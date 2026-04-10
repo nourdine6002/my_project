@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nourdine Doulahiane | Portfolio</title>
+  <meta name="description"
+    content="Personal Portfolio of Nourdine Doulahiane - Software Developer specializing in C and Python.">
+  <link rel="stylesheet" href="css/globals.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/github-calendar@latest/dist/github-calendar-responsive.css" />
+</head>
+
+<body>
+
+  <div class="scroll-progress-container">
+    <div class="scroll-progress-bar" id="scroll-bar"></div>
+  </div>
+
+  <!-- Splash Screen -->
+  <div id="splash-screen" style="flex-direction: column; align-items: flex-start; justify-content: flex-start;">
+    <div class="boot-sequence" id="boot-sequence" style="padding: 20px; width: 100%; text-align: left; font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #10b981; line-height: 1.5; text-shadow: 0 0 5px rgba(16, 185, 129, 0.5);"></div>
+    <div class="splash-content" id="splash-content" style="display: none; margin: auto; text-align: center;">
+      <div class="splash-logo">ND<span>_</span></div>
+      <div class="loading-bar"></div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <header>
+    <div class="container nav-container">
+      <a href="#" class="logo">ND<span>.</span></a>
+      <ul class="nav-links">
+        <li><a href="#about">01. About</a></li>
+        <li><a href="#skills">02. Skills</a></li>
+        <li><a href="#terminal">03. Terminal</a></li>
+        <li><a href="#projects">04. Work</a></li>
+        <li><a href="#contact">05. Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="intro" style="position: relative;">
+    <button id="bg-toggle-btn" class="btn btn-outline"
+      style="position:absolute; top:80px; right:20px; z-index:100; padding: 8px 16px; font-size: 0.8rem; border-radius: 5px;"><i
+        class="fas fa-magic"></i> BG</button>
+    <canvas id="matrix-bg" style="transition: opacity 0.5s ease;"></canvas>
+    <div id="particles-js" style="position: absolute; top:0; left:0; width:100%; height:100%; z-index:1; opacity:0; pointer-events:none; transition: opacity 0.5s ease;">
+    </div>
+    <div class="container hero-grid">
+      <div class="hero-content" style="position: relative; z-index: 2;">
+        <h3 style="color: var(--accent-cyan); font-family: 'Fira Code', monospace; margin-bottom: 20px;">Hi, my name is
+        </h3>
+        <h1>Nourdine <span class="glitch-text" data-text="Doulahiane.">Doulahiane.</span></h1>
+
+        <div class="typewriter-container">
+          > <span class="typewriter"></span><span class="cursor" style="animation: blink 1s infinite;">_</span>
+        </div>
+
+
+
+        <div class="social-btns">
+          <a href="https://github.com/nourdine6002" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+            <i class="fab fa-github"></i> GitHub
+          </a>
+          <a href="https://www.linkedin.com/in/nourdine-doulahiane-9a6538390/" target="_blank" rel="noopener noreferrer"
+            class="btn btn-outline">
+            <i class="fab fa-linkedin-in"></i> LinkedIn
+          </a>
+          <a href="#" id="cv-download-btn" data-href="cv.html" class="btn btn-primary btn-pulse"
+            style="background: transparent; color: var(--accent-green); border-color: var(--accent-green);">
+            <i class="fas fa-file-download"></i> View / Download CV
+          </a>
+        </div>
+
+        <div style="margin-top: 32px;">
+          <a href="https://profile.intra.42.fr/users/nodoulah" target="_blank" rel="noopener noreferrer">
+            <img src="https://badge.mediaplus.ma/green_binary/nodoulah" alt="nodoulah 42 stats"
+              style="max-width: 400px; width: 100%; border-radius: 8px; box-shadow: var(--shadow-neon); transition: transform 0.3s ease;"
+              onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-visual" style="position: relative; z-index: 2;">
+        <img src="https://avatars.githubusercontent.com/nourdine6002" alt="Nourdine Doulahiane Profile">
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="section" style="padding-bottom: 0;">
+    <div class="container">
+      <h2 class="section-title"><span>01.</span> <span class="decode-text" data-value="About Me">About Me</span></h2>
+      <p style="font-size: 1.15rem; color: var(--text-muted); max-width: 800px; line-height: 1.8;">
+        I'm a passionate software developer primarily focused on lower-level systems programming in <strong>C</strong>
+        and building robust applications in <strong>Python</strong>. I love solving complex algorithms, organizing
+        efficient architectures, and writing clean, scalable code. My journey in the 42 School network has hardened my
+        skills in memory management, algorithmic efficiency, and object-oriented paradigms.
+      </p>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section id="skills" class="section">
+    <div class="container">
+      <h2 class="section-title"><span>02.</span> <span class="decode-text" data-value="Skills Matrix">Skills Matrix</span></h2>
+      <div class="skills-grid">
+
+        <div class="skill-item">
+          <div class="skill-info">
+            <span><i class="fab fa-cuttlefish"></i> C</span>
+            <span>95%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill" data-width="95%"></div>
+          </div>
+        </div>
+
+        <div class="skill-item">
+          <div class="skill-info">
+            <span><i class="fab fa-python"></i> Python</span>
+            <span>90%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill" data-width="90%"></div>
+          </div>
+        </div>
+
+        <div class="skill-item">
+          <div class="skill-info">
+            <span><i class="fas fa-project-diagram"></i> Data Structures & Algorithms</span>
+            <span>85%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill" data-width="85%"></div>
+          </div>
+        </div>
+
+        <div class="skill-item">
+          <div class="skill-info">
+            <span><i class="fab fa-linux"></i> Linux / Bash</span>
+            <span>80%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill" data-width="80%"></div>
+          </div>
+        </div>
+
+        <div class="skill-item">
+          <div class="skill-info">
+            <span><i class="fab fa-git-alt"></i> Git Version Control</span>
+            <span>85%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill" data-width="85%"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Terminal Section -->
+  <section id="terminal" class="section">
+    <div class="container">
+      <h2 class="section-title" style="justify-content: space-between;">
+        <span style="display: flex; align-items: center; gap: 16px;"><span>03.</span> <span class="decode-text" data-value="Interactive Terminal">Interactive Terminal</span></span>
+        <button id="restore-terminal-btn" class="btn btn-outline" style="display:none; font-size: 0.8rem; padding: 6px 16px; border-radius: 4px;">
+          <i class="fas fa-terminal"></i> Restore Window
+        </button>
+      </h2>
+
+      <div class="terminal-window" id="terminal-window" style="position: relative; left: 0; top: 0;">
+        <div class="terminal-header" id="term-header">
+          <div class="terminal-buttons">
+            <span class="close" id="term-close" title="Close"></span>
+            <span class="minimize" id="term-min" title="Minimize"></span>
+            <span class="maximize" id="term-max" title="Maximize"></span>
+          </div>
+          <div class="terminal-title">nourdine@macbook: ~</div>
+        </div>
+        <div class="terminal-body" id="term-body">
+          <p>Welcome to Nourdine OS v1.0.0</p>
+          <p>Type <span class="highlight">help</span> to see a list of available commands.</p>
+
+          <div id="term-history"></div>
+
+          <div class="term-input-line">
+            <span class="prompt">nourdine@macbook:~$</span>
+            <input type="text" id="term-input" autocomplete="off" spellcheck="false" autofocus>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="section">
+    <div class="container">
+      <h2 class="section-title"><span>04.</span> <span class="decode-text" data-value="Projects I've Built">Projects I've Built</span></h2>
+
+      <div class="projects-grid">
+
+        <div class="project-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare
+          data-tilt-max-glare="0.1">
+          <div class="project-top">
+            <i class="far fa-folder folder-icon"></i>
+            <div class="project-links">
+              <a href="https://github.com/nourdine6002/push_swap" target="_blank"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+          <h3 class="project-title">Push_Swap</h3>
+          <p class="project-desc">A highly optimized sorting algorithm project written in C. It sorts data on a stack
+            with a limited set of instructions, minimizing operations.</p>
+          <div class="project-tech">
+            <span>C</span>
+            <span>Algorithms</span>
+          </div>
+        </div>
+
+        <div class="project-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare
+          data-tilt-max-glare="0.1">
+          <div class="project-top">
+            <i class="far fa-folder folder-icon"></i>
+            <div class="project-links">
+              <a href="https://github.com/nourdine6002/python00" target="_blank"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+          <h3 class="project-title">Python Core Bootcamp</h3>
+          <p class="project-desc">A deep dive into core Python programming mechanics, data manipulation, and
+            Object-Oriented principles across several modules.</p>
+          <div class="project-tech">
+            <span>Python</span>
+            <span>OOP</span>
+          </div>
+        </div>
+
+        <div class="project-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare
+          data-tilt-max-glare="0.1">
+          <div class="project-top">
+            <i class="far fa-folder folder-icon"></i>
+            <div class="project-links">
+              <a href="https://github.com/nourdine6002/python05" target="_blank"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+          <h3 class="project-title">Advanced Python Solutions</h3>
+          <p class="project-desc">Implementation of advanced backend concepts using Python, focusing on modular
+            architecture, error handling, and memory efficiency.</p>
+          <div class="project-tech">
+            <span>Python</span>
+            <span>Backend</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="text-align: center; margin-top: 40px;">
+        <a href="https://github.com/nourdine6002?tab=repositories" target="_blank" class="btn btn-outline"
+          style="border-radius: 30px; font-size: 1rem;">
+          View All Projects on GitHub <i class="fab fa-github" style="margin-left: 8px;"></i>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- GitHub Stats Section -->
+  <section class="section" id="github-stats">
+    <div class="container">
+      <h2 class="section-title"><span>05.</span> <span class="decode-text" data-value="GitHub Contributions">GitHub Contributions</span></h2>
+      <div
+        style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 12px; padding: 32px;"
+        class="calendar">
+        <!-- Calendar gets injected here -->
+        Loading GitHub Stats...
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+  <footer id="contact">
+    <div class="container">
+      <h2 style="color: var(--text-main); margin-bottom: 24px;"><span>06.</span> <span class="decode-text" data-value="Get In Touch">Get In Touch</span></h2>
+      <p style="max-width: 600px; margin: 0 auto 32px;">Although I'm not currently looking for any new opportunities, my
+        inbox is always open. Whether you have a question or just want to say hi, I'll try my best to get back to you!
+      </p>
+
+      <div style="margin-bottom: 32px; font-size: 1.5rem; display: flex; justify-content: center; gap: 24px;">
+        <a href="https://github.com/nourdine6002" target="_blank"><i class="fab fa-github"></i></a>
+        <a href="https://www.linkedin.com/in/nourdine-doulahiane-9a6538390/" target="_blank"><i
+            class="fab fa-linkedin"></i></a>
+      </div>
+      <p>Designed & Built by Nourdine Doulahiane</p>
+    </div>
+  </footer>
+
+  <!-- Hack Server Modal -->
+  <div id="hack-modal" class="hack-modal">
+    <div class="hack-terminal">
+      <div id="hack-text"></div>
+      <span class="cursor" style="animation: blink 1s infinite;">_</span>
+    </div>
+  </div>
+
+  <!-- Custom Context Menu -->
+  <div id="custom-context-menu" class="context-menu">
+    <div class="context-menu-header">NourdineOS_Terminal</div>
+    <ul class="context-menu-list">
+      <li id="cm-terminal"><i class="fas fa-terminal"></i> Access Terminal</li>
+      <li id="cm-github"><i class="fab fa-github"></i> View GitHub</li>
+      <li id="cm-cv"><i class="fas fa-file-download"></i> Download CV</li>
+      <li id="cm-matrix"><i class="fas fa-user-secret"></i> Toggle Matrix Mode</li>
+    </ul>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+  <script src="https://unpkg.com/github-calendar@latest/dist/github-calendar.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>

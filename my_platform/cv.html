@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nourdine Doulahiane - Curriculum Vitae</title>
+    <!-- Add Google Fonts for Screen -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700&display=swap');
+
+        /* DUAL IDENTITY CSS VARIABLES */
+        :root {
+            /* Screen (Hacker) defaults */
+            --bg-color: #0a0e17;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-primary: #10b981; /* Neon green */
+            --accent-secondary: #06b6d4; /* Neon cyan */
+            --border-color: #1e293b;
+            --card-bg: #111827;
+            
+            --font-main: 'Inter', sans-serif;
+            --font-mono: 'Fira Code', monospace;
+            
+            --padding-body: 40px;
+            --max-width: 900px;
+        }
+
+        /* PRINT OVERRIDES (Standard Professional) */
+        @media print {
+            :root {
+                --bg-color: #ffffff;
+                --text-main: #111111;
+                --text-muted: #444444;
+                --accent-primary: #000000;
+                --accent-secondary: #000000;
+                --border-color: #cccccc;
+                --card-bg: transparent;
+                
+                --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                --font-mono: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                
+                --padding-body: 0px;
+                --max-width: 100%;
+            }
+            .no-print { display: none !important; }
+            body { background: white !important; padding: 0 !important; }
+            .cv-container {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+        }
+
+        /* GLOBAL STYLES */
+        body {
+            font-family: var(--font-main);
+            color: var(--text-main);
+            background-color: var(--bg-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: var(--padding-body);
+            transition: all 0.3s ease;
+        }
+
+        .cv-container {
+            max-width: var(--max-width);
+            margin: auto;
+            position: relative;
+        }
+
+        /* Screen-only Container Styling */
+        @media screen {
+            .cv-container {
+                background: rgba(17, 24, 39, 0.7);
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                padding: 50px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(16, 185, 129, 0.2);
+                backdrop-filter: blur(10px);
+            }
+            
+            .dossier-stamp {
+                position: absolute;
+                top: 20px;
+                right: 30px;
+                font-family: var(--font-mono);
+                color: rgba(239, 68, 68, 0.8);
+                border: 2px solid rgba(239, 68, 68, 0.8);
+                padding: 5px 10px;
+                font-weight: bold;
+                letter-spacing: 2px;
+                transform: rotate(5deg);
+                text-transform: uppercase;
+                pointer-events: none;
+            }
+            
+            ::selection {
+                background: var(--accent-primary);
+                color: #000;
+            }
+        }
+
+        header {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            margin: 0;
+            color: var(--text-main);
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        @media screen {
+            h1 {
+                text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: var(--accent-secondary);
+            margin-top: 5px;
+            font-family: var(--font-mono);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 15px;
+            font-size: 0.95em;
+            font-family: var(--font-mono);
+        }
+
+        .contact-info a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .contact-info a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        h2 {
+            font-size: 1.4em;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-top: 40px;
+            font-family: var(--font-mono);
+            letter-spacing: 1px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            color: var(--text-muted);
+        }
+
+        .item {
+            margin-bottom: 20px;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 3px solid var(--accent-primary);
+        }
+
+        @media print {
+            .item {
+                padding: 0;
+                border: none;
+                margin-bottom: 15px;
+            }
+            .section {
+                color: var(--text-main);
+            }
+        }
+
+        .item-title {
+            font-weight: 700;
+            font-size: 1.2em;
+            color: var(--text-main);
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .item-meta {
+            font-size: 0.9em;
+            color: var(--accent-secondary);
+            font-family: var(--font-mono);
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .skills-grid > div {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 6px;
+        }
+        
+        @media print {
+            .skills-grid > div {
+                padding: 0;
+            }
+            .skills-grid {
+                gap: 10px;
+            }
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+
+        /* Screen-only Print Button */
+        .print-btn {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-primary);
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            cursor: pointer;
+            border: 1px solid var(--accent-primary);
+            transition: all 0.3s ease;
+            font-family: var(--font-mono);
+        }
+
+        .print-btn:hover {
+            background: var(--accent-primary);
+            color: var(--bg-color);
+        }
+    </style>
+</head>
+<body>
+
+    <button onclick="window.print()" class="print-btn no-print">[+] EXPORT_AS_PDF</button>
+
+    <div class="cv-container">
+        <!-- Top Secret Stamp (Screen Only) -->
+        <div class="dossier-stamp no-print">CONFIDENTIAL</div>
+
+        <header>
+            <h1>Nourdine Doulahiane</h1>
+            <div class="subtitle">Software Developer | C & Python Specialist</div>
+            <div class="contact-info">
+                <span><strong>[GITHUB]:</strong> <a href="https://github.com/nourdine6002" target="_blank">github.com/nourdine6002</a></span>
+                <span><strong>[LINKEDIN]:</strong> <a href="https://www.linkedin.com/in/nourdine-doulahiane-9a6538390/" target="_blank">in/nourdine-doulahiane</a></span>
+                <span><strong>[INTRA]:</strong> nodoulah</span>
+            </div>
+        </header>
+
+        <div class="section">
+            <h2>> Professional_Summary</h2>
+            <p>Passionate software developer with a strong foundation in low-level systems programming (C) and backend application architecture (Python). Trained in the intensive, project-based 42 School network, specializing in algorithmic efficiency, data structures, and memory management. Proven ability to build scalable, clean code across multiple environments.</p>
+        </div>
+
+        <div class="section">
+            <h2>> Technical_Skills</h2>
+            <div class="skills-grid">
+                <div>
+                    <strong style="color: var(--text-main);">Languages:</strong> C, Python, SQL, Bash<br>
+                    <strong style="color: var(--text-main); margin-top:5px; display:inline-block;">Concepts:</strong> Data Structures, Algorithms, Object-Oriented Programming (OOP)
+                </div>
+                <div>
+                    <strong style="color: var(--text-main);">Tools & OS:</strong> Linux, Git Version Control, Terminal/Shell scripting<br>
+                    <strong style="color: var(--text-main); margin-top:5px; display:inline-block;">Domains:</strong> Backend Development, Systems Architecture
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>> Key_Projects</h2>
+            
+            <div class="item">
+                <div class="item-title">Push_Swap <span>(C / Algorithms)</span></div>
+                <div class="item-meta">42 Curriculum - Focus: Optimization & Data Structures</div>
+                <ul>
+                    <li>Developed a highly optimized sorting program that sorts data using two stacks and a restricted set of instructions.</li>
+                    <li>Designed custom sorting logic minimizing the maximum number of operations significantly below acceptable benchmarks.</li>
+                    <li>Extensive manipulation of linked lists, pointers, and manual memory management in C.</li>
+                </ul>
+            </div>
+
+            <div class="item">
+                <div class="item-title">Advanced Python Solutions <span>(Python)</span></div>
+                <div class="item-meta">Focus: OOP & Backend Architecture</div>
+                <ul>
+                    <li>Engineered backend components emphasizing modular architecture, clean abstraction, and standard design patterns.</li>
+                    <li>Implemented robust error handling, exception management, and performance optimizations.</li>
+                    <li>Created scripts handling complex file parsing, data manipulation, and testing workflows.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>> Education</h2>
+            <div class="item">
+                <div class="item-title">42 Network (1337 / 42 School)</div>
+                <div class="item-meta">Software Engineering intensive peer-to-peer curriculum</div>
+                <p style="margin-top: 5px;">Currently mastering core computer science paradigms through rigorous hands-on projects, ranging from custom Unix utilities to complex full-stack implementations.</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
