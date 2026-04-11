@@ -860,23 +860,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cards.forEach(c => obs.observe(c));
   })();
 
-  // 17. Timeline Scroll Reveal (Intersection Observer)
-  (function initTimeline() {
-    const items = document.querySelectorAll('.tl-item');
-    if (!items.length) return;
 
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.remove('tl-hidden');
-          entry.target.classList.add('tl-visible');
-          obs.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.2 });
-
-    items.forEach(item => obs.observe(item));
-  })();
 
 
 });

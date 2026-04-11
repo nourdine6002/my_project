@@ -309,55 +309,7 @@
     </div>
   </section>
 
-  <!-- Timeline Section -->
-  <section id="journey" class="section">
-    <div class="container">
-      <h2 class="section-title"><span>06.</span> <span class="decode-text" data-value="My Journey">My Journey</span></h2>
-      <div class="timeline">
 
-        <div class="tl-item tl-left tl-hidden">
-          <div class="tl-dot"></div>
-          <div class="tl-card">
-            <div class="tl-year">2022</div>
-            <p class="tl-text">Started learning C — fell in love with memory management and low-level programming. Pointers, stacks, and raw performance became my obsession.</p>
-          </div>
-        </div>
-
-        <div class="tl-item tl-right tl-hidden">
-          <div class="tl-dot"></div>
-          <div class="tl-card">
-            <div class="tl-year">2023</div>
-            <p class="tl-text">Joined 42 School network — completed Push_Swap, pipex, and core curriculum projects through intensive peer-to-peer learning with no teachers.</p>
-          </div>
-        </div>
-
-        <div class="tl-item tl-left tl-hidden">
-          <div class="tl-dot"></div>
-          <div class="tl-card">
-            <div class="tl-year">2024</div>
-            <p class="tl-text">Mastered Python — built AI tools, automation scripts and backend systems. Discovered the power of combining low-level thinking with high-level productivity.</p>
-          </div>
-        </div>
-
-        <div class="tl-item tl-right tl-hidden">
-          <div class="tl-dot"></div>
-          <div class="tl-card">
-            <div class="tl-year">2025</div>
-            <p class="tl-text">Started exploring AI agents — combining C efficiency with Python AI capabilities. Built a Terminal ChatBot powered by Claude API running in the Linux terminal.</p>
-          </div>
-        </div>
-
-        <div class="tl-item tl-left tl-hidden">
-          <div class="tl-dot tl-dot-now"></div>
-          <div class="tl-card tl-card-now">
-            <div class="tl-year tl-year-now">Now</div>
-            <p class="tl-text">Open to work — seeking exciting opportunities in systems programming or AI development. Let's build something great together.</p>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
 
   <!-- GitHub Stats Section -->
   <section class="section" id="github-stats">
@@ -521,71 +473,6 @@
   <script src="https://unpkg.com/github-calendar@latest/dist/github-calendar.min.js"></script>
   <script src="js/app.js"></script>
 
-  <!-- Cursor Trail Effect -->
-  <script>
-  (function() {
-    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
 
-    const TRAIL_COUNT = 8;
-    const MAIN_SIZE  = 14;
-    const TRAIL_START = 10;
-
-    const style = document.createElement('style');
-    style.textContent = `
-      #cursor-main { position:fixed; width:${MAIN_SIZE}px; height:${MAIN_SIZE}px; border-radius:50%;
-        background:#4fc3f7; pointer-events:none; z-index:99999; transform:translate(-50%,-50%);
-        mix-blend-mode:screen; transition:transform 0.1s ease; will-change:left,top; }
-      body:has(a:hover,button:hover) #cursor-main { transform:translate(-50%,-50%) scale(1.8); }
-      .cursor-trail { position:fixed; border-radius:50%; background:#4fc3f7; pointer-events:none;
-        z-index:99998; transform:translate(-50%,-50%); mix-blend-mode:screen; will-change:left,top; }
-    `;
-    document.head.appendChild(style);
-
-    const main = document.createElement('div');
-    main.id = 'cursor-main';
-    document.body.appendChild(main);
-
-    const trail = Array.from({length: TRAIL_COUNT}, (_, i) => {
-      const d = document.createElement('div');
-      d.className = 'cursor-trail';
-      const frac = 1 - i / TRAIL_COUNT;
-      const sz = Math.max(2, TRAIL_START * frac);
-      d.style.cssText = `width:${sz}px;height:${sz}px;opacity:${frac * 0.6};`;
-      document.body.appendChild(d);
-      return d;
-    });
-
-    let mx = -100, my = -100;
-    let cx = -100, cy = -100;
-    const hist = Array(TRAIL_COUNT).fill(null).map(() => ({x: -100, y: -100}));
-
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-
-    let rafId;
-    function animate() {
-      cx += (mx - cx) * 0.18;
-      cy += (my - cy) * 0.18;
-      main.style.left = cx + 'px';
-      main.style.top  = cy + 'px';
-
-      hist.unshift({x: cx, y: cy});
-      hist.length = TRAIL_COUNT;
-
-      trail.forEach((dot, i) => {
-        const step = Math.floor((i + 1) * (TRAIL_COUNT / TRAIL_COUNT));
-        const pos  = hist[Math.min(step + i * 2, hist.length - 1)];
-        dot.style.left = pos.x + 'px';
-        dot.style.top  = pos.y + 'px';
-      });
-
-      rafId = requestAnimationFrame(animate);
-    }
-    animate();
-
-    document.addEventListener('mouseleave', () => { main.style.opacity = '0'; });
-    document.addEventListener('mouseenter', () => { main.style.opacity = '1'; });
-  })();
-  </script>
 </body>
-
 </html>
