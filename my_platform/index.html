@@ -38,6 +38,9 @@
         <li><a href="#projects">04. Work</a></li>
         <li><a href="#contact">05. Contact</a></li>
       </ul>
+      <button id="theme-toggle" class="btn-theme-toggle" aria-label="Toggle dark/light mode">
+        <i class="fas fa-moon" id="theme-icon"></i>
+      </button>
     </div>
   </header>
 
@@ -69,9 +72,9 @@
             class="btn btn-outline">
             <i class="fab fa-linkedin-in"></i> LinkedIn
           </a>
-          <a href="#" id="cv-download-btn" data-href="cv.html" class="btn btn-primary btn-pulse"
+          <a href="#" id="cv-download-btn" class="btn btn-primary btn-pulse"
             style="background: transparent; color: var(--accent-green); border-color: var(--accent-green);">
-            <i class="fas fa-file-download"></i> View / Download CV
+            <i class="fas fa-file-download"></i> Download CV
           </a>
         </div>
 
@@ -95,10 +98,14 @@
     <div class="container">
       <h2 class="section-title"><span>01.</span> <span class="decode-text" data-value="About Me">About Me</span></h2>
       <p style="font-size: 1.15rem; color: var(--text-muted); max-width: 800px; line-height: 1.8;">
-        I'm a passionate software developer primarily focused on lower-level systems programming in <strong>C</strong>
-        and building robust applications in <strong>Python</strong>. I love solving complex algorithms, organizing
-        efficient architectures, and writing clean, scalable code. My journey in the 42 School network has hardened my
-        skills in memory management, algorithmic efficiency, and object-oriented paradigms.
+        I'm Nourdine — a developer forged in 42 School's intense, peer-driven environment. I specialize in systems
+        programming with <strong>C</strong>, write clean <strong>Python</strong>, and feel most at home deep in a
+        Linux terminal. I believe great software should be as readable as it is fast.
+      </p>
+      <p style="font-size: 1.15rem; color: var(--text-muted); max-width: 800px; line-height: 1.8; margin-top: 16px;">
+        What drives me is solving real problems — from wrestling with memory to crafting lean algorithms. I bring
+        curiosity, precision, and genuine care for craft to everything I build. I'm currently
+        <strong style="color: var(--accent-green);">open to freelance work and new opportunities</strong>.
       </p>
     </div>
   </section>
@@ -107,55 +114,55 @@
   <section id="skills" class="section">
     <div class="container">
       <h2 class="section-title"><span>02.</span> <span class="decode-text" data-value="Skills Matrix">Skills Matrix</span></h2>
-      <div class="skills-grid">
+      <div class="skills-bars-list" id="skills-bars">
 
-        <div class="skill-item">
-          <div class="skill-info">
-            <span><i class="fab fa-cuttlefish"></i> C</span>
-            <span>95%</span>
+        <div class="sbar-item">
+          <div class="sbar-info">
+            <span class="sbar-label"><i class="fab fa-cuttlefish"></i> C</span>
+            <span class="sbar-pct" data-target="95">0%</span>
           </div>
-          <div class="skill-bar">
-            <div class="skill-fill" data-width="95%"></div>
+          <div class="sbar-track">
+            <div class="sbar-fill" data-target="95"></div>
           </div>
         </div>
 
-        <div class="skill-item">
-          <div class="skill-info">
-            <span><i class="fab fa-python"></i> Python</span>
-            <span>90%</span>
+        <div class="sbar-item">
+          <div class="sbar-info">
+            <span class="sbar-label"><i class="fab fa-python"></i> Python</span>
+            <span class="sbar-pct" data-target="90">0%</span>
           </div>
-          <div class="skill-bar">
-            <div class="skill-fill" data-width="90%"></div>
-          </div>
-        </div>
-
-        <div class="skill-item">
-          <div class="skill-info">
-            <span><i class="fas fa-project-diagram"></i> Data Structures & Algorithms</span>
-            <span>85%</span>
-          </div>
-          <div class="skill-bar">
-            <div class="skill-fill" data-width="85%"></div>
+          <div class="sbar-track">
+            <div class="sbar-fill" data-target="90"></div>
           </div>
         </div>
 
-        <div class="skill-item">
-          <div class="skill-info">
-            <span><i class="fab fa-linux"></i> Linux / Bash</span>
-            <span>80%</span>
+        <div class="sbar-item">
+          <div class="sbar-info">
+            <span class="sbar-label"><i class="fas fa-project-diagram"></i> Data Structures &amp; Algorithms</span>
+            <span class="sbar-pct" data-target="85">0%</span>
           </div>
-          <div class="skill-bar">
-            <div class="skill-fill" data-width="80%"></div>
+          <div class="sbar-track">
+            <div class="sbar-fill" data-target="85"></div>
           </div>
         </div>
 
-        <div class="skill-item">
-          <div class="skill-info">
-            <span><i class="fab fa-git-alt"></i> Git Version Control</span>
-            <span>85%</span>
+        <div class="sbar-item">
+          <div class="sbar-info">
+            <span class="sbar-label"><i class="fab fa-linux"></i> Linux / Bash</span>
+            <span class="sbar-pct" data-target="80">0%</span>
           </div>
-          <div class="skill-bar">
-            <div class="skill-fill" data-width="85%"></div>
+          <div class="sbar-track">
+            <div class="sbar-fill" data-target="80"></div>
+          </div>
+        </div>
+
+        <div class="sbar-item">
+          <div class="sbar-info">
+            <span class="sbar-label"><i class="fab fa-git-alt"></i> Git Version Control</span>
+            <span class="sbar-pct" data-target="85">0%</span>
+          </div>
+          <div class="sbar-track">
+            <div class="sbar-fill" data-target="85"></div>
           </div>
         </div>
 
@@ -267,33 +274,194 @@
     </div>
   </section>
 
+
+  <!-- Stats Counter Section -->
+  <section id="stats" class="section">
+    <div class="container">
+      <h2 class="section-title"><span>05.</span> <span class="decode-text" data-value="By The Numbers">By The Numbers</span></h2>
+      <div class="counter-grid">
+
+        <div class="counter-card">
+          <div class="counter-icon"><i class="fas fa-rocket"></i></div>
+          <div class="counter-value" data-target="12" data-suffix="">0</div>
+          <div class="counter-label">Projects Completed</div>
+        </div>
+
+        <div class="counter-card">
+          <div class="counter-icon"><i class="fab fa-github"></i></div>
+          <div class="counter-value" data-target="247" data-suffix="">0</div>
+          <div class="counter-label">GitHub Commits</div>
+        </div>
+
+        <div class="counter-card">
+          <div class="counter-icon"><i class="fas fa-code"></i></div>
+          <div class="counter-value" data-target="18400" data-suffix="">0</div>
+          <div class="counter-label">Lines of Code</div>
+        </div>
+
+        <div class="counter-card">
+          <div class="counter-icon"><i class="fas fa-star"></i></div>
+          <div class="counter-value" data-target="100" data-suffix="%">0%</div>
+          <div class="counter-label">42 School Score</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline Section -->
+  <section id="journey" class="section">
+    <div class="container">
+      <h2 class="section-title"><span>06.</span> <span class="decode-text" data-value="My Journey">My Journey</span></h2>
+      <div class="timeline">
+
+        <div class="tl-item tl-left tl-hidden">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-year">2022</div>
+            <p class="tl-text">Started learning C — fell in love with memory management and low-level programming. Pointers, stacks, and raw performance became my obsession.</p>
+          </div>
+        </div>
+
+        <div class="tl-item tl-right tl-hidden">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-year">2023</div>
+            <p class="tl-text">Joined 42 School network — completed Push_Swap, pipex, and core curriculum projects through intensive peer-to-peer learning with no teachers.</p>
+          </div>
+        </div>
+
+        <div class="tl-item tl-left tl-hidden">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-year">2024</div>
+            <p class="tl-text">Mastered Python — built AI tools, automation scripts and backend systems. Discovered the power of combining low-level thinking with high-level productivity.</p>
+          </div>
+        </div>
+
+        <div class="tl-item tl-right tl-hidden">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-year">2025</div>
+            <p class="tl-text">Started exploring AI agents — combining C efficiency with Python AI capabilities. Built a Terminal ChatBot powered by Claude API running in the Linux terminal.</p>
+          </div>
+        </div>
+
+        <div class="tl-item tl-left tl-hidden">
+          <div class="tl-dot tl-dot-now"></div>
+          <div class="tl-card tl-card-now">
+            <div class="tl-year tl-year-now">Now</div>
+            <p class="tl-text">Open to work — seeking exciting opportunities in systems programming or AI development. Let's build something great together.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
   <!-- GitHub Stats Section -->
   <section class="section" id="github-stats">
     <div class="container">
-      <h2 class="section-title"><span>05.</span> <span class="decode-text" data-value="GitHub Contributions">GitHub Contributions</span></h2>
-      <div
-        style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 12px; padding: 32px;"
-        class="calendar">
+      <h2 class="section-title"><span>05.</span> <span class="decode-text" data-value="GitHub Activity">GitHub Activity</span></h2>
+
+      <!-- Live API Stats Cards -->
+      <div class="github-stats-grid">
+        <div class="stats-card skeleton">
+          <div class="stats-icon"><i class="fas fa-code-branch"></i></div>
+          <div class="stats-value" id="repos-count">--</div>
+          <div class="stats-label">Repositories</div>
+        </div>
+        <div class="stats-card skeleton">
+          <div class="stats-icon"><i class="fas fa-star"></i></div>
+          <div class="stats-value" id="stars-count">--</div>
+          <div class="stats-label">Total Stars</div>
+        </div>
+        <div class="stats-card skeleton">
+          <div class="stats-icon"><i class="fas fa-users"></i></div>
+          <div class="stats-value" id="followers-count">--</div>
+          <div class="stats-label">Followers</div>
+        </div>
+      </div>
+
+      <!-- Top Languages -->
+      <div class="lang-chart">
+        <div class="lang-chart-title"><i class="fas fa-code" style="margin-right:8px;"></i>Top Languages</div>
+        <div id="lang-bars">
+          <div class="lang-bar-row" style="height:20px;background:var(--bg-secondary);border-radius:4px;"></div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="recent-activity">
+        <div class="activity-title"><i class="fas fa-history" style="margin-right:8px;"></i>Recent Commits</div>
+        <div id="activity-list"><div style="color:var(--text-muted);font-size:0.9rem;padding:8px 0;">Fetching activity...</div></div>
+      </div>
+
+      <!-- Contribution Calendar -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 12px; padding: 32px;" class="calendar">
         <!-- Calendar gets injected here -->
         Loading GitHub Stats...
       </div>
     </div>
   </section>
 
-  <!-- Footer Section -->
-  <footer id="contact">
+  <!-- Contact Section -->
+  <section id="contact" class="section">
     <div class="container">
-      <h2 style="color: var(--text-main); margin-bottom: 24px;"><span>06.</span> <span class="decode-text" data-value="Get In Touch">Get In Touch</span></h2>
-      <p style="max-width: 600px; margin: 0 auto 32px;">Although I'm not currently looking for any new opportunities, my
-        inbox is always open. Whether you have a question or just want to say hi, I'll try my best to get back to you!
-      </p>
+      <h2 class="section-title"><span>06.</span> <span class="decode-text" data-value="Get In Touch">Get In Touch</span></h2>
+      <div class="contact-grid">
 
-      <div style="margin-bottom: 32px; font-size: 1.5rem; display: flex; justify-content: center; gap: 24px;">
-        <a href="https://github.com/nourdine6002" target="_blank"><i class="fab fa-github"></i></a>
-        <a href="https://www.linkedin.com/in/nourdine-doulahiane-9a6538390/" target="_blank"><i
-            class="fab fa-linkedin"></i></a>
+        <!-- Left: info -->
+        <div class="contact-info-col">
+          <p class="contact-tagline">Have a project in mind or just want to connect? My inbox is always open — drop me a message and I'll get back to you.</p>
+          <div class="contact-links">
+            <a href="https://github.com/nourdine6002" target="_blank" rel="noopener noreferrer" class="contact-link">
+              <i class="fab fa-github"></i> github.com/nourdine6002
+            </a>
+            <a href="https://www.linkedin.com/in/nourdine-doulahiane-9a6538390/" target="_blank" rel="noopener noreferrer" class="contact-link">
+              <i class="fab fa-linkedin"></i> in/nourdine-doulahiane
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: form — replace YOUR_FORM_ID at https://formspree.io -->
+        <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="contact-form" novalidate>
+          <div class="form-group">
+            <label for="cf-name">Name</label>
+            <input type="text" id="cf-name" name="name" placeholder="Your name" required autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label for="cf-email">Email</label>
+            <input type="email" id="cf-email" name="email" placeholder="your@email.com" required autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label for="cf-message">Message</label>
+            <textarea id="cf-message" name="message" placeholder="Tell me about your project..." rows="5" required></textarea>
+          </div>
+          <button type="submit" id="form-submit-btn" class="btn btn-primary form-submit-btn">
+            <i class="fas fa-paper-plane"></i> SEND_MESSAGE
+          </button>
+        </form>
+
+        <!-- Success state (shown after send) -->
+        <div id="form-success" class="form-success" style="display: none;">
+          <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+          <h3>Message Transmitted!</h3>
+          <p>Thanks for reaching out. I'll get back to you ASAP.</p>
+        </div>
+
       </div>
-      <p>Designed & Built by Nourdine Doulahiane</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div style="margin-bottom: 16px; font-size: 1.4rem; display: flex; justify-content: center; gap: 24px;">
+        <a href="https://github.com/nourdine6002" target="_blank"><i class="fab fa-github"></i></a>
+        <a href="https://www.linkedin.com/in/nourdine-doulahiane-9a6538390/" target="_blank"><i class="fab fa-linkedin"></i></a>
+      </div>
+      <p>Designed &amp; Built by Nourdine Doulahiane</p>
     </div>
   </footer>
 
@@ -316,10 +484,108 @@
     </ul>
   </div>
 
+  <!-- AI Chatbot Widget -->
+  <div id="chatbot-container" class="chatbot-container">
+    <div id="chatbot-window" class="chatbot-window" style="display:none;">
+      <div class="chatbot-header">
+        <div class="chatbot-avatar"><i class="fas fa-robot"></i></div>
+        <div>
+          <div class="chatbot-name">Nourdine's Assistant</div>
+          <div class="chatbot-status"><span class="status-dot"></span> Online</div>
+        </div>
+        <button id="chatbot-close" class="chatbot-close" aria-label="Close chat"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="chatbot-messages" id="chatbot-messages">
+        <div class="chat-msg bot">
+          <div class="chat-bubble">👋 Hi! I'm Nourdine's assistant. Ask me about his skills, projects, or how to work with him!</div>
+        </div>
+      </div>
+      <div class="chatbot-quick-btns">
+        <button class="quick-btn" data-q="What are your skills?">💻 Skills</button>
+        <button class="quick-btn" data-q="Show me your projects">🚀 Projects</button>
+        <button class="quick-btn" data-q="How to hire you?">💼 Hire</button>
+      </div>
+      <div class="chatbot-input-row">
+        <input type="text" id="chatbot-input" placeholder="Ask me anything..." autocomplete="off">
+        <button id="chatbot-send" aria-label="Send message"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+    <button id="chatbot-bubble" class="chatbot-bubble" aria-label="Open AI assistant">
+      <i class="fas fa-comment-dots"></i>
+      <span class="chatbot-badge" id="chatbot-badge">1</span>
+    </button>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
   <script src="https://unpkg.com/github-calendar@latest/dist/github-calendar.min.js"></script>
   <script src="js/app.js"></script>
+
+  <!-- Cursor Trail Effect -->
+  <script>
+  (function() {
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
+
+    const TRAIL_COUNT = 8;
+    const MAIN_SIZE  = 14;
+    const TRAIL_START = 10;
+
+    const style = document.createElement('style');
+    style.textContent = `
+      #cursor-main { position:fixed; width:${MAIN_SIZE}px; height:${MAIN_SIZE}px; border-radius:50%;
+        background:#4fc3f7; pointer-events:none; z-index:99999; transform:translate(-50%,-50%);
+        mix-blend-mode:screen; transition:transform 0.1s ease; will-change:left,top; }
+      body:has(a:hover,button:hover) #cursor-main { transform:translate(-50%,-50%) scale(1.8); }
+      .cursor-trail { position:fixed; border-radius:50%; background:#4fc3f7; pointer-events:none;
+        z-index:99998; transform:translate(-50%,-50%); mix-blend-mode:screen; will-change:left,top; }
+    `;
+    document.head.appendChild(style);
+
+    const main = document.createElement('div');
+    main.id = 'cursor-main';
+    document.body.appendChild(main);
+
+    const trail = Array.from({length: TRAIL_COUNT}, (_, i) => {
+      const d = document.createElement('div');
+      d.className = 'cursor-trail';
+      const frac = 1 - i / TRAIL_COUNT;
+      const sz = Math.max(2, TRAIL_START * frac);
+      d.style.cssText = `width:${sz}px;height:${sz}px;opacity:${frac * 0.6};`;
+      document.body.appendChild(d);
+      return d;
+    });
+
+    let mx = -100, my = -100;
+    let cx = -100, cy = -100;
+    const hist = Array(TRAIL_COUNT).fill(null).map(() => ({x: -100, y: -100}));
+
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+    let rafId;
+    function animate() {
+      cx += (mx - cx) * 0.18;
+      cy += (my - cy) * 0.18;
+      main.style.left = cx + 'px';
+      main.style.top  = cy + 'px';
+
+      hist.unshift({x: cx, y: cy});
+      hist.length = TRAIL_COUNT;
+
+      trail.forEach((dot, i) => {
+        const step = Math.floor((i + 1) * (TRAIL_COUNT / TRAIL_COUNT));
+        const pos  = hist[Math.min(step + i * 2, hist.length - 1)];
+        dot.style.left = pos.x + 'px';
+        dot.style.top  = pos.y + 'px';
+      });
+
+      rafId = requestAnimationFrame(animate);
+    }
+    animate();
+
+    document.addEventListener('mouseleave', () => { main.style.opacity = '0'; });
+    document.addEventListener('mouseenter', () => { main.style.opacity = '1'; });
+  })();
+  </script>
 </body>
 
 </html>

@@ -8,6 +8,22 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   window.scrollTo(0, 0);
 
+  // 0. Dark / Light Mode Toggle
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeIcon   = document.getElementById('theme-icon');
+  if (localStorage.getItem('theme') === 'light') {
+    document.body.classList.add('light-mode');
+    if (themeIcon) themeIcon.className = 'fas fa-sun';
+  }
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light-mode');
+      const isLight = document.body.classList.contains('light-mode');
+      if (themeIcon) themeIcon.className = isLight ? 'fas fa-sun' : 'fas fa-moon';
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    });
+  }
+
   // 1. Splash Screen Logic
   const splashScreen = document.getElementById('splash-screen');
   const bootSequence = document.getElementById('boot-sequence');
@@ -138,10 +154,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Smooth scroll
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (!target) return;
       e.preventDefault();
-      document.querySelector(this.getAttribute('href')).scrollIntoView({
-        behavior: 'smooth'
-      });
+      target.scrollIntoView({ behavior: 'smooth' });
     });
   });
 
@@ -343,6 +359,94 @@ document.addEventListener('DOMContentLoaded', () => {
     GitHubCalendar(".calendar", "nourdine6002", { responsive: true, tooltips: true, global_stats: false });
   }
 
+  // 7b. GitHub Live API Stats
+  (async function loadGitHubStats() {
+    const user = 'nourdine6002';
+    const LANG_COLORS = {
+      'C': '#555555', 'Python': '#3572A5', 'Shell': '#89e051',
+      'Makefile': '#427819', 'JavaScript': '#f1e05a', 'TypeScript': '#2b7489',
+      'HTML': '#e34c26', 'CSS': '#563d7c', 'C++': '#f34b7d'
+    };
+    function timeAgo(date) {
+      const s = Math.floor((Date.now() - new Date(date)) / 1000);
+      if (s < 60)    return 'just now';
+      if (s < 3600)  return `${Math.floor(s/60)}m ago`;
+      if (s < 86400) return `${Math.floor(s/3600)}h ago`;
+      return `${Math.floor(s/86400)}d ago`;
+    }
+    try {
+      const [uRes, rRes, eRes] = await Promise.all([
+        fetch(`https://api.github.com/users/${user}`),
+        fetch(`https://api.github.com/users/${user}/repos?per_page=100&sort=updated`),
+        fetch(`https://api.github.com/users/${user}/events/public?per_page=20`)
+      ]);
+      if (!uRes.ok) throw new Error('rate limit');
+      const [uData, repos, events] = await Promise.all([uRes.json(), rRes.json(), eRes.json()]);
+
+      // Stats cards
+      const rc = document.getElementById('repos-count');
+      const sc = document.getElementById('stars-count');
+      const fc = document.getElementById('followers-count');
+      if (rc) rc.textContent = uData.public_repos;
+      if (fc) fc.textContent = uData.followers;
+      if (sc) sc.textContent = repos.reduce((a, r) => a + r.stargazers_count, 0);
+      document.querySelectorAll('.stats-card').forEach(c => c.classList.remove('skeleton'));
+
+      // Language bars
+      const langCount = {};
+      repos.forEach(r => { if (r.language) langCount[r.language] = (langCount[r.language]||0) + 1; });
+      const sorted = Object.entries(langCount).sort((a,b) => b[1]-a[1]).slice(0, 5);
+      const total  = sorted.reduce((s,[,v]) => s+v, 0);
+      const langEl = document.getElementById('lang-bars');
+      if (langEl && sorted.length) {
+        langEl.innerHTML = sorted.map(([lang, cnt]) => {
+          const pct = Math.round((cnt/total)*100);
+          const color = LANG_COLORS[lang] || 'var(--accent-cyan)';
+          return `<div class="lang-bar-row">
+            <span class="lang-name">${lang}</span>
+            <div class="lang-bar-track"><div class="lang-bar-fill" style="background:${color};"></div></div>
+            <span class="lang-pct">${pct}%</span>
+          </div>`;
+        }).join('');
+        // Animate bars after paint
+        requestAnimationFrame(() => {
+          sorted.forEach(([lang, cnt], i) => {
+            const pct = Math.round((cnt/total)*100);
+            const fill = langEl.querySelectorAll('.lang-bar-fill')[i];
+            if (fill) setTimeout(() => { fill.style.width = pct + '%'; }, 100);
+          });
+        });
+      }
+
+      // Recent activity
+      const pushes = events.filter(e => e.type === 'PushEvent').slice(0, 3);
+      const actEl  = document.getElementById('activity-list');
+      if (actEl) {
+        if (!pushes.length) {
+          actEl.innerHTML = '<p class="stats-error">No recent public activity.</p>';
+        } else {
+          actEl.innerHTML = pushes.map(e => {
+            const commit = e.payload.commits?.[0];
+            const msg  = (commit?.message || 'Pushed changes').split('\n')[0].slice(0, 72);
+            const repo = e.repo.name.split('/')[1];
+            return `<div class="activity-item">
+              <span class="activity-dot"></span>
+              <span class="activity-text">Pushed to <strong>${repo}</strong>: ${msg}</span>
+              <span class="activity-time">${timeAgo(e.created_at)}</span>
+            </div>`;
+          }).join('');
+        }
+      }
+    } catch {
+      document.querySelectorAll('.stats-card').forEach(c => c.classList.remove('skeleton'));
+      ['repos-count','stars-count','followers-count'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.textContent = '?';
+      });
+      const actEl = document.getElementById('activity-list');
+      if (actEl) actEl.innerHTML = '<p class="stats-error">⚠ GitHub API limit reached. Refresh in a minute.</p>';
+    }
+  })();
+
   // 8. Secret Password Easter Egg ("matrix")
   let keySequence = '';
   const secretCode = 'matrix';
@@ -370,7 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-  // 10. Scroll Progress Bar
+  // 9. Scroll Progress Bar
   const scrollBar = document.getElementById('scroll-bar');
   if (scrollBar) {
     window.addEventListener('scroll', () => {
@@ -381,14 +485,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 11. Hack CV Modal
+  // 10. Hack CV Modal — downloads PDF if available, falls back to cv.html
   const cvBtn = document.getElementById('cv-download-btn');
   const hackModal = document.getElementById('hack-modal');
   const hackText = document.getElementById('hack-text');
   if (cvBtn && hackModal && hackText) {
     cvBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      const targetHref = cvBtn.getAttribute('data-href') || 'cv.html';
       hackModal.classList.add('active');
       const messages = [
         "INITIALIZING MAINFRAME CONNECTION...",
@@ -405,17 +508,32 @@ document.addEventListener('DOMContentLoaded', () => {
           msgIndex++;
         } else {
           clearInterval(interval);
-          setTimeout(() => {
+          setTimeout(async () => {
             hackModal.classList.remove('active');
             hackText.innerHTML = '';
-            window.open(targetHref, '_blank');
+            // Try PDF download first; fall back to cv.html
+            try {
+              const res = await fetch('Nourdine_CV.pdf', { method: 'HEAD' });
+              if (res.ok) {
+                const a = document.createElement('a');
+                a.href = 'Nourdine_CV.pdf';
+                a.download = 'Nourdine_CV.pdf';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+              } else {
+                window.open('cv.html', '_blank');
+              }
+            } catch {
+              window.open('cv.html', '_blank');
+            }
           }, 800);
         }
       }, 500);
     });
   }
 
-  // 12. Particles JS Toggle
+  // 11. Particles JS Toggle
   const bgToggleBtn = document.getElementById('bg-toggle-btn');
   const matrixBg = document.getElementById('matrix-bg');
   const particlesJs = document.getElementById('particles-js');
@@ -459,7 +577,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 13. Custom Context Menu
+  // 12. Custom Context Menu
   const contextMenu = document.getElementById('custom-context-menu');
   if (contextMenu && !isMobile) {
     document.addEventListener('contextmenu', (e) => {
@@ -524,5 +642,241 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // 13. Contact Form — Formspree AJAX submission
+  const contactForm = document.getElementById('contact-form');
+  if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = document.getElementById('form-submit-btn');
+      const successMsg = document.getElementById('form-success');
+      const originalLabel = submitBtn.innerHTML;
+
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SENDING...';
+      submitBtn.disabled = true;
+
+      try {
+        const response = await fetch(contactForm.action, {
+          method: 'POST',
+          body: new FormData(contactForm),
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+          contactForm.reset();
+          contactForm.style.display = 'none';
+          if (successMsg) successMsg.style.display = 'block';
+        } else {
+          submitBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ERROR — RETRY';
+          submitBtn.disabled = false;
+          setTimeout(() => { submitBtn.innerHTML = originalLabel; }, 4000);
+        }
+      } catch {
+        submitBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ERROR — RETRY';
+        submitBtn.disabled = false;
+        setTimeout(() => { submitBtn.innerHTML = originalLabel; }, 4000);
+      }
+    });
+  }
+
+  // 14. AI Chatbot Widget
+  (function initChatbot() {
+    const bubble   = document.getElementById('chatbot-bubble');
+    const chatWin  = document.getElementById('chatbot-window');
+    const closeBtn = document.getElementById('chatbot-close');
+    const input    = document.getElementById('chatbot-input');
+    const sendBtn  = document.getElementById('chatbot-send');
+    const msgBox   = document.getElementById('chatbot-messages');
+    const badge    = document.getElementById('chatbot-badge');
+    if (!bubble || !chatWin) return;
+
+    const kb = [
+      {
+        match: ['skill','tech','stack','language','know','good at','exper','proficien','capabilit'],
+        reply: `Here's Nourdine's technical stack:\n\n💻 <strong>C</strong> — 95% &nbsp;(Systems programming, pointers, memory)\n🐍 <strong>Python</strong> — 90% &nbsp;(Backend, scripting, OOP)\n🧠 <strong>Algorithms & DS</strong> — 85%\n🐧 <strong>Linux / Bash</strong> — 80%\n🔀 <strong>Git</strong> — 85%`
+      },
+      {
+        match: ['project','work','built','portfolio','repo','show'],
+        reply: `Nourdine's key projects:\n\n🔧 <strong>Push_Swap</strong> — Optimized sorting in C with two stacks & minimal ops.\n🐍 <strong>Python Core Bootcamp</strong> — Deep OOP, data manipulation, modules.\n⚙️ <strong>Advanced Python Solutions</strong> — Clean backend architecture & design patterns.\n\n→ <a href="https://github.com/nourdine6002" target="_blank" style="color:var(--accent-cyan);">View all on GitHub ↗</a>`
+      },
+      {
+        match: ['hire','freelanc','job','opport','work with','contact','reach','collab','availabl','partner'],
+        reply: `Nourdine is <strong>open to freelance work, collaborations & new opportunities!</strong>\n\n📬 Use the contact form on this page\n💼 <a href="https://www.linkedin.com/in/nourdine-doulahiane-9a6538390/" target="_blank" style="color:var(--accent-cyan);">LinkedIn ↗</a>\n🐙 <a href="https://github.com/nourdine6002" target="_blank" style="color:var(--accent-cyan);">GitHub ↗</a>`
+      },
+      {
+        match: ['who','about','nourdine','yourself','tell me','bio','introduc'],
+        reply: `I'm an assistant for <strong>Nourdine Doulahiane</strong> — a passionate developer trained at 42 School.\n\nHe specializes in C systems programming & Python backend work. Clean code, efficient algorithms, and Linux are his home turf. 🐧`
+      },
+      {
+        match: ['school','42','1337','educat','study','learn','train','peer'],
+        reply: `Nourdine studied at <strong>42 School Network (1337)</strong> — an intensive, peer-to-peer software engineering program.\n\nNo lectures, no teachers — just hands-on projects, rigorous peer reviews, and real problem-solving from day one.`
+      },
+      {
+        match: ['github','link','profile','social','linkedin'],
+        reply: `Nourdine's profiles:\n\n🐙 <a href="https://github.com/nourdine6002" target="_blank" style="color:var(--accent-cyan);">github.com/nourdine6002</a>\n💼 <a href="https://www.linkedin.com/in/nourdine-doulahiane-9a6538390/" target="_blank" style="color:var(--accent-cyan);">LinkedIn</a>`
+      },
+      {
+        match: ['cv','resume','download','pdf'],
+        reply: `Click the <strong>"Download CV"</strong> button in the hero section to get Nourdine's CV! It triggers a cool hacker animation first 😄`
+      },
+      {
+        match: ['hello','hi','hey','sup','yo','howdy','hiya'],
+        reply: `Hey! 👋 I'm Nourdine's portfolio assistant. Ask me about his <strong>skills</strong>, <strong>projects</strong>, or how to <strong>hire him</strong>!`
+      }
+    ];
+
+    const fallbacks = [
+      "Not sure about that! Try: <em>\"What are your skills?\"</em> or <em>\"Show me your projects\"</em> 🚀",
+      "That's outside my knowledge base. Use the contact form below to ask Nourdine directly! 📬",
+      "Hmm, I don't have info on that. Check out his <strong>GitHub</strong> or drop him a message!"
+    ];
+
+    function getReply(msg) {
+      const q = msg.toLowerCase();
+      for (const item of kb) {
+        if (item.match.some(kw => q.includes(kw))) return item.reply;
+      }
+      return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+    }
+
+    function addMsg(text, sender) {
+      const el = document.createElement('div');
+      el.className = `chat-msg ${sender}`;
+      el.innerHTML = `<div class="chat-bubble">${text.replace(/\n/g,'<br>')}</div>`;
+      msgBox.appendChild(el);
+      msgBox.scrollTop = msgBox.scrollHeight;
+    }
+
+    function showTyping() {
+      const t = document.createElement('div');
+      t.className = 'chat-msg bot chat-typing'; t.id = 'chat-typing';
+      t.innerHTML = '<div class="chat-bubble"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>';
+      msgBox.appendChild(t);
+      msgBox.scrollTop = msgBox.scrollHeight;
+    }
+
+    function send(text) {
+      const msg = text || input.value.trim();
+      if (!msg) return;
+      input.value = '';
+      addMsg(msg, 'user');
+      showTyping();
+      setTimeout(() => {
+        const t = document.getElementById('chat-typing'); if (t) t.remove();
+        addMsg(getReply(msg), 'bot');
+      }, 700 + Math.random() * 400);
+    }
+
+    bubble.addEventListener('click', () => {
+      const isOpen = chatWin.style.display !== 'none' && chatWin.style.display !== '';
+      chatWin.style.display = isOpen ? 'none' : 'flex';
+      chatWin.style.flexDirection = 'column';
+      if (!isOpen) { if (badge) badge.style.display = 'none'; input.focus(); }
+    });
+    closeBtn.addEventListener('click', () => { chatWin.style.display = 'none'; });
+    sendBtn.addEventListener('click', () => send());
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+    document.querySelectorAll('.quick-btn').forEach(btn => {
+      btn.addEventListener('click', () => send(btn.getAttribute('data-q')));
+    });
+  })();
+
+  // 15. Animated Skill Bars (Intersection Observer + stagger)
+  (function initSkillBars() {
+    const bars = document.querySelectorAll('.sbar-fill');
+    const pcts = document.querySelectorAll('.sbar-pct');
+    if (!bars.length) return;
+
+    let fired = false;
+
+    function animateBars() {
+      if (fired) return;
+      fired = true;
+      bars.forEach((bar, i) => {
+        const target = parseInt(bar.getAttribute('data-target'), 10);
+        const pct    = pcts[i];
+        setTimeout(() => {
+          bar.style.width = target + '%';
+          if (pct) {
+            let start = 0;
+            const step = () => {
+              start += 2;
+              if (start > target) start = target;
+              pct.textContent = start + '%';
+              if (start < target) requestAnimationFrame(step);
+            };
+            requestAnimationFrame(step);
+          }
+        }, i * 150);
+      });
+    }
+
+    const obs = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) { animateBars(); obs.disconnect(); }
+    }, { threshold: 0.3 });
+
+    const section = document.getElementById('skills');
+    if (section) obs.observe(section);
+  })();
+
+  // 16. Counter Animation (Intersection Observer)
+  (function initCounters() {
+    const cards = document.querySelectorAll('.counter-card');
+    if (!cards.length) return;
+
+    const DURATION = 1500;
+
+    function easeOutExpo(t) {
+      return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+    }
+
+    function animateCounter(el) {
+      const target  = parseInt(el.getAttribute('data-target'), 10);
+      const suffix  = el.getAttribute('data-suffix') || '';
+      const start   = performance.now();
+
+      function step(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / DURATION, 1);
+        const current  = Math.round(easeOutExpo(progress) * target);
+        el.textContent = current.toLocaleString() + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target.querySelector('.counter-value');
+          if (el && !el.dataset.done) {
+            el.dataset.done = '1';
+            animateCounter(el);
+          }
+        }
+      });
+    }, { threshold: 0.5 });
+
+    cards.forEach(c => obs.observe(c));
+  })();
+
+  // 17. Timeline Scroll Reveal (Intersection Observer)
+  (function initTimeline() {
+    const items = document.querySelectorAll('.tl-item');
+    if (!items.length) return;
+
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.remove('tl-hidden');
+          entry.target.classList.add('tl-visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    items.forEach(item => obs.observe(item));
+  })();
+
 
 });
