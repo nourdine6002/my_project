@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - 42 Cursus Helper</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <div class="sidebar">
+    <div style="text-align:center;margin-bottom:20px;">
+      <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="Profile" style="width:60px;height:60px;border-radius:50%;border:2px solid #00babc;box-shadow:0 0 15px rgba(0,186,188,0.5);">
+      <div style="color:#00babc;font-weight:bold;margin-top:8px;font-size:16px;">Ayanakouji</div>
+    </div>
+    <div class="logo"><span>42</span> Helper</div>
+    <a href="dashboard.html" class="nav-link active">
+      <span>🏠</span> <span class="nav-text">Dashboard</span>
+    </a>
+    <a href="project-analyzer.html" class="nav-link">
+      <span>📊</span> <span class="nav-text">Analyzer</span>
+    </a>
+    <a href="tester-project.html" class="nav-link">
+      <span>🧪</span> <span class="nav-text">Project Tester</span>
+    </a>
+    <a href="ai-chat.html" class="nav-link">
+      <span>🤖</span> <span class="nav-text">AI Chat</span>
+    </a>
+    <button onclick="logout()" class="btn btn-outline logout-btn">
+      <span>🚪</span> <span class="logout-text">Logout</span>
+    </button>
+  </div>
+
+  <div class="main-content">
+    <div class="page-header">
+      <h1 class="page-title" id="welcomeMessage">Hello!</h1>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (!checkAuth()) return;
+
+      const user = getUser();
+      document.getElementById('welcomeMessage').textContent = `Hello, ${user.login} 👋`;
+    });
+
+    function logout() {
+      clearData();
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

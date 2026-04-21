@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>42 Cursus Helper</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <style>
+    .intro-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0a0a0a;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: fadeOut 1s ease 2s forwards;
+    }
+    
+    .intro-logo {
+      font-size: 120px;
+      font-weight: bold;
+      color: #00babc;
+      text-shadow: 0 0 10px #00babc, 0 0 20px #00babc, 0 0 40px #00babc, 0 0 80px #00babc;
+      animation: logoGlow 1s ease-in-out infinite alternate;
+    }
+    
+    .intro-text {
+      font-size: 32px;
+      color: #fff;
+      margin-top: 20px;
+      animation: fadeIn 0.5s ease 0.5s forwards;
+      opacity: 0;
+    }
+    
+    .intro-subtext {
+      font-size: 18px;
+      color: #a0a0a0;
+      margin-top: 10px;
+      animation: fadeIn 0.5s ease 1s forwards;
+      opacity: 0;
+    }
+    
+    @keyframes logoGlow {
+      from { text-shadow: 0 0 10px #00babc, 0 0 20px #00babc, 0 0 40px #00babc; }
+      to { text-shadow: 0 0 20px #00babc, 0 0 40px #00babc, 0 0 80px #00babc, 0 0 120px #00babc; }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; visibility: hidden; }
+    }
+  </style>
+</head>
+<body>
+  <div class="intro-overlay" id="introOverlay">
+    <div class="intro-logo">42</div>
+    <div class="intro-text">42 Cursus Helper</div>
+    <div class="intro-subtitle">Your journey begins here</div>
+  </div>
+
+  <div class="landing-container">
+    <div class="landing-content">
+      <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="Profile" style="width:100px;height:100px;border-radius:50%;margin:0 auto 20px;display:block;border:3px solid #00babc;box-shadow:0 0 20px rgba(0,186,188,0.5);">
+      <div class="landing-logo">42</div>
+      <h1 class="landing-title">42 Cursus Helper</h1>
+      <p class="landing-subtitle">Your personal assistant for 42 journey</p>
+      
+      <form id="loginForm" class="landing-form">
+        <div class="form-group">
+          <label class="form-label">Login (42 username)</label>
+          <input type="text" id="loginInput" class="form-input" placeholder="Enter your 42 login" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="passwordInput" class="form-input" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Get Started</button>
+      </form>
+      
+      <div class="landing-footer">
+        Made for 42 students
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const overlay = document.getElementById('introOverlay');
+      overlay.style.display = 'flex';
+    });
+    
+    const existingUser = getUser();
+    if (existingUser) {
+      document.querySelector('.landing-content').innerHTML = `
+        <div class="landing-logo">42</div>
+        <h1 class="landing-title">42 Cursus Helper</h1>
+        <p class="landing-subtitle">Welcome back, ${existingUser.login}!</p>
+        <a href="dashboard.html" class="btn btn-primary" style="display:inline-block;text-decoration:none;margin-top:20px;">Go to Dashboard</a>
+      `;
+    }
+
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+      loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const login = document.getElementById('loginInput').value.trim();
+        const password = document.getElementById('passwordInput').value;
+
+        if (login !== 'nodoulah' || password !== 'Pop#2006husa') {
+          showError('Invalid login or password');
+          return;
+        }
+
+        const userData = {
+          login: login,
+          password: password,
+          level: 0,
+          campus: "",
+          projects: [],
+          skills: []
+        };
+
+        if (saveUser(userData)) {
+          window.location.href = 'dashboard.html';
+        } else {
+          showError('Failed to save data. Storage might be full.');
+        }
+      });
+    }
+  </script>
+</body>
+</html>

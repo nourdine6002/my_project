@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Tester - 42 Cursus Helper</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <style>
+    .tester-wrapper { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+
+    .tester-header { text-align: center; margin-bottom: 50px; }
+    .tester-title { font-size: 42px; color: var(--accent); text-shadow: 0 0 20px var(--accent); margin-bottom: 12px; }
+    .tester-subtitle { color: var(--text-secondary); font-size: 18px; max-width: 700px; margin: 0 auto; line-height: 1.6; }
+
+    .phase-indicator {
+      display: flex; justify-content: center; gap: 30px; margin-bottom: 40px; flex-wrap: wrap;
+    }
+    .phase {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 20px; background: var(--bg-card);
+      border-radius: 50px; border: 2px solid var(--border);
+      opacity: 0.5; transition: all 0.3s ease;
+    }
+    .phase.active { opacity: 1; border-color: var(--accent); box-shadow: 0 0 15px rgba(0,186,188,0.3); }
+    .phase.done { opacity: 1; border-color: var(--success); }
+    .phase-num {
+      width: 28px; height: 28px; border-radius: 50%; background: var(--accent);
+      color: #000; font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 14px;
+    }
+    .phase.done .phase-num { background: var(--success); }
+    .phase-label { font-size: 14px; color: var(--text); font-weight: 600; }
+
+    .section-card {
+      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(15, 52, 96, 0.3) 100%);
+      border: 1px solid var(--border); border-radius: 20px; padding: 40px; margin-bottom: 24px;
+    }
+
+    .upload-zone {
+      border: 2px dashed var(--border); border-radius: 20px; padding: 70px 40px;
+      text-align: center; background: linear-gradient(135deg, var(--bg-secondary) 0%, transparent 100%);
+      transition: all 0.3s ease; cursor: pointer; position: relative;
+    }
+    .upload-zone:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 10px 40px rgba(0,186,188,0.15); }
+    .upload-zone.drag-over { border-color: var(--accent); background: rgba(0,186,188,0.1); transform: translateY(-4px); box-shadow: 0 10px 40px rgba(0,186,188,0.15); }
+
+    .upload-icon { font-size: 70px; margin-bottom: 16px; display: block; }
+    .upload-label { font-size: 24px; color: var(--text); font-weight: bold; margin-bottom: 8px; }
+    .upload-hint { color: var(--text-secondary); font-size: 14px; }
+
+    .file-input-hidden { display: none; }
+
+    .selected-files { display: none; margin-top: 20px; padding: 16px; background: rgba(0,186,188,0.06); border-radius: 12px; border: 1px solid var(--border); }
+    .selected-files.show { display: block; animation: slideDown 0.3s ease; }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .file-list { display: flex; flex-direction: column; gap: 8px; }
+    .file-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border); }
+    .file-icon { font-size: 24px; }
+    .file-details { flex: 1; text-align: left; }
+    .file-name { font-weight: 600; color: var(--accent); font-size: 15px; }
+    .file-path { color: var(--text-secondary); font-size: 12px; font-family: monospace; }
+    .remove-file { background: transparent; border: none; color: var(--danger); cursor: pointer; font-size: 22px; padding: 4px 8px; transition: transform 0.2s ease; }
+    .remove-file:hover { transform: scale(1.2); }
+
+    .action-buttons { display: flex; gap: 16px; margin-top: 30px; justify-content: center; }
+
+    .btn-main {
+      padding: 16px 40px; font-size: 18px; font-weight: bold; border: none; border-radius: 50px;
+      cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 10px;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); color: #000; box-shadow: 0 0 30px rgba(0,186,188,0.4); }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-3px) scale(1.02); box-shadow: 0 0 40px rgba(0,186,188,0.6); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-secondary { background: transparent; border: 2px solid var(--border); color: var(--text-secondary); }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    .code-block {
+      background: #0a0a0a; border: 1px solid var(--accent); border-radius: 12px; padding: 24px;
+      margin: 24px 0; overflow-x: auto; position: relative; box-shadow: 0 0 20px rgba(0,186,188,0.1);
+    }
+    .code-block pre { margin: 0; font-family: 'Courier New', monospace; font-size: 14px; color: #00ff88; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word; }
+    .code-label { position: absolute; top: -12px; left: 20px; background: var(--accent); color: #000; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; }
+
+    .copy-btn {
+      position: absolute; top: 12px; right: 12px;
+      background: rgba(0,186,188,0.15); border: 1px solid var(--accent); color: var(--accent);
+      padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s;
+    }
+    .copy-btn:hover { background: var(--accent); color: #000; }
+
+    .loading-container { display: none; text-align: center; padding: 80px 40px; background: linear-gradient(135deg, var(--bg-card) 0%, rgba(15,52,96,0.4) 100%); border-radius: 20px; border: 1px solid var(--border); }
+    .loading-container.show { display: block; animation: fadeIn 0.4s ease; }
+    .spinner-large { width: 70px; height: 70px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; margin: 0 auto 30px; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-step { font-size: 20px; color: var(--accent); font-weight: 600; margin-bottom: 10px; }
+    .loading-desc { color: var(--text-secondary); font-size: 14px; max-width: 500px; margin: 0 auto; }
+
+    .score-display {
+      text-align: center; padding: 60px 40px;
+      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(15,52,96,0.4) 100%);
+      border-radius: 24px; border: 2px solid var(--accent);
+      margin-bottom: 40px; box-shadow: 0 0 40px rgba(0,186,188,0.2);
+    }
+    .score-circle { width: 180px; height: 180px; border-radius: 50%; border: 6px solid var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; background: radial-gradient(circle, rgba(0,186,188,0.1) 0%, transparent 70%); box-shadow: 0 0 30px rgba(0,186,188,0.3); }
+    .score-value { font-size: 56px; font-weight: bold; color: var(--accent); text-shadow: 0 0 10px var(--accent); }
+    .score-label { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+    .grade-badge { display: inline-block; padding: 10px 26px; border-radius: 50px; font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+
+    .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 40px; }
+    .result-card { background: linear-gradient(135deg, var(--bg-card) 0%, rgba(15,52,96,0.5) 100%); border: 1px solid var(--border); border-radius: 20px; padding: 28px; transition: all 0.3s ease; position: relative; overflow: hidden; }
+    .result-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--success)); }
+    .result-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(0,186,188,0.15); }
+    .card-icon { font-size: 32px; margin-bottom: 16px; }
+    .card-title { font-size: 20px; font-weight: bold; color: var(--accent); margin-bottom: 14px; }
+    .card-content { color: var(--text); line-height: 1.8; font-size: 15px; }
+    .card-content ul { margin: 12px 0; padding-left: 20px; }
+    .card-content li { margin: 8px 0; }
+    .card-content code { background: rgba(0,0,0,0.4); padding: 4px 10px; border-radius: 6px; font-family: 'Courier New', monospace; color: #00ff88; font-size: 13px; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 768px) {
+      .tester-title { font-size: 32px; }
+      .phase-indicator { flex-direction: column; gap: 10px; }
+      .phase { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div style="text-align:center;margin-bottom:20px;">
+      <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="Profile" style="width:60px;height:60px;border-radius:50%;border:2px solid #00babc;box-shadow:0 0 15px rgba(0,186,188,0.5);">
+      <div style="color:#00babc;font-weight:bold;margin-top:8px;font-size:16px;">Ayanakouji</div>
+    </div>
+    <div class="logo"><span>42</span> Helper</div>
+    <a href="dashboard.html" class="nav-link"><span>🏠</span> <span class="nav-text">Dashboard</span></a>
+    <a href="project-analyzer.html" class="nav-link"><span>📊</span> <span class="nav-text">Analyzer</span></a>
+    <a href="tester-project.html" class="nav-link active"><span>🧪</span> <span class="nav-text">Project Tester</span></a>
+    <a href="ai-chat.html" class="nav-link"><span>🤖</span> <span class="nav-text">AI Chat</span></a>
+    <button onclick="logout()" class="btn btn-outline logout-btn"><span>🚪</span> <span class="logout-text">Logout</span></button>
+  </div>
+
+  <div class="main-content">
+    <div class="tester-wrapper">
+
+      <div class="tester-header">
+        <h1 class="tester-title">🧪 Project Tester</h1>
+        <p class="tester-subtitle">Upload project subject PDF → AI generates test.sh → Run it → Upload output → Get grade (0-100)</p>
+      </div>
+
+      <!-- PHASE INDICATOR -->
+      <div class="phase-indicator">
+        <div id="phase1" class="phase active">
+          <div class="phase-num">1</div>
+          <span class="phase-label">Upload Subject</span>
+        </div>
+        <div id="phase2" class="phase">
+          <div class="phase-num">2</div>
+          <span class="phase-label">Generate & Run test.sh</span>
+        </div>
+        <div id="phase3" class="phase">
+          <div class="phase-num">3</div>
+          <span class="phase-label">Upload Output</span>
+        </div>
+        <div id="phase4" class="phase">
+          <div class="phase-num">4</div>
+          <span class="phase-label">Get Grade</span>
+        </div>
+      </div>
+
+      <!-- PHASE 1: UPLOAD SUBJECT PDF -->
+      <div id="phase1Content" class="section-card">
+        <div style="text-align:center;margin-bottom:30px;">
+          <span style="font-size:64px;margin-bottom:12px;display:block;">📄</span>
+          <h3 style="color:var(--accent);margin-bottom:8px;">Upload Project Subject PDF</h3>
+          <p style="color:var(--text-secondary);">The AI will analyze the requirements and generate a custom test.sh script</p>
+        </div>
+
+        <div class="upload-zone" onclick="document.getElementById('subjectPdfInput').click()" style="max-width:600px;margin:0 auto;">
+          <span class="upload-icon">📁</span>
+          <div class="upload-label">Drop your subject PDF here</div>
+          <div class="upload-hint">or click to browse (en.subject.pdf)</div>
+          <input type="file" id="subjectPdfInput" class="file-input-hidden" accept=".pdf" onchange="handleSubjectPdf(event)">
+        </div>
+
+        <div id="subjectSelected" class="selected-files" style="max-width:600px;margin:24px auto 0;display:none;">
+          <div class="file-item" style="justify-content:center;">
+            <span class="file-icon">📄</span>
+            <div class="file-details"><div class="file-name" id="subjectFileName"></div></div>
+            <button class="remove-file" onclick="clearSubjectPdf()">×</button>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button id="generateBtn" class="btn-main btn-primary" onclick="generateTestScript()" disabled>
+            <span>⚡</span> Generate test.sh
+          </button>
+        </div>
+      </div>
+
+      <!-- PHASE 2: TEST.SH GENERATED -->
+      <div id="phase2Content" class="section-card" style="display:none;">
+        <div style="text-align:center;margin-bottom:20px;">
+          <div style="font-size:64px;margin-bottom:12px;">✅</div>
+          <h2 style="color:var(--success);margin-bottom:8px;">test.sh Generated!</h2>
+          <p style="color:var(--text-secondary);">Download the script, make it executable, and run it on your project folder.</p>
+        </div>
+
+        <div class="code-block">
+          <span class="code-label">test.sh</span>
+          <button class="copy-btn" onclick="copyTestScript()">📋 Copy</button>
+          <pre id="testScriptContent"></pre>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn-main btn-primary" onclick="downloadTestScript()">⬇️ Download test.sh</button>
+          <button class="btn-main btn-secondary" onclick="backToPhase1()">← Back</button>
+        </div>
+      </div>
+
+      <!-- PHASE 3: UPLOAD TEST OUTPUT -->
+      <div id="phase3Content" class="section-card" style="display:none;">
+        <div style="text-align:center;margin-bottom:24px;">
+          <span style="font-size:64px;margin-bottom:12px;display:block;">📤</span>
+          <h3 style="color:var(--accent);margin-bottom:8px;">Upload test.sh Output</h3>
+          <p style="color:var(--text-secondary);">After running <code>bash test.sh</code> in your project directory, copy the terminal output and paste it below.</p>
+        </div>
+
+        <textarea id="outputPasteArea" class="text-paste-area" placeholder="Paste the complete terminal output from running test.sh here...&#10;&#10;Make sure to include all lines, especially the TOTAL SCORE line." style="min-height:200px;"></textarea>
+
+        <div class="action-buttons">
+          <button id="gradeBtn" class="btn-main btn-primary" onclick="gradeProject()" disabled>📊 Get Grade</button>
+          <button class="btn-main btn-secondary" onclick="backToPhase2()">← Back</button>
+        </div>
+      </div>
+
+      <!-- PHASE 4: RESULTS -->
+      <div id="phase4Content" class="section-card" style="display:none;">
+        <div class="score-display">
+          <div class="score-circle">
+            <div>
+              <div class="score-value" id="scoreValue">0</div>
+              <div class="score-label">out of 100</div>
+            </div>
+          </div>
+          <div class="grade-badge" id="gradeBadge">Grade A</div>
+        </div>
+
+        <div class="results-grid" id="resultsGrid"></div>
+
+        <div class="action-buttons">
+          <button class="btn-main btn-primary" onclick="startNewTest()">🔄 Test Another Project</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/ai.js"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    let subjectPdf = null;
+    let subjectText = '';
+    let generatedScript = '';
+    let testOutput = '';
+
+    document.addEventListener("DOMContentLoaded", function() {
+      if (!checkAuth()) return;
+      setupDragDrop();
+      document.getElementById('outputPasteArea').addEventListener('input', validatePhase3);
+    });
+
+    function setupDragDrop() {
+      const zone = document.getElementById('subjectPdfInput').parentElement;
+      zone.addEventListener('dragenter', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
+      zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
+      zone.addEventListener('dragleave', (e) => { e.preventDefault(); if (!zone.contains(e.relatedTarget)) zone.classList.remove('drag-over'); });
+      zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zone.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file) processSubjectPdf(file);
+      });
+    }
+
+    function handleSubjectPdf(event) {
+      const file = event.target.files[0];
+      if (file) processSubjectPdf(file);
+    }
+
+    function processSubjectPdf(file) {
+      if (!file.name.toLowerCase().endsWith('.pdf')) { showError('Please select a PDF file'); return; }
+      if (file.size > 10 * 1024 * 1024) { showError('File too large (max 10MB)'); return; }
+      subjectPdf = file;
+      document.getElementById('subjectFileName').textContent = file.name;
+      document.getElementById('subjectSelected').style.display = 'block';
+      validatePhase1();
+    }
+
+    function clearSubjectPdf() {
+      subjectPdf = null;
+      subjectText = '';
+      document.getElementById('subjectPdfInput').value = '';
+      document.getElementById('subjectSelected').style.display = 'none';
+      validatePhase1();
+    }
+
+    function validatePhase1() {
+      const hasPdf = subjectPdf !== null;
+      document.getElementById('generateBtn').disabled = !hasPdf;
+    }
+
+    function validatePhase3() {
+      const hasOutput = document.getElementById('outputPasteArea').value.trim().length > 0;
+      document.getElementById('gradeBtn').disabled = !hasOutput;
+    }
+
+    async function extractPDF(file) {
+      try {
+        const pdf = await pdfjsLib.getDocument(await file.arrayBuffer()).promise;
+        let text = '';
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const items = await page.getTextContent();
+          text += items.items.map(item => item.str).join(' ') + '\n';
+        }
+        return text;
+      } catch (error) {
+        throw new Error('Failed to read PDF: ' + error.message);
+      }
+    }
+
+    async function generateTestScript() {
+      setPhase(2);
+      document.getElementById('phase2Content').style.display = 'block';
+      document.getElementById('generateBtn').disabled = true;
+      document.getElementById('generateBtn').innerHTML = '<span>⏳</span> Generating...';
+
+      try {
+        subjectText = await extractPDF(subjectPdf);
+        if (subjectText.length < 50) throw new Error('Could not extract text from PDF');
+
+        const prompt = `You are creating a test.sh script for a 42 school project based ONLY on the project subject requirements.
+
+PROJECT SUBJECT (requirements):
+${subjectText.slice(0, 6000)}
+
+Generate a bash test script (test.sh) that:
+1. Compiles the project (use \$(CC) for C projects)
+2. Runs all mandatory tests from the subject
+3. Checks norm compliance (run norminette for C projects)
+4. Tests all required functions/features
+5. Tests edge cases and error handling
+6. Outputs "Test N: [description] - PASS/FAIL" for each test
+7. At the end: "TOTAL SCORE: X/100"
+8. Set proper exit codes
+
+Requirements:
+- Must run with: bash test.sh
+- Assume project files in current directory
+- Use set -e for error handling
+- Be strict but fair
+
+Return ONLY the bash script, no explanations.`;
+
+        const script = await sendMessage(prompt);
+
+         // Extract code - find content between first pair of ```
+         let extracted = script.trim();
+         const startIdx = extracted.indexOf('```');
+         if (startIdx !== -1) {
+           const endIdx = extracted.indexOf('```', startIdx + 3);
+           if (endIdx !== -1) {
+             extracted = extracted.substring(startIdx + 3, endIdx).trim();
+             // Remove language spec if present (e.g., "bash" or "sh")
+             if (extracted.startsWith('bash')) extracted = extracted.substring(4).trim();
+             if (extracted.startsWith('sh')) extracted = extracted.substring(2).trim();
+           }
+         }
+
+         // If still empty or very short, use full response (no code fences present)
+         if (extracted.length < 10) {
+           extracted = script.trim();
+         }
+
+         if (extracted.length < 10) {
+           throw new Error('AI returned empty or invalid test script. Please check your API credits or try a different PDF.');
+         }
+
+         generatedScript = extracted;
+         document.getElementById('testScriptContent').textContent = generatedScript;
+         showSuccess('test.sh generated!');
+        document.getElementById('generateBtn').disabled = false;
+        document.getElementById('generateBtn').innerHTML = '<span>⚡</span> Generate test.sh';
+      } catch (e) {
+        document.getElementById('generateBtn').disabled = false;
+        document.getElementById('generateBtn').innerHTML = '<span>⚡</span> Generate test.sh';
+        if (e.message.includes('402')) showCreditsError();
+        else showError('Failed: ' + e.message);
+        backToPhase1();
+      }
+    }
+
+    function copyTestScript() {
+      navigator.clipboard.writeText(generatedScript).then(() => showSuccess('Copied to clipboard!'));
+    }
+
+    function downloadTestScript() {
+      const blob = new Blob([generatedScript], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'test.sh'; a.click();
+      URL.revokeObjectURL(url);
+      setPhase(3);
+      document.getElementById('phase3Content').style.display = 'block';
+      document.getElementById('phase2Content').style.display = 'none';
+    }
+
+    async function gradeProject() {
+      testOutput = document.getElementById('outputPasteArea').value.trim();
+      setPhase(4);
+      document.getElementById('phase4Content').style.display = 'block';
+      document.getElementById('phase3Content').style.display = 'none';
+      document.getElementById('gradeBtn').disabled = true;
+      document.getElementById('gradeBtn').innerHTML = '⏳ Grading...';
+
+      try {
+        const prompt = `You are grading a 42 school project based ONLY on the test.sh execution output and the subject requirements.
+
+=== PROJECT SUBJECT ===
+${subjectText.slice(0, 4000)}
+
+=== TEST OUTPUT ===
+${testOutput.slice(0, 6000)}
+
+Analyze the test results and assign a grade 0-100.
+Consider: number of passed tests, norm compliance (if checked), completeness of implementation.
+
+Output EXACTLY:
+
+SCORE: [0-100]
+GRADE: [A/B/C/D/F]
+
+BREAKDOWN:
+• Functionality: X/40
+• Test Results: X/30
+• Code Quality: X/20
+• Norm Compliance: X/10
+
+OVERVIEW:
+[Brief summary]
+
+TEST ANALYSIS:
+[What passed/failed and why]
+
+DEDUCTIONS:
+• [Point losses]
+
+IMPROVEMENTS:
+• [What to fix]
+
+FINAL VERDICT:
+[Pass/fail conclusion]`;
+
+        const response = await sendMessage(prompt);
+        displayResults(response);
+        document.getElementById('gradeBtn').disabled = false;
+        document.getElementById('gradeBtn').innerHTML = '📊 Get Grade';
+      } catch (e) {
+        document.getElementById('gradeBtn').disabled = false;
+        document.getElementById('gradeBtn').innerHTML = '📊 Get Grade';
+        if (e.message.includes('402')) showCreditsError();
+        else showError(e.message);
+      }
+    }
+
+    function displayResults(text) {
+      const parsed = parseResults(text);
+      document.getElementById('scoreValue').textContent = parsed.score;
+      document.getElementById('scoreValue').style.color = getScoreColor(parsed.score);
+      const badge = document.getElementById('gradeBadge'); badge.textContent = 'Grade ' + parsed.grade; badge.className = 'grade-badge grade-' + parsed.grade;
+
+      const grid = document.getElementById('resultsGrid'); grid.innerHTML = '';
+      if (parsed.overview) grid.appendChild(createCard('📦', 'Overview', parsed.overview));
+      if (parsed.testAnalysis) grid.appendChild(createCard('🧪', 'Test Analysis', parsed.testAnalysis));
+      if (parsed.deductions) grid.appendChild(createCard('📉', 'Deductions', parsed.deductions));
+      if (parsed.improvements) grid.appendChild(createCard('💡', 'Improvements', parsed.improvements));
+      if (parsed.finalVerdict) grid.appendChild(createCard('🎯', 'Verdict', parsed.finalVerdict));
+    }
+
+    function parseResults(text) {
+      const result = { score: 0, grade: 'F', overview: '', testAnalysis: '', deductions: '', improvements: '', finalVerdict: '' };
+      const scoreMatch = text.match(/SCORE:\s*(\d+)/i); if (scoreMatch) result.score = parseInt(scoreMatch[1]);
+      const gradeMatch = text.match(/GRADE:\s*([A-F])/i); if (gradeMatch) result.grade = gradeMatch[1];
+      const patterns = {
+        overview: /OVERVIEW:\s*([\s\S]*?)(?=TEST|$)/i,
+        testAnalysis: /TEST ANALYSIS:\s*([\s\S]*?)(?=DEDUCTIONS|$)/i,
+        deductions: /DEDUCTIONS:\s*([\s\S]*?)(?=IMPROVEMENTS|$)/i,
+        improvements: /IMPROVEMENTS:\s*([\s\S]*?)(?=FINAL|$)/i,
+        finalVerdict: /FINAL VERDICT:\s*([\s\S]*?)$/i
+      };
+      for (const [key, pattern] of Object.entries(patterns)) { const m = text.match(pattern); if (m) result[key] = m[1].trim(); }
+      return result;
+    }
+
+    function createCard(icon, title, content) {
+      const card = document.createElement('div'); card.className = 'result-card';
+      card.innerHTML = `<div class="card-icon">${icon}</div><h3 class="card-title">${title}</h3><div class="card-content">${formatText(content)}</div>`;
+      return card;
+    }
+
+    function formatText(text) {
+      let t = escapeHtml(text);
+      t = t.replace(/\n/g, '<br>');
+      t = t.replace(/• (.+)/g, '<li>$1</li>');
+      t = t.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+      t = t.replace(/(\d+\/\d+)/g, '<code>$1</code>');
+      return t;
+    }
+
+    function getScoreColor(score) {
+      if (score >= 90) return 'var(--success)';
+      if (score >= 80) return 'var(--accent)';
+      if (score >= 70) return 'var(--warning)';
+      if (score >= 60) return '#ff9500';
+      return 'var(--danger)';
+    }
+
+    function setPhase(n) {
+      for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById('phase' + i);
+        el.classList.remove('active', 'done');
+        if (i < n) el.classList.add('done');
+        else if (i === n) el.classList.add('active');
+      }
+      document.getElementById('phase1Content').style.display = n === 1 ? 'block' : 'none';
+      document.getElementById('phase2Content').style.display = n === 2 ? 'block' : 'none';
+      document.getElementById('phase3Content').style.display = n === 3 ? 'block' : 'none';
+      document.getElementById('phase4Content').style.display = n === 4 ? 'block' : 'none';
+    }
+
+    function backToPhase1() { setPhase(1); }
+    function backToPhase2() { setPhase(2); }
+    function startNewTest() {
+      subjectPdf = null; subjectText = ''; generatedScript = ''; testOutput = '';
+      document.getElementById('subjectPdfInput').value = '';
+      document.getElementById('subjectSelected').style.display = 'none';
+      document.getElementById('outputPasteArea').value = '';
+      setPhase(1);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function logout() { clearData(); window.location.href = 'index.html'; }
+  </script>
+</body>
+</html>

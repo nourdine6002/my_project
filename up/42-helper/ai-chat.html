@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Assistant - 42 Cursus Helper</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <div class="sidebar">
+    <div style="text-align:center;margin-bottom:20px;">
+      <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="Profile" style="width:60px;height:60px;border-radius:50%;border:2px solid #00babc;box-shadow:0 0 15px rgba(0,186,188,0.5);">
+      <div style="color:#00babc;font-weight:bold;margin-top:8px;font-size:16px;">Ayanakouji</div>
+    </div>
+    <div class="logo"><span>42</span> Helper</div>
+    <a href="dashboard.html" class="nav-link">
+      <span>🏠</span> <span class="nav-text">Dashboard</span>
+    </a>
+    <a href="project-analyzer.html" class="nav-link">
+      <span>📊</span> <span class="nav-text">Analyzer</span>
+    </a>
+    <a href="tester-project.html" class="nav-link">
+      <span>🧪</span> <span class="nav-text">Project Tester</span>
+    </a>
+    <a href="ai-chat.html" class="nav-link active">
+      <span>🤖</span> <span class="nav-text">AI Chat</span>
+    </a>
+    <button onclick="logout()" class="btn btn-outline logout-btn">
+      <span>🚪</span> <span class="logout-text">Logout</span>
+    </button>
+  </div>
+
+  <div class="main-content">
+    <div class="page-header">
+      <div class="title-row">
+        <h1 class="page-title ai-title">AI Assistant 🤖</h1>
+        <p class="ai-subtitle">Ask me anything about 42 cursus</p>
+      </div>
+      <button onclick="clearChat()" class="btn btn-outline">Clear Chat</button>
+    </div>
+
+    <div class="chat-container">
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-welcome">
+          <h2>Hello! I am your 42 school AI assistant.</h2>
+          <p>I can help you with projects, norminette, coding questions and more. What do you need?</p>
+        </div>
+      </div>
+
+      <div class="quick-questions">
+        <button class="quick-btn" onclick="sendQuickQuestion('How to fix norminette errors?')">How to fix norminette?</button>
+        <button class="quick-btn" onclick="sendQuickQuestion('Tips for minishell project?')">Tips for minishell?</button>
+        <button class="quick-btn" onclick="sendQuickQuestion('How to find evaluators at 42?')">How to find evaluators?</button>
+        <button class="quick-btn" onclick="sendQuickQuestion('Explain push_swap algorithm')">Explain push_swap algorithm</button>
+        <button class="quick-btn" onclick="sendQuickQuestion('Help with libft project')">Help with libft</button>
+        <button class="quick-btn" onclick="sendQuickQuestion('Git commands cheatsheet')">Git commands cheatsheet</button>
+      </div>
+
+      <div class="chat-input-area">
+        <input type="text" id="chatInput" class="chat-input" placeholder="Ask about 42 cursus...">
+        <button onclick="handleSendMessage()" class="btn btn-primary">Send 🚀</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/ai.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (!checkAuth()) return;
+
+      const chatInput = document.getElementById('chatInput');
+      chatInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          handleSendMessage();
+        }
+      });
+    });
+
+    async function handleSendMessage() {
+      const chatInput = document.getElementById('chatInput');
+      const userMessage = chatInput.value.trim();
+      
+      if (!userMessage) return;
+
+      chatInput.value = '';
+
+      addUserMessage(userMessage);
+      showThinking();
+
+      try {
+        const response = await sendMessage(userMessage);
+        hideThinking();
+        addAIMessage(response);
+      } catch (error) {
+        hideThinking();
+        addAIMessage("AI unavailable. Please try again later.");
+      }
+    }
+
+    function sendQuickQuestion(question) {
+      document.getElementById('chatInput').value = question;
+      handleSendMessage();
+    }
+
+    function addUserMessage(text) {
+      const container = document.getElementById('chatMessages');
+      const time = formatTime(new Date());
+      
+      const html = `
+        <div class="message-wrapper user">
+          <div class="message-bubble user">${escapeHtml(text)}</div>
+          <div class="message-time">${time}</div>
+        </div>
+      `;
+
+      const welcome = container.querySelector('.chat-welcome');
+      if (welcome) welcome.remove();
+
+      container.insertAdjacentHTML('beforeend', html);
+      scrollToBottom();
+    }
+
+    function addAIMessage(text) {
+      const container = document.getElementById('chatMessages');
+      const time = formatTime(new Date());
+      
+      const formattedText = formatMessage(text);
+      
+      const html = `
+        <div class="message-wrapper ai">
+          <div class="message-bubble ai">${formattedText}</div>
+          <div class="message-time">${time}</div>
+        </div>
+      `;
+
+      container.insertAdjacentHTML('beforeend', html);
+      scrollToBottom();
+    }
+
+    function showThinking() {
+      const container = document.getElementById('chatMessages');
+      
+      const html = `
+        <div class="thinking" id="thinkingIndicator">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      `;
+
+      container.insertAdjacentHTML('beforeend', html);
+      scrollToBottom();
+    }
+
+    function hideThinking() {
+      const indicator = document.getElementById('thinkingIndicator');
+      if (indicator) indicator.remove();
+    }
+
+    function formatMessage(text) {
+      text = escapeHtml(text);
+      
+      text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+      
+      text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+      
+      text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      
+      text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+      
+      text = text.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+      text = text.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+      text = text.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+      
+      text = text.replace(/^- (.+)$/gm, '<li>$1</li>');
+      
+      text = text.replace(/\n\n/g, '</p><p>');
+      text = text.replace(/\n/g, '<br>');
+      text = '<p>' + text + '</p>';
+      
+      text = text.replace(/<p><\/p>/g, '');
+      text = text.replace(/<p><br><\/p>/g, '');
+      text = text.replace(/<p>(<h[123]>)/g, '$1');
+      text = text.replace(/(<h[123]>)/g, '$1');
+      text = text.replace(/(<\/h[123]>)<\/p>/g, '$1');
+      text = text.replace(/(<li>)/g, '<ul>$1');
+      text = text.replace(/<\/li><\/p>/g, '</li></ul>');
+      
+      return text;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function formatTime(date) {
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    }
+
+    function scrollToBottom() {
+      const container = document.getElementById('chatMessages');
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function clearChat() {
+      messages = [
+        {
+          role: "system",
+          content: "You are a helpful AI assistant for 42 school students. You know everything about: - 42 cursus and all projects (libft, ft_printf, get_next_line, born2beroot, so_long, minitalk, push_swap, minishell, philosophers, netpractice, cub3d, inception, ft_containers, cpp modules, webserv, ft_transcendence) - C programming language - Norminette rules and fixes - Shell scripting and bash - Git and GitHub commands - Algorithms and data structures - Docker and system administration - 42 school evaluation tips - How to find peers for evaluation - Time management at 42 Always be helpful, friendly and specific. Give code examples when needed. Explain norminette errors clearly."
+        }
+      ];
+      const container = document.getElementById('chatMessages');
+      container.innerHTML = `
+        <div class="chat-welcome">
+          <h2>Hello! I am your 42 school AI assistant.</h2>
+          <p>I can help you with projects, norminette, coding questions and more. What do you need?</p>
+        </div>
+      `;
+      showSuccess('Chat cleared!');
+    }
+
+    function logout() {
+      clearData();
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
