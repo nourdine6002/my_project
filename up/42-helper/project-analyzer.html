@@ -192,14 +192,19 @@
     
     .spinner-large {
       width: 70px; height: 70px;
-      border: 4px solid var(--border);
+      border: 4px solid rgba(0, 186, 188, 0.2);
       border-top-color: var(--accent);
       border-radius: 50%;
       margin: 0 auto 30px;
-      animation: spin 1s linear infinite;
+      animation: spin 1s linear infinite, glow 1.5s ease-in-out infinite;
+      box-shadow: 0 0 20px rgba(0, 186, 188, 0.5);
     }
     
     @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(0, 186, 188, 0.5); }
+      50% { box-shadow: 0 0 40px rgba(0, 186, 188, 0.8); }
+    }
     
     .loading-step { font-size: 18px; color: var(--accent); font-weight: 600; margin-bottom: 10px; }
     .loading-desc { color: var(--text-secondary); font-size: 14px; }
@@ -214,13 +219,23 @@
       text-align: center;
       color: #fff;
       margin-bottom: 40px;
-      box-shadow: 0 0 40px rgba(0, 186, 188, 0.3);
       border: 2px solid var(--accent);
+      animation: borderGlow 2s ease-in-out infinite;
     }
     
-    .hero-icon { font-size: 70px; margin-bottom: 20px; display: block; }
+    @keyframes borderGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(0, 186, 188, 0.4); }
+      50% { box-shadow: 0 0 40px rgba(0, 186, 188, 0.8), 0 0 60px rgba(0, 186, 188, 0.4); }
+    }
+    
+    .hero-icon { font-size: 70px; margin-bottom: 20px; display: block; animation: float 3s ease-in-out infinite; }
     .hero-title { font-size: 42px; font-weight: bold; margin-bottom: 8px; color: #fff; text-shadow: 0 0 10px rgba(0,186,188,0.5); }
     .hero-subtitle { font-size: 18px; opacity: 0.9; color: #a0aec0; }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
     
     .result-grid {
       display: grid;
@@ -235,6 +250,29 @@
       border-radius: 20px;
       padding: 28px;
       transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: slideUp 0.5s ease forwards;
+    }
+    
+    .result-card:nth-child(1) { animation-delay: 0.1s; }
+    .result-card:nth-child(2) { animation-delay: 0.2s; }
+    .result-card:nth-child(3) { animation-delay: 0.3s; }
+    .result-card:nth-child(4) { animation-delay: 0.4s; }
+    .result-card:nth-child(5) { animation-delay: 0.5s; }
+    .result-card:nth-child(6) { animation-delay: 0.6s; }
+    .result-card:nth-child(7) { animation-delay: 0.7s; }
+    .result-card:nth-child(8) { animation-delay: 0.8s; }
+    
+    .result-card.full-width {
+      grid-column: 1 / -1;
+    }
+    
+    @keyframes slideUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     
     .result-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(0, 186, 188, 0.15); }
@@ -719,15 +757,37 @@ Common pitfalls to avoid:
 ## ADDITIONAL RESOURCES
 [Any relevant links or references]
 
+## PROJECT ICON
+Choose ONE perfect emoji that best represents this project and output ONLY the emoji on one line.
+Examples: 🚀 🔢 🐚 🍴 🎮 🐳 🌐 🏓 🌍 📚 🪴 🎯 💻 🔧 🌐
+
 Here's the project content:
-${content.slice(0, 6000)}`;
+${content.slice(0, 5000)}`;
     }
 
     function displayResults(text) {
       const parsed = parseAnalysisResponse(text);
       const grid = document.getElementById('resultGrid');
 
+      // Set project name
       document.getElementById('projectName').textContent = parsed.projectName || 'Project Analysis';
+      
+      // Set dynamic icon based on project name
+      const heroIcon = document.querySelector('.hero-icon');
+      const projectName = (parsed.projectName || '').toLowerCase();
+      let icon = '🚀';
+      if (projectName.includes('push_swap') || projectName.includes('sort')) icon = '🔢';
+      else if (projectName.includes('minishell') || projectName.includes('shell')) icon = '🐚';
+      else if (projectName.includes('philosoph')) icon = '🍴';
+      else if (projectName.includes('cub3d') || projectName.includes('ray')) icon = '🎮';
+      else if (projectName.includes('inception') || projectName.includes('docker')) icon = '🐳';
+      else if (projectName.includes('webserv') || projectName.includes('http')) icon = '🌐';
+      else if (projectName.includes('ft_transcendence') || projectName.includes('pong')) icon = '🏓';
+      else if (projectName.includes('netpractice')) icon = '🌍';
+      else if (projectName.includes('libft') || projectName.includes('printf')) icon = '📚';
+      else if (projectName.includes(' Born2beRoot') || projectName.includes('born2beroot')) icon = '🪴';
+      else if (projectName.includes('so_long') || projectName.includes('game')) icon = '🎮';
+      heroIcon.textContent = parsed.projectIcon || icon;
 
       if (parsed.timeEstimate) {
         const [min, max] = extractTimeRange(parsed.timeEstimate);
@@ -737,21 +797,27 @@ ${content.slice(0, 6000)}`;
 
       grid.innerHTML = '';
 
+      // Overview - First
       if (parsed.overview) {
-        grid.appendChild(createResultCard('📦', 'Overview', parsed.overview));
+        grid.appendChild(createResultCard('📋', 'Overview', parsed.overview, true));
       }
-      if (parsed.filesToBuild) {
-        grid.appendChild(createResultCard('📁', 'Files to Build', parsed.filesToBuild));
-      }
+      // Step-by-Step Plan - Second  
       if (parsed.plan) {
-        grid.appendChild(createResultCard('📋', 'Step-by-Step Plan', parsed.plan));
+        grid.appendChild(createResultCard('📝', 'Step-by-Step Plan', parsed.plan, true));
       }
+      // Files to Build - Third
+      if (parsed.filesToBuild) {
+        grid.appendChild(createResultCard('📁', 'Files to Build', parsed.filesToBuild, false));
+      }
+      // Requirements - Fourth
       if (parsed.requirements) {
         grid.appendChild(createResultCard('✅', 'Requirements', parsed.requirements));
       }
+      // Pro Tips - Fifth
       if (parsed.tips) {
         grid.appendChild(createResultCard('💡', 'Pro Tips', parsed.tips));
       }
+      // Test Command - Last
       if (parsed.testCommand) {
         grid.appendChild(createResultCard('🧪', 'Test Command', `<code>${parsed.testCommand}</code>`));
       }
@@ -759,9 +825,9 @@ ${content.slice(0, 6000)}`;
       document.getElementById('resultSection').classList.add('show');
     }
 
-    function createResultCard(icon, title, content) {
+    function createResultCard(icon, title, content, fullWidth = false) {
       const card = document.createElement('div');
-      card.className = 'result-card';
+      card.className = 'result-card' + (fullWidth ? ' full-width' : '');
       card.innerHTML = `
         <div class="card-icon">${icon}</div>
         <h3 class="card-title">${title}</h3>
@@ -809,7 +875,8 @@ ${content.slice(0, 6000)}`;
         plan: '',
         requirements: '',
         tips: '',
-        testCommand: ''
+        testCommand: '',
+        projectIcon: ''
       };
 
       const patterns = {
@@ -820,7 +887,8 @@ ${content.slice(0, 6000)}`;
         plan: /## PLAN\s*([\s\S]*?)(?=## |$)/,
         requirements: /## REQUIREMENTS\s*([\s\S]*?)(?=## |$)/,
         tips: /## TIPS\s*([\s\S]*?)(?=## |$)/,
-        testCommand: /## TEST COMMAND\s*([\s\S]*?)(?=## |$)/
+        testCommand: /## TEST COMMAND\s*([\s\S]*?)(?=## |$)/,
+        projectIcon: /## PROJECT ICON\s*([\p{L}\p{N}\p{P}\p{S}])/i
       };
 
       for (const [key, pattern] of Object.entries(patterns)) {
