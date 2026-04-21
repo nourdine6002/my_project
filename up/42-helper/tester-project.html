@@ -271,7 +271,6 @@
     let testOutput = '';
 
     document.addEventListener("DOMContentLoaded", function() {
-      if (!checkAuth()) return;
       setupDragDrop();
       document.getElementById('outputPasteArea').addEventListener('input', validatePhase3);
     });

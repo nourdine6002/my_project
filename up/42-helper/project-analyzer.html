@@ -298,8 +298,7 @@
       gap: 8px;
     }
     
-    .back-btn { background: transparent; border: 2px solid var(--border); color: var(--text); }
- }
+.back-btn { background: transparent; border: 2px solid var(--border); color: var(--text); }
     .back-btn:hover { border-color: var(--accent); color: var(--accent); }
     
     .new-analysis-btn { background: var(--accent); border: none; color: #000; }
@@ -342,6 +341,7 @@
       <div class="analyzer-header">
         <h1 class="analyzer-title">📊 Project Analyzer</h1>
         <p class="analyzer-subtitle">Upload your 42 project subject or paste the content to get AI-powered analysis, time estimates, and step-by-step guidance.</p>
+        
       </div>
 
       <!-- INPUT SECTION -->
@@ -651,6 +651,11 @@ PROJECT: ${projectName}
 ## OVERVIEW
 [A clear 2-3 sentence summary of what this project is about]
 
+## FILES TO BUILD
+List ALL files needed to build this project based on requirements:
+• 
+• [read subject and give files needed to build project - and add emojes based on file type]
+
 ## TIME ESTIMATE
 [Estimated hours: X-Y hours for beginners, Z-W hours for experienced]
 
@@ -676,7 +681,7 @@ Common pitfalls to avoid:
 • [Tip 3 - testing advice]
 
 ## TEST COMMAND
-[Exact command(s) to test the project as per 42 norms]
+[Exact command(s) to test the project as per 42 norms if projetc use c and if project use python test flake and mypy]
 
 ## ADDITIONAL RESOURCES
 [Any relevant links or references]
@@ -701,6 +706,9 @@ ${content.slice(0, 6000)}`;
 
       if (parsed.overview) {
         grid.appendChild(createResultCard('📦', 'Overview', parsed.overview));
+      }
+      if (parsed.filesToBuild) {
+        grid.appendChild(createResultCard('📁', 'Files to Build', parsed.filesToBuild));
       }
       if (parsed.plan) {
         grid.appendChild(createResultCard('📋', 'Step-by-Step Plan', parsed.plan));
@@ -744,6 +752,7 @@ ${content.slice(0, 6000)}`;
       const sections = {
         projectName: '',
         overview: '',
+        filesToBuild: '',
         timeEstimate: '',
         plan: '',
         requirements: '',
@@ -754,6 +763,7 @@ ${content.slice(0, 6000)}`;
       const patterns = {
         projectName: /PROJECT:\s*(.+)/i,
         overview: /## OVERVIEW\s*([\s\S]*?)(?=## |$)/,
+        filesToBuild: /## FILES TO BUILD\s*([\s\S]*?)(?=## |$)/,
         timeEstimate: /## TIME ESTIMATE\s*([\s\S]*?)(?=## |$)/,
         plan: /## PLAN\s*([\s\S]*?)(?=## |$)/,
         requirements: /## REQUIREMENTS\s*([\s\S]*?)(?=## |$)/,

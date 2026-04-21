@@ -1,11 +1,11 @@
 let messages = [
   {
     role: "system",
-    content: "You are a helpful AI assistant for 42 school students. You know everything about: - 42 cursus and all projects (libft, ft_printf, get_next_line, born2beroot, so_long, minitalk, push_swap, minishell, philosophers, netpractice, cub3d, inception, ft_containers, cpp modules, webserv, ft_transcendence) - C programming language - Norminette rules and fixes - Shell scripting and bash - Git and GitHub commands - Algorithms and data structures - Docker and system administration - 42 school evaluation tips - How to find peers for evaluation - Time management at 42 Always be helpful, friendly and specific. Give code examples when needed. Explain norminette errors clearly."
+    content: "You are a helpful AI assistant for 42 school students. ONLY answer questions related to 42 school cursus, programming, and coding (C, Python, Shell, etc.). If the user asks about unrelated topics (weather, sports, politics, entertainment, personal matters, etc.), politely respond: 'I'm here to help with 42 cursus questions only! Ask me about projects, code, norminette, or coding concepts.' You know: 42 cursus projects (libft, ft_printf, get_next_line, born2beroot, so_long, minitalk, push_swap, minishell, philosophers, netpractice, cub3d, inception, ft_containers, cpp modules, webserv, ft_transcendence), C programming, Python, Norminette rules, Shell scripting, Git commands, Algorithms, Docker. Be helpful, friendly and specific. Give code examples when needed."
   }
 ];
 
-async function sendMessage(userMessage) {
+async function sendMessage(userMessage, retryCount = 0) {
   messages.push({
     role: "user",
     content: userMessage
@@ -20,6 +20,9 @@ async function sendMessage(userMessage) {
 
   console.log("Request:", JSON.stringify(requestBody, null, 2));
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000);
+
   try {
     const response = await fetch(CONFIG.AI_BASE_URL, {
       method: "POST",
@@ -27,8 +30,11 @@ async function sendMessage(userMessage) {
         "Authorization": "Bearer " + CONFIG.OPENROUTER_KEY,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(requestBody)
+      body: JSON.stringify(requestBody),
+      signal: controller.signal
     });
+
+    clearTimeout(timeoutId);
 
     const responseText = await response.text();
     console.log("Status:", response.status);
@@ -39,6 +45,11 @@ async function sendMessage(userMessage) {
       if (response.status === 402) {
         errorMsg = "402 - Prompt tokens limit exceeded. Please upgrade your OpenRouter account at https://openrouter.ai/settings/credits";
       }
+      if ((response.status === 504 || response.status === 502) && retryCount < 2) {
+        console.log("Retrying...", retryCount + 1);
+        messages.pop();
+        return sendMessage(userMessage, retryCount + 1);
+      }
       throw new Error(errorMsg);
     }
 
@@ -47,6 +58,11 @@ async function sendMessage(userMessage) {
     if (data.error) {
       if (data.error.message.includes('tokens limit') || data.error.message.includes('402')) {
         throw new Error("402 - Prompt tokens limit exceeded. Please upgrade your OpenRouter account at https://openrouter.ai/settings/credits");
+      }
+      if (data.error.message.includes('aborted') && retryCount < 2) {
+        console.log("Retrying after abort...", retryCount + 1);
+        messages.pop();
+        return sendMessage(userMessage, retryCount + 1);
       }
       throw new Error("API Error: " + data.error.message);
     }
@@ -64,7 +80,13 @@ async function sendMessage(userMessage) {
     return "No response from AI. Check console for details.";
 
   } catch (error) {
+    clearTimeout(timeoutId);
     console.error("Fetch Error:", error);
+    if (error.name === 'AbortError' && retryCount < 2) {
+      console.log("Timeout, retrying...", retryCount + 1);
+      messages.pop();
+      return sendMessage(userMessage, retryCount + 1);
+    }
     throw error;
   }
 }
@@ -73,7 +95,7 @@ function clearChat() {
   messages = [
     {
       role: "system",
-      content: "You are a helpful AI assistant for 42 school students. You know everything about: - 42 cursus and all projects (libft, ft_printf, get_next_line, born2beroot, so_long, minitalk, push_swap, minishell, philosophers, netpractice, cub3d, inception, ft_containers, cpp modules, webserv, ft_transcendence) - C programming language - Norminette rules and fixes - Shell scripting and bash - Git and GitHub commands - Algorithms and data structures - Docker and system administration - 42 school evaluation tips - How to find peers for evaluation - Time management at 42 Always be helpful, friendly and specific. Give code examples when needed. Explain norminette errors clearly."
+      content: "You are a helpful AI assistant for 42 school students. ONLY answer questions related to 42 school cursus, programming, and coding (C, Python, Shell, etc.). If the user asks about unrelated topics (weather, sports, politics, entertainment, personal matters, etc.), politely respond: 'I'm here to help with 42 cursus questions only! Ask me about projects, code, norminette, or coding concepts.' You know: 42 cursus projects (libft, ft_printf, get_next_line, born2beroot, so_long, minitalk, push_swap, minishell, philosophers, netpractice, cub3d, inception, ft_containers, cpp modules, webserv, ft_transcendence), C programming, Python, Norminette rules, Shell scripting, Git commands, Algorithms, Docker. Be helpful, friendly and specific. Give code examples when needed."
     }
   ];
 }

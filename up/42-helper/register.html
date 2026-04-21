@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - 42 Cursus Helper</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="landing-container">
+    <div class="landing-content">
+      <div class="landing-logo">42</div>
+      <h1 class="landing-title">Register</h1>
+      
+      <form id="registerForm" class="landing-form">
+        <div class="form-group">
+          <label class="form-label">42 Username</label>
+          <input type="text" id="usernameInput" class="form-input" placeholder="Enter your 42 login" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="passwordInput" class="form-input" placeholder="Enter password" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Campus (optional)</label>
+          <input type="text" id="campusInput" class="form-input" placeholder="e.g., Paris">
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+      </form>
+      <p id="message" style="margin-top:20px;"></p>
+      <a href="index.html" style="display:block;margin-top:20px;color:#00babc;">Already have account? Login</a>
+    </div>
+  </div>
+  
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData();
+      formData.append('action', 'register');
+      formData.append('username', document.getElementById('usernameInput').value.trim());
+      formData.append('password', document.getElementById('passwordInput').value);
+      formData.append('owner', document.getElementById('campusInput').value.trim());
+
+      try {
+        const response = await fetch('api.php', {
+          method: 'POST',
+          headers: {
+            'X-App-Key': '84c3e776abf5d733612e048591875f555a303b8ffd456a2f263466125be8d601',
+            'X-App-Owner': 'RgNEGfrkmv',
+            'X-App-Version': '1.0'
+          },
+          body: formData
+        });
+        
+        const result = await response.json();
+        const msg = document.getElementById('message');
+        msg.textContent = result.message;
+        msg.style.color = result.success ? '#00ff00' : '#ff0000';
+        
+        if (result.success) {
+          setTimeout(() => window.location.href = 'index.html', 1500);
+        }
+      } catch (error) {
+        document.getElementById('message').textContent = 'Connection error';
+        document.getElementById('message').style.color = '#ff0000';
+      }
+    });
+  </script>
+</body>
+</html>

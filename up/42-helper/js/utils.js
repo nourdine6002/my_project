@@ -32,6 +32,16 @@ function showSuccess(message) {
   }, 3000);
 }
 
+function showCreditsError() {
+  const toast = document.createElement("div");
+  toast.className = "toast toast-error";
+  toast.textContent = "AI credits exhausted. Please upgrade at https://openrouter.ai/settings/credits";
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    toast.remove();
+  }, 5000);
+}
+
 function formatLevel(level) {
   return parseFloat(level).toFixed(2);
 }

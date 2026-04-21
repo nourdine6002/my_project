@@ -6,6 +6,341 @@
   <title>AI Assistant - 42 Cursus Helper</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/components.css">
+  <style>
+    .chat-wrapper {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 140px);
+      background: linear-gradient(135deg, #1a1a2e 0%, #0f1a2e 100%);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      overflow: auto;
+      box-shadow: 0 8px 40px rgba(0, 186, 188, 0.15);
+    }
+
+    .chat-header {
+      padding: 20px 24px;
+      background: linear-gradient(180deg, rgba(0, 186, 188, 0.15) 0%, transparent 100%);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chat-header-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .chat-avatar {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #00babc, #00ff88);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 0 20px rgba(0, 186, 188, 0.5);
+    }
+
+    .chat-header-text h2 {
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .chat-header-text p {
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    .chat-header-text .status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--success);
+      font-size: 12px;
+    }
+
+    .chat-header-text .status::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: statusPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 5px var(--success); }
+      50% { opacity: 0.5; box-shadow: 0 0 15px var(--success); }
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .message-wrapper {
+      display: flex;
+      gap: 12px;
+      max-width: 85%;
+      animation: messageSlide 0.3s ease-out;
+    }
+
+    .message-wrapper.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .message-wrapper.ai .message-avatar {
+      background: linear-gradient(135deg, #00babc, #00ff88);
+      box-shadow: 0 0 15px rgba(0, 186, 188, 0.4);
+    }
+
+    .message-wrapper.user .message-avatar {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      box-shadow: 0 0 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .message-content {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .message-bubble {
+      padding: 14px 18px;
+      border-radius: 18px;
+      line-height: 1.6;
+      font-size: 14px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .message-wrapper.ai .message-bubble {
+      background: linear-gradient(135deg, #1e2a4a 0%, #162240 100%);
+      border: 1px solid var(--border);
+      border-radius: 18px 18px 18px 4px;
+    }
+
+    .message-wrapper.user .message-bubble {
+      background: linear-gradient(135deg, #00babc, #00d4d6);
+      color: #000;
+      border-radius: 18px 18px 4px 18px;
+      font-weight: 500;
+    }
+
+    .message-time {
+      font-size: 11px;
+      color: var(--text-secondary);
+      padding: 0 4px;
+    }
+
+    .message-wrapper.user .message-time {
+      text-align: right;
+    }
+
+    .quick-questions {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .quick-questions-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .quick-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .quick-btn {
+      padding: 8px 14px;
+      background: rgba(0, 186, 188, 0.1);
+      border: 1px solid rgba(0, 186, 188, 0.3);
+      color: var(--accent);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .quick-btn:hover {
+      background: var(--accent);
+      color: #000;
+      box-shadow: 0 0 20px rgba(0, 186, 188, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .chat-input-area {
+      display: flex;
+      gap: 12px;
+      padding: 16px 20px;
+      background: rgba(0, 0, 0, 0.3);
+      border-top: 1px solid var(--border);
+    }
+
+    .chat-input {
+      flex: 1;
+      background: #1a1a2e;
+      border: 2px solid #00babc;
+      border-radius: 25px;
+      padding: 14px 20px;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .chat-input:focus {
+      box-shadow: 0 0 20px rgba(0, 186, 188, 0.3);
+    }
+
+    .chat-input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .send-btn {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #00babc, #00d4d6);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 20px rgba(0, 186, 188, 0.4);
+    }
+
+    .send-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(0, 186, 188, 0.6);
+    }
+
+    .send-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    @keyframes messageSlide {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes thinkingPulse {
+      0%, 100% { box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 10px rgba(0, 186, 188, 0.2); }
+      50% { box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 25px rgba(0, 186, 188, 0.4); }
+    }
+
+    .thinking {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: linear-gradient(135deg, #1e2a4a 0%, #162240 100%);
+      border-radius: 18px 18px 18px 4px;
+      border: 1px solid var(--border);
+      align-self: flex-start;
+      width: fit-content;
+      animation: thinkingPulse 1.5s ease-in-out infinite;
+    }
+
+    .thinking span {
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+
+    .thinking span:nth-child(2) { animation-delay: 0.2s; }
+    .thinking span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); opacity: 0.4; }
+      50% { transform: translateY(-10px); opacity: 1; }
+    }
+
+    .chat-welcome {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .chat-welcome-icon {
+      font-size: 60px;
+      margin-bottom: 20px;
+      animation: iconFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .chat-welcome h2 {
+      font-size: 24px;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .chat-welcome p {
+      color: var(--text-secondary);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .chat-welcome .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .chat-welcome .suggestion-item {
+      padding: 10px 18px;
+      background: rgba(0, 186, 188, 0.1);
+      border: 1px solid rgba(0, 186, 188, 0.3);
+      border-radius: 25px;
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .chat-welcome .suggestion-item:hover {
+      background: var(--accent);
+      color: #000;
+      box-shadow: 0 0 20px rgba(0, 186, 188, 0.4);
+    }
+  </style>
 </head>
 <body>
   <div class="sidebar">
@@ -34,32 +369,52 @@
   <div class="main-content">
     <div class="page-header">
       <div class="title-row">
-        <h1 class="page-title ai-title">AI Assistant 🤖</h1>
-        <p class="ai-subtitle">Ask me anything about 42 cursus</p>
+        <h1 class="page-title">AI Assistant</h1>
       </div>
       <button onclick="clearChat()" class="btn btn-outline">Clear Chat</button>
     </div>
 
-    <div class="chat-container">
+    <div class="chat-wrapper">
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <div class="chat-avatar">🤖</div>
+          <div class="chat-header-text">
+            <h2>42 AI Assistant</h2>
+            <p>Ask me anything about 42 cursus</p>
+            <div class="status">Online</div>
+          </div>
+        </div>
+      </div>
+
       <div class="chat-messages" id="chatMessages">
         <div class="chat-welcome">
-          <h2>Hello! I am your 42 school AI assistant.</h2>
-          <p>I can help you with projects, norminette, coding questions and more. What do you need?</p>
+          <div class="chat-welcome-icon">🤖</div>
+          <h2>Hello! I'm your 42 cursus AI</h2>
+          <p>Ask me about 42 projects, code, norminette, or coding ONLY.</p>
+          <div class="suggestions">
+            <div class="suggestion-item" onclick="sendQuickQuestion('How to fix norminette errors?')">Fix norminette</div>
+            <div class="suggestion-item" onclick="sendQuickQuestion('Tips for minishell project?')">Minishell</div>
+            <div class="suggestion-item" onclick="sendQuickQuestion('Explain push_swap algorithm')">push_swap</div>
+            <div class="suggestion-item" onclick="sendQuickQuestion('Git commands cheatsheet')">Git</div>
+          </div>
         </div>
       </div>
 
       <div class="quick-questions">
-        <button class="quick-btn" onclick="sendQuickQuestion('How to fix norminette errors?')">How to fix norminette?</button>
-        <button class="quick-btn" onclick="sendQuickQuestion('Tips for minishell project?')">Tips for minishell?</button>
-        <button class="quick-btn" onclick="sendQuickQuestion('How to find evaluators at 42?')">How to find evaluators?</button>
-        <button class="quick-btn" onclick="sendQuickQuestion('Explain push_swap algorithm')">Explain push_swap algorithm</button>
-        <button class="quick-btn" onclick="sendQuickQuestion('Help with libft project')">Help with libft</button>
-        <button class="quick-btn" onclick="sendQuickQuestion('Git commands cheatsheet')">Git commands cheatsheet</button>
+        <span class="quick-questions-label">Quick questions:</span>
+        <div class="quick-btns">
+          <button class="quick-btn" onclick="sendQuickQuestion('How to fix norminette errors?')">Fix norminette</button>
+          <button class="quick-btn" onclick="sendQuickQuestion('Tips for minishell project?')">Minishell</button>
+          <button class="quick-btn" onclick="sendQuickQuestion('How to find evaluators at 42?')">Evaluators</button>
+          <button class="quick-btn" onclick="sendQuickQuestion('Explain push_swap algorithm')">push_swap</button>
+          <button class="quick-btn" onclick="sendQuickQuestion('Help with libft project')">libft</button>
+          <button class="quick-btn" onclick="sendQuickQuestion('Git commands cheatsheet')">Git</button>
+        </div>
       </div>
 
       <div class="chat-input-area">
         <input type="text" id="chatInput" class="chat-input" placeholder="Ask about 42 cursus...">
-        <button onclick="handleSendMessage()" class="btn btn-primary">Send 🚀</button>
+        <button onclick="handleSendMessage()" class="send-btn" id="sendBtn">➤</button>
       </div>
     </div>
   </div>
@@ -73,32 +428,44 @@
       if (!checkAuth()) return;
 
       const chatInput = document.getElementById('chatInput');
+      const sendBtn = document.getElementById('sendBtn');
+
       chatInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
           handleSendMessage();
         }
       });
+
+      chatInput.addEventListener('input', function() {
+        sendBtn.disabled = !chatInput.value.trim();
+      });
+
+      sendBtn.addEventListener('click', handleSendMessage);
     });
 
-    async function handleSendMessage() {
+    function handleSendMessage() {
       const chatInput = document.getElementById('chatInput');
+      const sendBtn = document.getElementById('sendBtn');
       const userMessage = chatInput.value.trim();
-      
+
       if (!userMessage) return;
 
+      sendBtn.disabled = true;
       chatInput.value = '';
 
       addUserMessage(userMessage);
       showThinking();
 
-      try {
-        const response = await sendMessage(userMessage);
+      sendMessage(userMessage).then(response => {
         hideThinking();
         addAIMessage(response);
-      } catch (error) {
+      }).catch(error => {
         hideThinking();
-        addAIMessage("AI unavailable. Please try again later.");
-      }
+        addAIMessage("Error: " + error.message);
+      });
+
+      sendBtn.disabled = false;
+      chatInput.focus();
     }
 
     function sendQuickQuestion(question) {
@@ -109,16 +476,19 @@
     function addUserMessage(text) {
       const container = document.getElementById('chatMessages');
       const time = formatTime(new Date());
-      
-      const html = `
-        <div class="message-wrapper user">
-          <div class="message-bubble user">${escapeHtml(text)}</div>
-          <div class="message-time">${time}</div>
-        </div>
-      `;
 
       const welcome = container.querySelector('.chat-welcome');
       if (welcome) welcome.remove();
+
+      const html = `
+        <div class="message-wrapper user">
+          <div class="message-avatar">👤</div>
+          <div class="message-content">
+            <div class="message-bubble">${escapeHtml(text)}</div>
+            <div class="message-time">${time}</div>
+          </div>
+        </div>
+      `;
 
       container.insertAdjacentHTML('beforeend', html);
       scrollToBottom();
@@ -127,13 +497,15 @@
     function addAIMessage(text) {
       const container = document.getElementById('chatMessages');
       const time = formatTime(new Date());
-      
       const formattedText = formatMessage(text);
-      
+
       const html = `
         <div class="message-wrapper ai">
-          <div class="message-bubble ai">${formattedText}</div>
-          <div class="message-time">${time}</div>
+          <div class="message-avatar">🤖</div>
+          <div class="message-content">
+            <div class="message-bubble">${formattedText}</div>
+            <div class="message-time">${time}</div>
+          </div>
         </div>
       `;
 
@@ -143,7 +515,7 @@
 
     function showThinking() {
       const container = document.getElementById('chatMessages');
-      
+
       const html = `
         <div class="thinking" id="thinkingIndicator">
           <span></span>
@@ -163,33 +535,37 @@
 
     function formatMessage(text) {
       text = escapeHtml(text);
-      
+
       text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
-      
       text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
-      
-      text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-      
-      text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-      
-      text = text.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-      text = text.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-      text = text.replace(/^# (.+)$/gm, '<h1>$1</h1>');
-      
-      text = text.replace(/^- (.+)$/gm, '<li>$1</li>');
-      
+
+      text = text.replace(/^### (.+)$/gm, '<h3>🔹 $1</h3>');
+      text = text.replace(/^## (.+)$/gm, '<h2>🔸 $1</h2>');
+      text = text.replace(/^# (.+)$/gm, '<h1>⭐ $1</h1>');
+
+      text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>💫 $1</strong>');
+      text = text.replace(/\*([^*]+)\*/g, '<em>✨ $1</em>');
+
+      text = text.replace(/^- (.+)$/gm, '• $1');
+      text = text.replace(/^\d+\. (.+)$/gm, '1️⃣ $1');
+
+      text = text.replace(/Key Ideas:/gi, '📚 <strong>Key Ideas:</strong>');
+      text = text.replace(/Example:/gi, '📝 <strong>Example:</strong>');
+      text = text.replace(/In this example:/gi, '🔍 <strong>In this example:</strong>');
+      text = text.replace(/Benefits of/gi, '✅ <strong>Benefits of</strong>');
+      text = text.replace(/Drawbacks:/gi, '⚠️ <strong>Drawbacks:</strong>');
+      text = text.replace(/In Summary:/gi, '🎯 <strong>In Summary:</strong>');
+      text = text.replace(/How it works/gi, '⚙️ <strong>How it works</strong>');
+
       text = text.replace(/\n\n/g, '</p><p>');
       text = text.replace(/\n/g, '<br>');
       text = '<p>' + text + '</p>';
-      
       text = text.replace(/<p><\/p>/g, '');
       text = text.replace(/<p><br><\/p>/g, '');
       text = text.replace(/<p>(<h[123]>)/g, '$1');
       text = text.replace(/(<h[123]>)/g, '$1');
       text = text.replace(/(<\/h[123]>)<\/p>/g, '$1');
-      text = text.replace(/(<li>)/g, '<ul>$1');
-      text = text.replace(/<\/li><\/p>/g, '</li></ul>');
-      
+
       return text;
     }
 
@@ -214,14 +590,21 @@
       messages = [
         {
           role: "system",
-          content: "You are a helpful AI assistant for 42 school students. You know everything about: - 42 cursus and all projects (libft, ft_printf, get_next_line, born2beroot, so_long, minitalk, push_swap, minishell, philosophers, netpractice, cub3d, inception, ft_containers, cpp modules, webserv, ft_transcendence) - C programming language - Norminette rules and fixes - Shell scripting and bash - Git and GitHub commands - Algorithms and data structures - Docker and system administration - 42 school evaluation tips - How to find peers for evaluation - Time management at 42 Always be helpful, friendly and specific. Give code examples when needed. Explain norminette errors clearly."
+          content: "You are a helpful AI assistant for 42 school students. ONLY answer questions related to 42 school cursus, programming, and coding (C, Python, Shell, etc.). If the user asks about unrelated topics (weather, sports, politics, entertainment, personal matters, etc.), politely respond: 'I'm here to help with 42 cursus questions only! Ask me about projects, code, norminette, or coding concepts.' You know: 42 cursus projects (libft, ft_printf, get_next_line, born2beroot, so_long, minitalk, push_swap, minishell, philosophers, netpractice, cub3d, inception, ft_containers, cpp modules, webserv, ft_transcendence), C programming, Python, Norminette rules, Shell scripting, Git commands, Algorithms, Docker. Be helpful, friendly and specific. Give code examples when needed."
         }
       ];
       const container = document.getElementById('chatMessages');
       container.innerHTML = `
         <div class="chat-welcome">
-          <h2>Hello! I am your 42 school AI assistant.</h2>
-          <p>I can help you with projects, norminette, coding questions and more. What do you need?</p>
+          <div class="chat-welcome-icon">🤖</div>
+          <h2>Hello! I'm your 42 cursus AI</h2>
+          <p>Ask me about 42 projects, code, norminette, or coding ONLY.</p>
+          <div class="suggestions">
+            <div class="suggestion-item" onclick="sendQuickQuestion('How to fix norminette errors?')">Fix norminette</div>
+            <div class="suggestion-item" onclick="sendQuickQuestion('Tips for minishell project?')">Minishell</div>
+            <div class="suggestion-item" onclick="sendQuickQuestion('Explain push_swap algorithm')">push_swap</div>
+            <div class="suggestion-item" onclick="sendQuickQuestion('Git commands cheatsheet')">Git</div>
+          </div>
         </div>
       `;
       showSuccess('Chat cleared!');

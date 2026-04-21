@@ -113,6 +113,9 @@
       `;
     }
 
+    const VALID_USER = 'nodoulah';
+    const VALID_PASS = 'Pop#2006husa';
+
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
       loginForm.addEventListener('submit', function(e) {
@@ -121,8 +124,8 @@
         const login = document.getElementById('loginInput').value.trim();
         const password = document.getElementById('passwordInput').value;
 
-        if (login !== 'nodoulah' || password !== 'Pop#2006husa') {
-          showError('Invalid login or password');
+        if (login !== VALID_USER || password !== VALID_PASS) {
+          showError('Invalid username or password');
           return;
         }
 
