@@ -208,18 +208,19 @@
     .result-container.show { display: block; }
     
     .project-hero {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+      background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
       border-radius: 24px;
       padding: 50px 40px;
       text-align: center;
-      color: #000;
+      color: #fff;
       margin-bottom: 40px;
       box-shadow: 0 0 40px rgba(0, 186, 188, 0.3);
+      border: 2px solid var(--accent);
     }
     
-    .hero-icon { font-size: 60px; margin-bottom: 20px; }
-    .hero-title { font-size: 36px; font-weight: bold; margin-bottom: 8px; }
-    .hero-subtitle { font-size: 18px; opacity: 0.8; }
+    .hero-icon { font-size: 70px; margin-bottom: 20px; display: block; }
+    .hero-title { font-size: 42px; font-weight: bold; margin-bottom: 8px; color: #fff; text-shadow: 0 0 10px rgba(0,186,188,0.5); }
+    .hero-subtitle { font-size: 18px; opacity: 0.9; color: #a0aec0; }
     
     .result-grid {
       display: grid;
@@ -238,18 +239,21 @@
     
     .result-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(0, 186, 188, 0.15); }
     
-    .card-icon { font-size: 32px; margin-bottom: 16px; }
-    .card-title { font-size: 20px; font-weight: bold; color: var(--accent); margin-bottom: 14px; }
-    .card-content { color: var(--text); line-height: 1.8; font-size: 15px; }
-    .card-content ul { margin: 12px 0; padding-left: 20px; }
-    .card-content li { margin: 8px 0; }
+    .card-icon { font-size: 36px; margin-bottom: 16px; display: block; }
+    .card-title { font-size: 22px; font-weight: bold; color: var(--accent); margin-bottom: 16px; border-bottom: 2px solid rgba(0,186,188,0.3); padding-bottom: 10px; }
+    .card-content { color: #e2e8f0; line-height: 1.9; font-size: 15px; }
+    .card-content p { margin: 10px 0; }
+    .card-content ul { margin: 14px 0; padding-left: 0; list-style: none; }
+    .card-content li { margin: 10px 0; padding-left: 24px; position: relative; }
+    .card-content li::before { content: '▸'; color: var(--accent); position: absolute; left: 0; }
     .card-content code {
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 186, 188, 0.15);
       padding: 4px 10px;
       border-radius: 6px;
       font-family: 'Courier New', monospace;
       color: #00ff88;
       font-size: 13px;
+      border: 1px solid rgba(0,186,188,0.3);
     }
     .card-content pre {
       background: #0a0a0a;
@@ -264,6 +268,30 @@
       padding: 0;
       color: #00ff88;
     }
+    .card-content .day-header {
+      color: var(--accent);
+      font-weight: bold;
+      font-size: 16px;
+      margin: 20px 0 10px;
+      padding: 8px 12px;
+      background: rgba(0,186,188,0.1);
+      border-radius: 8px;
+      display: inline-block;
+    }
+    .card-content .time {
+      background: rgba(0,186,188,0.2);
+      color: var(--accent);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+    .card-content .check { color: #22c55e; }
+    .card-content .tip { color: #fbbf24; }
+    .card-content .warn { color: #f97316; }
+    .card-content .res { color: #3b82f6; }
+    .card-content .vid { color: #ec4899; }
+    .card-content .link { color: #06b6d4; }
+    .card-content strong { color: #00babc; }
     
     .time-estimate {
       text-align: center;
@@ -274,9 +302,9 @@
       margin-bottom: 40px;
     }
     
-    .time-label { font-size: 16px; color: var(--text-secondary); margin-bottom: 8px; }
-    .time-value { font-size: 42px; font-weight: bold; color: var(--accent); text-shadow: 0 0 15px var(--accent); }
-    .time-unit { font-size: 18px; color: var(--text-secondary); margin-left: 4px; }
+    .time-label { font-size: 16px; color: #a0aec0; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+    .time-value { font-size: 48px; font-weight: bold; color: var(--accent); text-shadow: 0 0 20px var(--accent); }
+    .time-unit { font-size: 18px; color: #a0aec0; margin-left: 8px; }
     
     .action-bar {
       display: flex;
@@ -399,7 +427,7 @@
       <!-- RESULT SECTION -->
       <div id="resultSection" class="result-container">
         <div class="project-hero">
-          <div class="hero-icon">🎯</div>
+          <div class="hero-icon">🚀</div>
           <h2 class="hero-title" id="projectName">Project Analysis</h2>
           <p class="hero-subtitle">Here's your complete breakdown</p>
         </div>
@@ -651,16 +679,24 @@ PROJECT: ${projectName}
 ## OVERVIEW
 [A clear 2-3 sentence summary of what this project is about]
 
-## FILES TO BUILD
-List ALL files needed to build this project based on requirements:
-• 
-• [read subject and give files needed to build project - and add emojes based on file type]
 
 ## TIME ESTIMATE
 [Estimated hours: X-Y hours for beginners, Z-W hours for experienced]
 
 ## PLAN
 Day-by-day breakdown:
+[Create a detailed day-by-day roadmap that is easy to read and visually well-organized. The roadmap should include clear daily sections with specific tasks for each day. Use a clean and structured design format with headings, spacing, and emojis to improve readability and engagement.
+
+Make sure:
+
+Each day is clearly labeled (Day 1, Day 2, etc.)
+Each day includes actionable and specific tasks
+Use emojis to highlight activities, goals, and progress
+Keep the layout clean, structured, and easy to scan
+Add short motivational notes where relevant
+Make the roadmap feel like a designed plan, not just plain text
+
+The goal is to create a visually appealing and easy-to-understand roadmap that someone can follow step by step without confusion. The roadmap should feel like a well-crafted guide that motivates and directs the user through the project development process.]
 Day 1: [specific tasks]
 Day 2: [specific tasks]
 [... continue with realistic daily goals]
@@ -679,9 +715,6 @@ Common pitfalls to avoid:
 • [Tip 1 - specific and actionable]
 • [Tip 2 - include norminette advice if C project]
 • [Tip 3 - testing advice]
-
-## TEST COMMAND
-[Exact command(s) to test the project as per 42 norms if projetc use c and if project use python test flake and mypy]
 
 ## ADDITIONAL RESOURCES
 [Any relevant links or references]
@@ -740,11 +773,30 @@ ${content.slice(0, 6000)}`;
     function formatContent(text) {
       if (!text) return '';
       let formatted = escapeHtml(text);
+      
+      formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      formatted = formatted.replace(/\* ([^*]+)/g, '<em>$1</em>');
+      formatted = formatted.replace(/✅ /g, '<span class="check">✅</span> ');
+      formatted = formatted.replace(/💡 /g, '<span class="tip">💡</span> ');
+      formatted = formatted.replace(/⚠️ /g, '<span class="warn">⚠️</span> ');
+      formatted = formatted.replace(/📚 /g, '<span class="res">📚</span> ');
+      formatted = formatted.replace(/🎥 /g, '<span class="vid">🎥</span> ');
+      formatted = formatted.replace(/🌐 /g, '<span class="link">🌐</span> ');
+      
+      formatted = formatted.replace(/\n\n/g, '</p><p>');
       formatted = formatted.replace(/\n/g, '<br>');
-      formatted = formatted.replace(/• (.+)/g, '<li>$1</li>');
-      formatted = formatted.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
-      formatted = formatted.replace(/Day \d+:.*/g, match => `<strong>${match}</strong>`);
-      formatted = formatted.replace(/(\d+-\d+ hours|\d+ hours)/g, '<code>$1</code>');
+      formatted = '<p>' + formatted + '</p>';
+      
+      formatted = formatted.replace(/<p><\/p>/g, '');
+      
+      formatted = formatted.replace(/• ([^\n<]+)/g, '<li>$1</li>');
+      formatted = formatted.replace(/(<li>[^\n]+<\/li>)+/g, match => '<ul>' + match + '</ul>');
+      
+      formatted = formatted.replace(/(\*\*[^\n]+\*\*)/g, '<strong>$1</strong>');
+      formatted = formatted.replace(/(Day \d+):/g, '<div class="day-header">$1:</div>');
+      formatted = formatted.replace(/(Beginners|Experienced|Recommended):/g, '<strong>$1:</strong>');
+      formatted = formatted.replace(/(\d+-\d+ hours|\d+ hours)/g, '<span class="time">$1</span>');
+      
       return formatted;
     }
 
