@@ -391,12 +391,6 @@
           <div class="chat-welcome-icon">🤖</div>
           <h2>Hello! I'm your 42 cursus AI</h2>
           <p>Ask me about 42 projects, code, norminette, or coding ONLY.</p>
-          <div class="suggestions">
-            <div class="suggestion-item" onclick="sendQuickQuestion('How to fix norminette errors?')">Fix norminette</div>
-            <div class="suggestion-item" onclick="sendQuickQuestion('Tips for minishell project?')">Minishell</div>
-            <div class="suggestion-item" onclick="sendQuickQuestion('Explain push_swap algorithm')">push_swap</div>
-            <div class="suggestion-item" onclick="sendQuickQuestion('Git commands cheatsheet')">Git</div>
-          </div>
         </div>
       </div>
 
@@ -522,38 +516,42 @@
     }
 
     function formatMessage(text) {
+      if (!text) return '';
+      
+      // Simple cleanup - remove complex markdown symbols
+      text = text.replace(/[*💫✨]+/g, ' ');
+      text = text.replace(/\s+/g, ' ');
+      
       text = escapeHtml(text);
 
-      text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
-      text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+      // Code blocks - terminal/bash style
+      if (text.includes('```') || text.includes('c\n') || text.includes('bash\n')) {
+        text = text.replace(/```(\w+)?\n?([\s\S]*?)```/g, '<div class="terminal"><div class="terminal-header"><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-title">bash</span></div><pre><code>$2</code></pre></div>');
+        text = text.replace(/```([\s\S]*?)```/g, '<div class="terminal"><div class="terminal-header"><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-title">bash</span></div><pre><code>$1</code></pre></div>');
+      } else if (text.includes('`')) {
+        text = text.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
+      }
 
-      text = text.replace(/^### (.+)$/gm, '<h3>🔹 $1</h3>');
-      text = text.replace(/^## (.+)$/gm, '<h2>🔸 $1</h2>');
-      text = text.replace(/^# (.+)$/gm, '<h1>⭐ $1</h1>');
+      // Headers - simple
+      text = text.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+      text = text.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+      text = text.replace(/^# (.+)$/gm, '<h1>$1</h1>');
 
-      text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>💫 $1</strong>');
-      text = text.replace(/\*([^*]+)\*/g, '<em>✨ $1</em>');
+      // Bold text
+      text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
 
-      text = text.replace(/^- (.+)$/gm, '• $1');
-      text = text.replace(/^\d+\. (.+)$/gm, '1️⃣ $1');
+      // Lists - more flexible pattern
+      text = text.replace(/^\s*[-•]\s+(.+)$/gm, '<li>$1</li>');
+      text = text.replace(/^\s*(\d+)\.\s+(.+)$/gm, '<li>$2</li>');
 
-      text = text.replace(/Key Ideas:/gi, '📚 <strong>Key Ideas:</strong>');
-      text = text.replace(/Example:/gi, '📝 <strong>Example:</strong>');
-      text = text.replace(/In this example:/gi, '🔍 <strong>In this example:</strong>');
-      text = text.replace(/Benefits of/gi, '✅ <strong>Benefits of</strong>');
-      text = text.replace(/Drawbacks:/gi, '⚠️ <strong>Drawbacks:</strong>');
-      text = text.replace(/In Summary:/gi, '🎯 <strong>In Summary:</strong>');
-      text = text.replace(/How it works/gi, '⚙️ <strong>How it works</strong>');
-
-      text = text.replace(/\n\n/g, '</p><p>');
-      text = text.replace(/\n/g, '<br>');
-      text = '<p>' + text + '</p>';
-      text = text.replace(/<p><\/p>/g, '');
-      text = text.replace(/<p><br><\/p>/g, '');
-      text = text.replace(/<p>(<h[123]>)/g, '$1');
-      text = text.replace(/(<h[123]>)/g, '$1');
-      text = text.replace(/(<\/h[123]>)<\/p>/g, '$1');
-
+      // Clean paragraphs
+      text = text.replace(/(\\n)+/g, '<br>');
+      text = text.replace(/\n+/g, '<br>');
+      text = '<div class="msg-text">' + text + '</div>';
+      
+      // Fix nested lists
+      text = text.replace(/(<li>[^<]+<\/li>)+/g, '<ul>$&</ul>');
+      
       return text;
     }
 
