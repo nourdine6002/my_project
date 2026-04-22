@@ -3,9 +3,121 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>42 Cursus Helper - Login</title>
+  <title>42 Cursus Helper</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/components.css">
+  <style>
+    .landing-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    
+    .landing-content {
+      text-align: center;
+      max-width: 900px;
+    }
+    
+    .landing-logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 120px;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: neonFlicker 3s ease-in-out infinite;
+      margin-bottom: 10px;
+    }
+    
+    .landing-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      text-shadow: 0 0 20px var(--neon-pink);
+    }
+    
+    .landing-subtitle {
+      font-size: 18px;
+      color: var(--text-muted);
+      margin-bottom: 50px;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 50px;
+    }
+    
+    .feature-card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glow);
+      border-radius: 20px;
+      padding: 30px 24px;
+      transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(255,45,120,0.2);
+      border-color: var(--neon-pink);
+    }
+    
+    .feature-card .feature-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: block;
+    }
+    
+    .feature-card h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+    
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    
+    .cta-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+      color: white;
+      padding: 16px 48px;
+      border-radius: 50px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(255,45,120,0.4);
+    }
+    
+    .cta-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(255,45,120,0.6), 0 0 60px rgba(255,45,120,0.3);
+    }
+    
+    .landing-footer {
+      margin-top: 50px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    
+    @media (max-width: 768px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .landing-title { font-size: 36px; }
+    }
+  </style>
 </head>
 <body>
   <div class="scanline"></div>
@@ -19,139 +131,36 @@
   <div class="sakura-petal"></div>
   <div class="sakura-petal"></div>
 
-  <div class="watermark" style="top: 30px; right: 40px; transform: rotate(-15deg);">四十二</div>
-
-  <div class="login-page">
-    <div class="login-hero">
-      <div class="big-42">42</div>
-      <div class="subtitle-main">Cursus Helper</div>
-      <div class="subtitle-jp">Your 42 Journey</div>
-    </div>
-
-    <div class="login-form-side">
-      <div class="glass-card login-card">
-        <div class="header-row">
-          <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="Avatar" class="avatar-img">
-          <div>
-            <div class="welcome-text">Welcome back,</div>
-            <div class="username" id="displayUsername">Student</div>
-          </div>
+  <div class="landing-page">
+    <div class="landing-content">
+      <div class="landing-logo">42</div>
+      <h1 class="landing-title">Cursus Helper</h1>
+      <p class="landing-subtitle">Your personal AI assistant for the 42 school journey</p>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <span class="feature-icon">📊</span>
+          <h3>Project Analyzer</h3>
+          <p>AI-powered analysis of your 42 project subjects with daily task plans</p>
         </div>
-
-        <form id="loginForm">
-          <div class="form-group">
-            <span class="input-icon">👤</span>
-            <input type="text" id="loginInput" class="form-input" placeholder="42 Username" required>
-          </div>
-
-          <div class="form-group">
-            <span class="input-icon">🔒</span>
-            <input type="password" id="passwordInput" class="form-input password-field" placeholder="Password" required>
-            <button type="button" class="password-toggle" onclick="togglePassword()">👁</button>
-          </div>
-
-          <div class="remember-row">
-            <label class="remember-me">
-              <input type="checkbox" id="rememberMe">
-              <div class="remember-checkbox"></div>
-              <span>Remember me</span>
-            </label>
-          </div>
-
-          <button type="submit" class="btn-primary login-btn" id="loginBtn">
-            Authenticate →
-          </button>
-
-          <div class="login-error" id="loginError"></div>
-        </form>
-
-        <div class="login-footer">
-          Made for 42 students • Tokyo Style
+        
+        <div class="feature-card">
+          <span class="feature-icon">🧪</span>
+          <h3>Project Tester</h3>
+          <p>Test and grade your code with AI-generated test scripts</p>
+        </div>
+        
+        <div class="feature-card">
+          <span class="feature-icon">🤖</span>
+          <h3>AI Assistant</h3>
+          <p>Get instant help with code reviews and explanations</p>
         </div>
       </div>
+      
+      <a href="login.html" class="cta-btn">Get Started →</a>
+      
+      <p class="landing-footer">Made for 42 students • Tokyo Style</p>
     </div>
   </div>
-
-  <script src="js/config.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/utils.js"></script>
-  <script>
-    function togglePassword() {
-      const input = document.getElementById('passwordInput');
-      const btn = document.querySelector('.password-toggle');
-      if (input.type === 'password') {
-        input.type = 'text';
-        btn.textContent = '🔒';
-      } else {
-        input.type = 'password';
-        btn.textContent = '👁';
-      }
-    }
-
-    // Password typing effect
-    const passwordInput = document.getElementById('passwordInput');
-    passwordInput.addEventListener('input', function() {
-      if (this.value.length > 0) {
-        this.classList.add('typing');
-        setTimeout(() => this.classList.remove('typing'), 500);
-      }
-    });
-
-    // If not logged in, redirect to landing page
-    if (!getUser()) {
-      window.location.href = 'landing.html';
-      return;
-    }
-
-    const VALID_USER = 'nodoulah';
-    const VALID_PASS = 'Pop#2006husa';
-
-    const loginForm = document.getElementById('loginForm');
-    const loginBtn = document.getElementById('loginBtn');
-    const loginError = document.getElementById('loginError');
-
-    const loginInput = document.getElementById('loginInput');
-    loginInput.addEventListener('input', function() {
-      document.getElementById('displayUsername').textContent = this.value.trim() || 'Student';
-    });
-
-    loginForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const login = document.getElementById('loginInput').value.trim();
-      const password = document.getElementById('passwordInput').value;
-
-      if (login !== VALID_USER || password !== VALID_PASS) {
-        loginError.textContent = '✗ Invalid credentials';
-        loginError.classList.add('show');
-        return;
-      }
-
-      loginError.classList.remove('show');
-      loginBtn.disabled = true;
-      loginBtn.innerHTML = '<span class="spinner-btn"></span>Authenticating...';
-
-      setTimeout(() => {
-        const userData = {
-          login: login,
-          password: password,
-          level: 0,
-          campus: '',
-          projects: [],
-          skills: [],
-          loginDate: Date.now()
-        };
-
-        if (saveUser(userData)) {
-          window.location.href = 'dashboard.html';
-        } else {
-          loginBtn.disabled = false;
-          loginBtn.textContent = 'Authenticate →';
-          loginError.textContent = '✗ Failed to save data';
-          loginError.classList.add('show');
-        }
-      }, 1000);
-    });
-  </script>
 </body>
 </html>
