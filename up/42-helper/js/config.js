@@ -1,5 +1,5 @@
 const CONFIG = {
-  OPENROUTER_KEY: "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",
+  OPENROUTER_KEY: "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",
   AI_MODEL: "google/gemini-2.0-flash-001",
   AI_BASE_URL: "https://openrouter.ai/api/v1/chat/completions"
 };
