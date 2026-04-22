@@ -8,487 +8,337 @@
   <link rel="stylesheet" href="css/components.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <style>
-    .analyzer-wrapper { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
-    
-    .analyzer-header { text-align: center; margin-bottom: 50px; }
-    .analyzer-title { font-size: 42px; color: var(--accent); text-shadow: 0 0 20px var(--accent); margin-bottom: 12px; }
-    .analyzer-subtitle { color: var(--text-secondary); font-size: 18px; max-width: 600px; margin: 0 auto; }
-    
-    .input-tabs { display: flex; gap: 12px; justify-content: center; margin-bottom: 30px; }
-    .tab-btn {
-      padding: 12px 28px;
-      background: transparent;
-      border: 2px solid var(--border);
-      border-radius: 50px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      font-size: 15px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-    .tab-btn.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #000;
-      box-shadow: 0 0 20px rgba(0, 186, 188, 0.5);
-    }
-    .tab-btn:hover:not(.active) {
-      border-color: var(--accent);
-      color: var(--accent);
+    .analyzer-container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 30px 20px 120px;
     }
     
-    .input-section { display: none; }
-    .input-section.active { display: block; animation: fadeIn 0.4s ease; }
+    .analyzer-card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glow);
+      border-radius: 24px;
+      padding: 40px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 32px rgba(255,45,120,0.1);
+    }
     
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    
-    .upload-zone {
-      border: 2px dashed var(--border);
-      border-radius: 20px;
-      padding: 60px 40px;
+    .analyzer-hero {
       text-align: center;
-      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(15, 52, 96, 0.3) 100%);
-      transition: all 0.3s ease;
+      margin-bottom: 40px;
+    }
+    
+    .analyzer-hero h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    
+    .analyzer-hero .subtitle {
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+    
+    .analyzer-hero .rank-badge {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 6px 16px;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+      border-radius: 20px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: white;
+      box-shadow: 0 0 20px rgba(255,45,120,0.4);
+    }
+    
+    .upload-area {
+      border: 2px dashed var(--border-glow);
+      border-radius: 16px;
+      padding: 50px 30px;
+      text-align: center;
       cursor: pointer;
-      position: relative;
-      overflow: hidden;
+      transition: all 0.3s ease;
     }
     
-    .upload-zone::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(circle at center, rgba(0, 186, 188, 0.05) 0%, transparent 70%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
+    .upload-area:hover {
+      border-color: var(--neon-pink);
+      background: rgba(255,45,120,0.05);
     }
     
-    .upload-zone:hover::before { opacity: 1; }
-    .upload-zone:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 10px 40px rgba(0, 186, 188, 0.15); }
+    .upload-area.dragover {
+      border-style: solid;
+      border-color: var(--neon-pink);
+      background: rgba(255,45,120,0.1);
+    }
     
-    .upload-icon { font-size: 64px; margin-bottom: 20px; display: block; }
-    .upload-label { font-size: 22px; color: var(--text); font-weight: 600; margin-bottom: 8px; }
-    .upload-hint { color: var(--text-secondary); font-size: 14px; }
+    .upload-area .icon {
+      font-size: 56px;
+      margin-bottom: 16px;
+    }
     
-    .file-input-hidden { display: none; }
+    .upload-area .label {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
     
-    .selected-file {
+    .upload-area .hint {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    
+    .file-selected {
       display: none;
-      margin-top: 25px;
-      padding: 18px;
-      background: rgba(0, 186, 188, 0.08);
-      border: 2px solid var(--accent);
-      border-radius: 12px;
       align-items: center;
       justify-content: space-between;
+      margin-top: 20px;
+      padding: 16px 20px;
+      background: rgba(255,45,120,0.1);
+      border: 1px solid var(--neon-pink);
+      border-radius: 12px;
+    }
+    
+    .file-selected.show {
+      display: flex;
+    }
+    
+    .file-selected .info {
+      display: flex;
+      align-items: center;
       gap: 12px;
     }
     
-    .selected-file.show { display: flex; animation: slideDown 0.3s ease; }
+    .file-selected .badge {
+      background: var(--neon-pink);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
     
-    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-    
-    .file-info { display: flex; align-items: center; gap: 12px; flex: 1; }
-    .file-icon { font-size: 28px; }
-    .file-details { text-align: left; }
-    .file-name { font-weight: 600; color: var(--accent); font-size: 16px; }
-    .file-size { color: var(--text-secondary); font-size: 13px; }
-    
-    .remove-file {
-      background: transparent;
+    .file-selected .clear {
+      background: none;
       border: none;
-      color: var(--danger);
+      color: #ef4444;
       cursor: pointer;
-      font-size: 24px;
-      padding: 4px 8px;
-      transition: transform 0.2s ease;
-    }
-    .remove-file:hover { transform: scale(1.2); }
-    
-    .text-paste-area {
-      width: 100%;
-      min-height: 300px;
-      padding: 24px;
-      background: var(--bg-secondary);
-      border: 2px solid var(--border);
-      border-radius: 16px;
-      color: var(--text);
-      font-size: 15px;
-      line-height: 1.7;
-      resize: vertical;
-      outline: none;
-      transition: all 0.3s ease;
-      font-family: 'Courier New', monospace;
-    }
-    
-    .text-paste-area:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 20px rgba(0, 186, 188, 0.2);
-    }
-    
-    .text-paste-area::placeholder { color: var(--text-secondary); }
-    
-    .action-buttons {
-      display: flex;
-      gap: 16px;
-      margin-top: 30px;
-      justify-content: center;
+      font-size: 20px;
     }
     
     .analyze-btn {
-      padding: 16px 40px;
-      font-size: 18px;
-      font-weight: bold;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      width: 100%;
+      margin-top: 24px;
+      padding: 16px;
+      font-size: 16px;
     }
     
-    .analyze-btn-primary {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
-      color: #000;
-      box-shadow: 0 0 30px rgba(0, 186, 188, 0.4);
-    }
-    
-    .analyze-btn-primary:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 0 40px rgba(0, 186, 188, 0.6);
-    }
-    
-    .analyze-btn-primary:disabled {
+    .analyze-btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-      transform: none;
     }
     
-    .clear-btn {
-      background: transparent;
-      border: 2px solid var(--border);
-      color: var(--text-secondary);
-      padding: 14px 32px;
-      font-size: 16px;
-      font-weight: 600;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .clear-btn:hover { border-color: var(--danger); color: var(--danger); }
-    
-    .loading-container {
+    /* Loading State */
+    .loading-state {
       display: none;
       text-align: center;
-      padding: 80px 40px;
-      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(15, 52, 96, 0.4) 100%);
-      border-radius: 20px;
-      border: 1px solid var(--border);
+      padding: 60px 20px;
     }
     
-    .loading-container.show { display: block; animation: fadeIn 0.4s ease; }
-    
-    .spinner-large {
-      width: 70px; height: 70px;
-      border: 4px solid rgba(0, 186, 188, 0.2);
-      border-top-color: var(--accent);
+    .loading-state .spinner {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 24px;
+      border: 4px solid rgba(255,45,120,0.2);
+      border-top-color: var(--neon-pink);
       border-radius: 50%;
-      margin: 0 auto 30px;
-      animation: spin 1s linear infinite, glow 1.5s ease-in-out infinite;
-      box-shadow: 0 0 20px rgba(0, 186, 188, 0.5);
+      animation: spin 1s linear infinite;
     }
     
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(0, 186, 188, 0.5); }
-      50% { box-shadow: 0 0 40px rgba(0, 186, 188, 0.8); }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
     
-    .loading-step { font-size: 18px; color: var(--accent); font-weight: 600; margin-bottom: 10px; }
-    .loading-desc { color: var(--text-secondary); font-size: 14px; }
+    .loading-state .text-main {
+      color: var(--neon-pink);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
     
-    .result-container { display: none; animation: fadeIn 0.5s ease; }
-    .result-container.show { display: block; }
+    .loading-state .text-sub {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
     
-    .project-hero {
-      background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-      border-radius: 24px;
-      padding: 50px 40px;
+    /* Result State */
+    .result-state {
+      display: none;
+    }
+    
+    .result-header {
       text-align: center;
-      color: #fff;
-      margin-bottom: 40px;
-      border: 2px solid var(--accent);
-      animation: borderGlow 2s ease-in-out infinite;
+      margin-bottom: 30px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border-subtle);
     }
     
-    @keyframes borderGlow {
-      0%, 100% { box-shadow: 0 0 20px rgba(0, 186, 188, 0.4); }
-      50% { box-shadow: 0 0 40px rgba(0, 186, 188, 0.8), 0 0 60px rgba(0, 186, 188, 0.4); }
+    .result-header .title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 28px;
+      color: var(--neon-pink);
+      text-shadow: 0 0 20px var(--neon-pink);
+      margin-bottom: 16px;
     }
     
-    .hero-icon { font-size: 70px; margin-bottom: 20px; display: block; animation: float 3s ease-in-out infinite; }
-    .hero-title { font-size: 42px; font-weight: bold; margin-bottom: 8px; color: #fff; text-shadow: 0 0 10px rgba(0,186,188,0.5); }
-    .hero-subtitle { font-size: 18px; opacity: 0.9; color: #a0aec0; }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+    .result-header .time {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 22px;
+      color: var(--neon-yellow);
+      text-shadow: 0 0 15px var(--neon-yellow);
     }
     
-    .result-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 24px;
-      margin-bottom: 40px;
-    }
-    
-    .result-card {
-      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(15, 52, 96, 0.5) 100%);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 28px;
-      transition: all 0.3s ease;
-      opacity: 0;
-      transform: translateY(30px);
-      animation: slideUp 0.5s ease forwards;
-    }
-    
-    .result-card:nth-child(1) { animation-delay: 0.1s; }
-    .result-card:nth-child(2) { animation-delay: 0.2s; }
-    .result-card:nth-child(3) { animation-delay: 0.3s; }
-    .result-card:nth-child(4) { animation-delay: 0.4s; }
-    .result-card:nth-child(5) { animation-delay: 0.5s; }
-    .result-card:nth-child(6) { animation-delay: 0.6s; }
-    .result-card:nth-child(7) { animation-delay: 0.7s; }
-    .result-card:nth-child(8) { animation-delay: 0.8s; }
-    
-    .result-card.full-width {
-      grid-column: 1 / -1;
-    }
-    
-    @keyframes slideUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .result-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(0, 186, 188, 0.15); }
-    
-    .card-icon { font-size: 36px; margin-bottom: 16px; display: block; }
-    .card-title { font-size: 22px; font-weight: bold; color: var(--accent); margin-bottom: 16px; border-bottom: 2px solid rgba(0,186,188,0.3); padding-bottom: 10px; }
-    .card-content { color: #e2e8f0; line-height: 1.9; font-size: 15px; }
-    .card-content p { margin: 10px 0; }
-    .card-content ul { margin: 14px 0; padding-left: 0; list-style: none; }
-    .card-content li { margin: 10px 0; padding-left: 24px; position: relative; }
-    .card-content li::before { content: '▸'; color: var(--accent); position: absolute; left: 0; }
-    .card-content code {
-      background: rgba(0, 186, 188, 0.15);
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-family: 'Courier New', monospace;
-      color: #00ff88;
-      font-size: 13px;
-      border: 1px solid rgba(0,186,188,0.3);
-    }
-    .card-content pre {
-      background: #0a0a0a;
-      padding: 16px;
-      border-radius: 10px;
-      overflow-x: auto;
-      margin: 14px 0;
-      border-left: 3px solid var(--accent);
-    }
-    .card-content pre code {
-      background: transparent;
-      padding: 0;
-      color: #00ff88;
-    }
-    .card-content .day-header {
-      color: var(--accent);
-      font-weight: bold;
-      font-size: 16px;
-      margin: 20px 0 10px;
-      padding: 8px 12px;
-      background: rgba(0,186,188,0.1);
-      border-radius: 8px;
-      display: inline-block;
-    }
-    .card-content .time {
-      background: rgba(0,186,188,0.2);
-      color: var(--accent);
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-weight: bold;
-    }
-    .card-content .check { color: #22c55e; }
-    .card-content .tip { color: #fbbf24; }
-    .card-content .warn { color: #f97316; }
-    .card-content .res { color: #3b82f6; }
-    .card-content .vid { color: #ec4899; }
-    .card-content .link { color: #06b6d4; }
-    .card-content strong { color: #00babc; }
-    
-    .time-estimate {
-      text-align: center;
-      background: linear-gradient(135deg, rgba(0, 186, 188, 0.15) 0%, rgba(0, 212, 214, 0.1) 100%);
-      border: 2px solid var(--accent);
-      border-radius: 20px;
-      padding: 30px;
-      margin-bottom: 40px;
-    }
-    
-    .time-label { font-size: 16px; color: #a0aec0; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
-    .time-value { font-size: 48px; font-weight: bold; color: var(--accent); text-shadow: 0 0 20px var(--accent); }
-    .time-unit { font-size: 18px; color: #a0aec0; margin-left: 8px; }
-    
-    .action-bar {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      margin-top: 40px;
-      flex-wrap: wrap;
-    }
-    
-    .action-btn {
-      padding: 12px 28px;
-      border-radius: 50px;
-      font-weight: 600;
+    .result-header .description {
+      color: var(--text-secondary);
       font-size: 15px;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      line-height: 1.6;
+      margin-top: 16px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .task-list {
+      margin-bottom: 30px;
+    }
+    
+    .task-item {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 16px;
+      padding: 16px 20px;
+      background: rgba(255,45,120,0.08);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(255,45,120,0.15);
+      transition: all 0.2s ease;
     }
     
-.back-btn { background: transparent; border: 2px solid var(--border); color: var(--text); }
-    .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .task-item:hover {
+      background: rgba(255,45,120,0.12);
+      transform: translateX(4px);
+    }
     
-    .new-analysis-btn { background: var(--accent); border: none; color: #000; }
-    .new-analysis-btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(0, 186, 188, 0.5); }
+    .task-item .day-num {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
     
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
+    .task-item .day-task {
       color: var(--text-secondary);
+      font-size: 15px;
+      line-height: 1.4;
     }
-    .empty-icon { font-size: 70px; margin-bottom: 20px; }
-    .empty-text { font-size: 18px; }
     
-    @media (max-width: 768px) {
-      .analyzer-title { font-size: 32px; }
-      .input-tabs { flex-direction: column; align-items: stretch; }
-      .tab-btn { width: 100%; }
-      .action-buttons { flex-direction: column; }
-      .analyze-btn, .clear-btn { width: 100%; justify-content: center; }
-      .result-grid { grid-template-columns: 1fr; }
+    .empty-tasks {
+      text-align: center;
+      padding: 30px;
+      color: var(--text-muted);
     }
+    
+    .new-btn {
+      width: 100%;
+      padding: 16px;
+      font-size: 15px;
+    }
+    
+    /* Hide/Show Logic */
+    .upload-state { display: block; }
+    .loading-state { display: block; }
+    .result-state { display: block; }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <div style="text-align:center;margin-bottom:20px;">
-      <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="Profile" style="width:60px;height:60px;border-radius:50%;border:2px solid #00babc;box-shadow:0 0 15px rgba(0,186,188,0.5);">
-      <div style="color:#00babc;font-weight:bold;margin-top:8px;font-size:16px;">Ayanakouji</div>
+  <div class="scanline"></div>
+  
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
+
+  <div class="watermark" style="top: 30px; right: 40px; transform: rotate(-10deg); font-size: 80px; opacity: 0.03;">分析</div>
+
+  <div class="analyzer-container">
+    <!-- Header -->
+    <div class="analyzer-hero">
+      <h1>Project Analyzer</h1>
+      <p class="subtitle">AI-powered analysis of your 42 projects</p>
+      <div class="rank-badge">A RANK</div>
     </div>
-    <div class="logo"><span>42</span> Helper</div>
-    <a href="dashboard.html" class="nav-link"><span>🏠</span> <span class="nav-text">Dashboard</span></a>
-    <a href="project-analyzer.html" class="nav-link active"><span>📊</span> <span class="nav-text">Analyzer</span></a>
-    <a href="tester-project.html" class="nav-link"><span>🧪</span> <span class="nav-text">Project Tester</span></a>
-    <a href="ai-chat.html" class="nav-link"><span>🤖</span> <span class="nav-text">AI Chat</span></a>
-    <button onclick="logout()" class="btn btn-outline logout-btn"><span>🚪</span> <span class="logout-text">Logout</span></button>
-  </div>
 
-  <div class="main-content">
-    <div class="analyzer-wrapper">
-      <div class="analyzer-header">
-        <h1 class="analyzer-title">📊 Project Analyzer</h1>
-        <p class="analyzer-subtitle">Upload your 42 project subject or paste the content to get AI-powered analysis, time estimates, and step-by-step guidance.</p>
-        
+    <!-- Upload State -->
+    <div class="analyzer-card upload-state" id="uploadState">
+      <div class="upload-area" id="uploadArea">
+        <div class="icon">📄</div>
+        <div class="label">Drop your subject file here</div>
+        <div class="hint">PDF file, max 10MB</div>
+        <input type="file" id="fileInput" accept=".pdf" style="display:none">
       </div>
 
-      <!-- INPUT SECTION -->
-      <div id="inputSection">
-        <div class="input-tabs">
-          <button class="tab-btn active" onclick="switchTab('upload')">📤 Upload File</button>
-          <button class="tab-btn" onclick="switchTab('paste')">📝 Paste Text</button>
+      <div class="file-selected" id="fileSelected">
+        <div class="info">
+          <span class="badge">FILE</span>
+          <span id="fileName">filename.pdf</span>
         </div>
-
-        <!-- Upload Tab -->
-        <div id="uploadTab" class="input-section active">
-          <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
-            <span class="upload-icon">📁</span>
-            <div class="upload-label">Drop your file here or click to browse</div>
-            <div class="upload-hint">Supports PDF and TXT files (max 10MB)</div>
-            <input type="file" id="fileInput" class="file-input-hidden" accept=".pdf,.txt" onchange="handleFileSelect(event)">
-          </div>
-
-          <div id="selectedFile" class="selected-file">
-            <div class="file-info">
-              <span class="file-icon" id="fileIcon">📄</span>
-              <div class="file-details">
-                <div class="file-name" id="fileName"></div>
-                <div class="file-size" id="fileSize"></div>
-              </div>
-            </div>
-            <button class="remove-file" onclick="clearFile()" title="Remove file">×</button>
-          </div>
-        </div>
-
-        <!-- Paste Tab -->
-        <div id="pasteTab" class="input-section">
-          <textarea 
-            id="textPasteArea"
-            class="text-paste-area"
-            placeholder="Paste your 42 project subject or description here...&#10;&#10;You can paste the entire PDF text or any project documentation. The AI will analyze it and provide:&#10;• Project overview&#10;• Time estimate&#10;• Step-by-step plan&#10;• Requirements checklist&#10;• Tips & tricks&#10;• Test commands"
-          ></textarea>
-        </div>
-
-        <div class="action-buttons">
-          <button id="analyzeBtn" class="analyze-btn analyze-btn-primary" onclick="startAnalysis()" disabled>
-            <span>🔍</span> Analyze with AI
-          </button>
-          <button class="clear-btn" onclick="clearAll()">Clear</button>
-        </div>
+        <button class="clear" onclick="clearFile()">✕</button>
       </div>
 
-      <!-- LOADING SECTION -->
-      <div id="loadingSection" class="loading-container">
-        <div class="spinner-large"></div>
-        <div class="loading-step" id="loadingStep">Reading content...</div>
-        <div class="loading-desc" id="loadingDesc">Please wait while we process your project</div>
+      <button class="btn-primary analyze-btn" id="analyzeBtn" onclick="analyze()" disabled>
+        ⚡ Analyze Project
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    <div class="analyzer-card loading-state hidden" id="loadingState">
+      <div class="spinner"></div>
+      <div class="text-main">AI is analyzing...</div>
+      <div class="text-sub" id="loadingText">Processing your project</div>
+    </div>
+
+    <!-- Result State -->
+    <div class="analyzer-card result-state hidden" id="resultState">
+      <div class="result-header">
+        <div class="title" id="resultTitle">PROJECT NAME</div>
+        <div class="time" id="resultTime">Estimated Time</div>
+        <div class="description" id="resultDesc"></div>
       </div>
 
-      <!-- RESULT SECTION -->
-      <div id="resultSection" class="result-container">
-        <div class="project-hero">
-          <div class="hero-icon">🚀</div>
-          <h2 class="hero-title" id="projectName">Project Analysis</h2>
-          <p class="hero-subtitle">Here's your complete breakdown</p>
-        </div>
-
-        <div class="time-estimate">
-          <div class="time-label">Estimated Completion Time</div>
-          <div>
-            <span class="time-value" id="timeValue">--</span>
-            <span class="time-unit" id="timeUnit">hours</span>
-          </div>
-        </div>
-
-        <div class="result-grid" id="resultGrid">
-          <!-- Results will be injected here -->
-        </div>
-
-        <div class="action-bar">
-          <button class="action-btn back-btn" onclick="startOver()">← Start Over</button>
-          <button class="action-btn new-analysis-btn" onclick="analyzeAgain()">🔍 New Analysis</button>
-        </div>
+      <div class="task-list" id="taskList">
+        <!-- Tasks will be inserted here -->
       </div>
+
+      <button class="btn-primary new-btn" onclick="resetAnalyzer()">
+        🔄 Analyze Another Project
+      </button>
     </div>
   </div>
+
+  <!-- Floating Navigation -->
+  <nav class="tokyo-nav">
+    <a href="dashboard.html" class="nav-pill" data-label="Home">🏠</a>
+    <a href="project-analyzer.html" class="nav-pill active" data-label="Analyze">🔍</a>
+    <a href="tester-project.html" class="nav-pill" data-label="Test">🧪</a>
+    <a href="ai-chat.html" class="nav-pill" data-label="AI">🤖</a>
+    <button onclick="logout()" class="nav-pill" data-label="Exit">🚪</button>
+  </nav>
 
   <script src="js/config.js"></script>
   <script src="js/storage.js"></script>
@@ -497,457 +347,207 @@
   <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    let currentFile = null;
-    let extractedText = '';
-    let analysisResult = '';
+    const loadingTexts = ['Reading your file...', 'Analyzing requirements...', 'Generating task plan...', 'Finalizing...'];
+    let loadingIndex = 0;
+    let currentInterval = null;
 
     document.addEventListener("DOMContentLoaded", function() {
       if (!checkAuth()) return;
-      setupFileInput();
+      
+      const uses = parseInt(localStorage.getItem('analyzer_uses') || '0');
+      localStorage.setItem('analyzer_uses', uses + 1);
+
+      // Drag and drop handlers
+      const uploadArea = document.getElementById('uploadArea');
+      
+      uploadArea.addEventListener('click', () => document.getElementById('fileInput').click());
+      
+      uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+      });
+      
+      uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+      });
+      
+      uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          document.getElementById('fileInput').files = files;
+          handleFileSelect(files[0]);
+        }
+      });
+
+      document.getElementById('fileInput').addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          handleFileSelect(e.target.files[0]);
+        }
+      });
     });
 
-    function setupFileInput() {
-      const uploadZone = document.querySelector('.upload-zone');
-      const fileInput = document.getElementById('fileInput');
-
-      uploadZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadZone.style.borderColor = 'var(--accent)';
-        uploadZone.style.background = 'rgba(0, 186, 188, 0.1)';
-      });
-
-      uploadZone.addEventListener('dragleave', (e) => {
-        e.preventDefault();
-        uploadZone.style.borderColor = 'var(--border)';
-        uploadZone.style.background = '';
-      });
-
-      uploadZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadZone.style.borderColor = 'var(--border)';
-        uploadZone.style.background = '';
-        const file = e.dataTransfer.files[0];
-        if (file) handleFile(file);
-      });
-    }
-
-    function switchTab(tab) {
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.input-section').forEach(section => section.classList.remove('active'));
-
-      if (tab === 'upload') {
-        document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
-        document.getElementById('uploadTab').classList.add('active');
-      } else {
-        document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
-        document.getElementById('pasteTab').classList.add('active');
-        validatePasteText();
-      }
-    }
-
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      if (file) handleFile(file);
-    }
-
-    function handleFile(file) {
-      const validTypes = ['application/pdf', 'text/plain'];
-      const ext = file.name.split('.').pop().toLowerCase();
-
-      if (!['pdf', 'txt'].includes(ext)) {
-        showError('Please select a PDF or TXT file');
-        return;
-      }
-
-      if (file.size > 10 * 1024 * 1024) {
-        showError('File too large. Max 10MB');
-        return;
-      }
-
-      currentFile = file;
-      const icon = ext === 'pdf' ? '📄' : '📝';
-      document.getElementById('fileIcon').textContent = icon;
-      document.getElementById('fileName').textContent = file.name;
-      document.getElementById('fileSize').textContent = formatFileSize(file.size);
-      document.getElementById('selectedFile').classList.add('show');
+    function handleFileSelect(file) {
+      document.getElementById('fileName').textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + 'KB)';
+      document.getElementById('fileSelected').classList.add('show');
       document.getElementById('analyzeBtn').disabled = false;
-
-      if (ext === 'txt') {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          extractedText = e.target.result;
-        };
-        reader.readAsText(file);
-      }
-    }
-
-    function formatFileSize(bytes) {
-      if (bytes < 1024) return bytes + ' B';
-      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
     }
 
     function clearFile() {
-      currentFile = null;
-      extractedText = '';
       document.getElementById('fileInput').value = '';
-      document.getElementById('selectedFile').classList.remove('show');
+      document.getElementById('fileSelected').classList.remove('show');
       document.getElementById('analyzeBtn').disabled = true;
     }
 
-    function validatePasteText() {
-      const text = document.getElementById('textPasteArea').value.trim();
-      document.getElementById('analyzeBtn').disabled = !text;
-    }
-
-    document.getElementById('textPasteArea').addEventListener('input', validatePasteText);
-
-    function clearAll() {
-      clearFile();
-      document.getElementById('textPasteArea').value = '';
-      document.getElementById('analyzeBtn').disabled = true;
-    }
-
-    async function startAnalysis() {
-      const activeTab = document.querySelector('.input-section.active').id;
-      let content = '';
-
-      if (activeTab === 'uploadTab') {
-        if (!currentFile) {
-          showError('Please select a file');
-          return;
-        }
-
-        const ext = currentFile.name.split('.').pop().toLowerCase();
-        if (ext === 'pdf') {
-          content = await extractPDF(currentFile);
-        } else if (ext === 'txt') {
-          content = await readTextFile(currentFile);
-        }
-      } else {
-        content = document.getElementById('textPasteArea').value.trim();
-        if (!content) {
-          showError('Please paste some text');
-          return;
-        }
-      }
-
-      if (content.length < 30) {
-        showError('Content too short. Please provide more information.');
+    async function analyze() {
+      const fileInput = document.getElementById('fileInput');
+      if (!fileInput.files[0]) {
+        showError('Please select a file first');
         return;
       }
 
-      extractedText = content;
-      performAnalysis(content);
-    }
+      showLoadingState();
 
-    function readTextFile(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = e => resolve(e.target.result);
-        reader.onerror = reject;
-        reader.readAsText(file);
-      });
+      try {
+        let text = '';
+        const file = fileInput.files[0];
+        
+        if (file.name.endsWith('.pdf')) {
+          text = await extractPDF(file);
+        } else {
+          text = await file.text();
+        }
+        
+        if (text.length < 30) throw new Error('Could not read file. Please try a different file.');
+
+        const PROMPT = `You are a 42 school expert. Analyze this project subject and create a practical study plan.
+
+ANALYSIS RULES:
+1. Find and use the EXACT project name from the subject (usually at the top or in the title)
+2. Be realistic with hours - most 42 projects take 20-80 hours
+3. Practical daily tasks (2-4 hours each day)
+
+Respond in EXACT format below:
+
+PROJECT: [USE THE EXACT NAME FROM SUBJECT FILE]
+DIFFICULTY: [Easy/Medium/Hard]
+KEY_TOPICS: [comma-separated concepts]
+ESTIMATED_HOURS: [hours]
+BONUS_WORTH: [yes/no]
+
+DAILY_TASKS:
+Day 1: [task]
+Day 2: [task]
+Day 3: [task]
+Day 4: [task]
+Day 5: [task]
+
+TIPS:
+- [tip]
+- [tip]
+
+Subject:\n${text.slice(0, 4000)}`;
+
+        const response = await sendMessage(prompt);
+        displayResult(response);
+        
+      } catch (e) {
+        showError(e.message || 'Failed to analyze. Please try again.');
+        showUploadState();
+      }
     }
 
     async function extractPDF(file) {
-      try {
-        const pdf = await pdfjsLib.getDocument(await file.arrayBuffer()).promise;
-        let text = '';
-        for (let i = 1; i <= pdf.numPages; i++) {
-          const page = await pdf.getPage(i);
-          const items = await page.getTextContent();
-          text += items.items.map(x => x.str).join(' ') + '\n';
+      const pdf = await pdfjsLib.getDocument(await file.arrayBuffer()).promise;
+      let text = '';
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const items = await page.getTextContent();
+        text += items.items.map(x => x.str).join(' ') + '\n';
+      }
+      return text;
+    }
+
+    function showLoadingState() {
+      document.getElementById('uploadState').classList.add('hidden');
+      document.getElementById('loadingState').classList.remove('hidden');
+      document.getElementById('resultState').classList.add('hidden');
+      
+      loadingIndex = 0;
+      currentInterval = setInterval(() => {
+        document.getElementById('loadingText').textContent = loadingTexts[loadingIndex];
+        loadingIndex = (loadingIndex + 1) % loadingTexts.length;
+      }, 800);
+    }
+
+    function showUploadState() {
+      if (currentInterval) clearInterval(currentInterval);
+      document.getElementById('uploadState').classList.remove('hidden');
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('resultState').classList.add('hidden');
+    }
+
+    function showResultState() {
+      if (currentInterval) clearInterval(currentInterval);
+      document.getElementById('uploadState').classList.add('hidden');
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('resultState').classList.remove('hidden');
+    }
+
+    function displayResult(response) {
+      showResultState();
+
+      // Parse PROJECT name
+      const projectMatch = response.match(/PROJECT:\s*(.+?)(?:\n|$)/i);
+      document.getElementById('resultTitle').textContent = projectMatch ? projectMatch[1].trim() : '42 Project';
+
+      // Parse ESTIMATED_HOURS
+      const hoursMatch = response.match(/ESTIMATED_HOURS:\s*(\d+)/i);
+      const difficultyMatch = response.match(/DIFFICULTY:\s*(\w+)/i);
+      const difficulty = difficultyMatch ? difficultyMatch[1].trim() : '';
+      const hours = hoursMatch ? hoursMatch[1].trim() : '?';
+      document.getElementById('resultTime').textContent = difficulty ? `${difficulty} • ${hours}h` : `${hours}h estimated`;
+
+      // Parse KEY_TOPICS as description
+      const topicsMatch = response.match(/KEY_TOPICS:\s*(.+?)(?:\n|$)/i);
+      const topics = topicsMatch ? topicsMatch[1].trim() : '';
+      if (topics) {
+        document.getElementById('resultDesc').textContent = 'Key topics: ' + topics;
+        document.getElementById('resultDesc').style.display = 'block';
+      } else {
+        document.getElementById('resultDesc').style.display = 'none';
+      }
+
+      // Parse Daily Tasks
+      const taskList = document.getElementById('taskList');
+      const dayMatches = [...response.matchAll(/Day (\d+):\s*(.+?)(?:\n|Day|\nTIPS|$)/gi)];
+      
+      if (dayMatches.length > 0) {
+        let html = '';
+        for (const match of dayMatches) {
+          html += `
+            <div class="task-item">
+              <div class="day-num">${match[1]}</div>
+              <div class="day-task">${match[2].trim()}</div>
+            </div>
+          `;
         }
-        return text;
-      } catch (e) {
-        throw new Error('Failed to read PDF. Please try another file.');
+        taskList.innerHTML = html;
+      } else {
+        taskList.innerHTML = '<div class="empty-tasks">No tasks generated. Try uploading a different subject file.</div>';
       }
     }
 
-    function performAnalysis(content) {
-      document.getElementById('inputSection').style.display = 'none';
-      document.getElementById('loadingSection').classList.add('show');
-      document.getElementById('resultSection').classList.remove('show');
-
-      simulateSteps().then(() => {
-        const prompt = generateAnalysisPrompt(content);
-        return sendMessage(prompt);
-      }).then(response => {
-        analysisResult = response;
-        displayResults(response);
-      }).catch(e => {
-        if (e.message.includes('402')) showCreditsError();
-        else showError(e.message);
-        resetToInput();
-      }).finally(() => {
-        document.getElementById('loadingSection').classList.remove('show');
-      });
+    function resetAnalyzer() {
+      clearFile();
+      showUploadState();
     }
 
-    function simulateSteps() {
-      const steps = [
-        { step: 'Reading content...', desc: 'Extracting text from your document' },
-        { step: 'Analyzing project...', desc: 'Identifying key requirements and objectives' },
-        { step: 'Estimating timeline...', desc: 'Calculating required hours based on complexity' },
-        { step: 'Generating plan...', desc: 'Creating your personalized roadmap' }
-      ];
-
-      return new Promise(resolve => {
-        let i = 0;
-        const interval = setInterval(() => {
-          if (i < steps.length) {
-            document.getElementById('loadingStep').textContent = steps[i].step;
-            document.getElementById('loadingDesc').textContent = steps[i].desc;
-            i++;
-          } else {
-            clearInterval(interval);
-            resolve();
-          }
-        }, 600);
-      });
+    function logout() {
+      clearData();
+      window.location.href = 'index.html';
     }
-
-    function generateAnalysisPrompt(content) {
-      const projectName = currentFile ? currentFile.name.replace(/\.(pdf|txt)$/i, '').replace(/^en\./, '') : 'Project';
-      return `Analyze this 42 school project and provide output in the following EXACT structure:
-
-PROJECT: ${projectName}
-
-## OVERVIEW
-[A clear 2-3 sentence summary of what this project is about]
-
-
-## TIME ESTIMATE
-[Estimated hours: X-Y hours for beginners, Z-W hours for experienced]
-
-## PLAN
-Day-by-day breakdown:
-[Create a detailed day-by-day roadmap that is easy to read and visually well-organized. The roadmap should include clear daily sections with specific tasks for each day. Use a clean and structured design format with headings, spacing, and emojis to improve readability and engagement.
-
-Make sure:
-
-Each day is clearly labeled (Day 1, Day 2, etc.)
-Each day includes actionable and specific tasks
-Use emojis to highlight activities, goals, and progress
-Keep the layout clean, structured, and easy to scan
-Add short motivational notes where relevant
-Make the roadmap feel like a designed plan, not just plain text
-
-The goal is to create a visually appealing and easy-to-understand roadmap that someone can follow step by step without confusion. The roadmap should feel like a well-crafted guide that motivates and directs the user through the project development process.]
-Day 1: [specific tasks]
-Day 2: [specific tasks]
-[... continue with realistic daily goals]
-
-## REQUIREMENTS
-Mandatory from subject:
-• [Requirement 1]
-• [Requirement 2]
-• [...]
-
-Common pitfalls to avoid:
-• [Pitfall 1]
-• [Pitfall 2]
-
-## TIPS
-• [Tip 1 - specific and actionable]
-• [Tip 2 - give advice project]
-• [Tip 3 - testing advice]
-
-## ADDITIONAL RESOURCES
-[Any relevant links or references]
-
-## PROJECT ICON
-Choose ONE perfect emoji that best represents this project and output ONLY the emoji on one line.
-Examples: 🚀 🔢 🐚 🍴 🎮 🐳 🌐 🏓 🌍 📚 🪴 🎯 💻 🔧 🌐
-
-Here's the project content:
-${content.slice(0, 5000)}`;
-    }
-
-    function displayResults(text) {
-      const parsed = parseAnalysisResponse(text);
-      const grid = document.getElementById('resultGrid');
-
-      // Set project name
-      document.getElementById('projectName').textContent = parsed.projectName || 'Project Analysis';
-      
-      // Set dynamic icon based on project name
-      const heroIcon = document.querySelector('.hero-icon');
-      const projectName = (parsed.projectName || '').toLowerCase();
-      let icon = '🚀';
-      if (projectName.includes('push_swap') || projectName.includes('sort')) icon = '🔢';
-      else if (projectName.includes('minishell') || projectName.includes('shell')) icon = '🐚';
-      else if (projectName.includes('philosoph')) icon = '🍴';
-      else if (projectName.includes('cub3d') || projectName.includes('ray')) icon = '🎮';
-      else if (projectName.includes('inception') || projectName.includes('docker')) icon = '🐳';
-      else if (projectName.includes('webserv') || projectName.includes('http')) icon = '🌐';
-      else if (projectName.includes('ft_transcendence') || projectName.includes('pong')) icon = '🏓';
-      else if (projectName.includes('netpractice')) icon = '🌍';
-      else if (projectName.includes('libft') || projectName.includes('printf')) icon = '📚';
-      else if (projectName.includes(' Born2beRoot') || projectName.includes('born2beroot')) icon = '🪴';
-      else if (projectName.includes('so_long') || projectName.includes('game')) icon = '🎮';
-      heroIcon.textContent = parsed.projectIcon || icon;
-
-      if (parsed.timeEstimate) {
-        const [min, max] = extractTimeRange(parsed.timeEstimate);
-        document.getElementById('timeValue').textContent = min === max ? min : `${min}-${max}`;
-        document.getElementById('timeUnit').textContent = min === max ? 'hours' : 'hours';
-      }
-
-      grid.innerHTML = '';
-
-      // Overview - First
-      if (parsed.overview) {
-        grid.appendChild(createResultCard('📋', 'Overview', parsed.overview, true));
-      }
-      // Step-by-Step Plan - Second  
-      if (parsed.plan) {
-        grid.appendChild(createResultCard('📝', 'Step-by-Step Plan', parsed.plan, true));
-      }
-      // Files to Build - Third
-      if (parsed.filesToBuild) {
-        grid.appendChild(createResultCard('📁', 'Files to Build', parsed.filesToBuild, false));
-      }
-      // Requirements - Fourth
-      if (parsed.requirements) {
-        grid.appendChild(createResultCard('✅', 'Requirements', parsed.requirements));
-      }
-      // Pro Tips - Fifth
-      if (parsed.tips) {
-        grid.appendChild(createResultCard('💡', 'Pro Tips', parsed.tips));
-      }
-      // Test Command - Last
-      if (parsed.testCommand) {
-        grid.appendChild(createResultCard('🧪', 'Test Command', `<code>${parsed.testCommand}</code>`));
-      }
-
-      document.getElementById('resultSection').classList.add('show');
-    }
-
-    function createResultCard(icon, title, content, fullWidth = false) {
-      const card = document.createElement('div');
-      card.className = 'result-card' + (fullWidth ? ' full-width' : '');
-      card.innerHTML = `
-        <div class="card-icon">${icon}</div>
-        <h3 class="card-title">${title}</h3>
-        <div class="card-content">${formatContent(content)}</div>
-      `;
-      return card;
-    }
-
-    function formatContent(text) {
-      if (!text) return '';
-      let formatted = escapeHtml(text);
-      
-      formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-      formatted = formatted.replace(/\* ([^*]+)/g, '<em>$1</em>');
-      formatted = formatted.replace(/✅ /g, '<span class="check">✅</span> ');
-      formatted = formatted.replace(/💡 /g, '<span class="tip">💡</span> ');
-      formatted = formatted.replace(/⚠️ /g, '<span class="warn">⚠️</span> ');
-      formatted = formatted.replace(/📚 /g, '<span class="res">📚</span> ');
-      formatted = formatted.replace(/🎥 /g, '<span class="vid">🎥</span> ');
-      formatted = formatted.replace(/🌐 /g, '<span class="link">🌐</span> ');
-      
-      formatted = formatted.replace(/\n\n/g, '</p><p>');
-      formatted = formatted.replace(/\n/g, '<br>');
-      formatted = '<p>' + formatted + '</p>';
-      
-      formatted = formatted.replace(/<p><\/p>/g, '');
-      
-      formatted = formatted.replace(/• ([^\n<]+)/g, '<li>$1</li>');
-      formatted = formatted.replace(/(<li>[^\n]+<\/li>)+/g, match => '<ul>' + match + '</ul>');
-      
-      formatted = formatted.replace(/(\*\*[^\n]+\*\*)/g, '<strong>$1</strong>');
-      formatted = formatted.replace(/(Day \d+):/g, '<div class="day-header">$1:</div>');
-      formatted = formatted.replace(/(Beginners|Experienced|Recommended):/g, '<strong>$1:</strong>');
-      formatted = formatted.replace(/(\d+-\d+ hours|\d+ hours)/g, '<span class="time">$1</span>');
-      
-      return formatted;
-    }
-
-    function parseAnalysisResponse(text) {
-      const sections = {
-        projectName: '',
-        overview: '',
-        filesToBuild: '',
-        timeEstimate: '',
-        plan: '',
-        requirements: '',
-        tips: '',
-        testCommand: '',
-        projectIcon: ''
-      };
-
-      const patterns = {
-        projectName: /PROJECT:\s*(.+)/i,
-        overview: /## OVERVIEW\s*([\s\S]*?)(?=## |$)/,
-        filesToBuild: /## FILES TO BUILD\s*([\s\S]*?)(?=## |$)/,
-        timeEstimate: /## TIME ESTIMATE\s*([\s\S]*?)(?=## |$)/,
-        plan: /## PLAN\s*([\s\S]*?)(?=## |$)/,
-        requirements: /## REQUIREMENTS\s*([\s\S]*?)(?=## |$)/,
-        tips: /## TIPS\s*([\s\S]*?)(?=## |$)/,
-        testCommand: /## TEST COMMAND\s*([\s\S]*?)(?=## |$)/,
-        projectIcon: /## PROJECT ICON\s*([\p{L}\p{N}\p{P}\p{S}])/i
-      };
-
-      for (const [key, pattern] of Object.entries(patterns)) {
-        const match = text.match(pattern);
-        if (match) {
-          sections[key] = match[1].trim();
-        }
-      }
-
-      return sections;
-    }
-
-    function extractTimeRange(text) {
-      const match = text.match(/(\d+)-?(\d+)?/);
-      if (match) {
-        return match[2] ? [match[1], match[2]] : [match[1], match[1]];
-      }
-      return [10, 20];
-    }
-
-    function resetToInput() {
-      document.getElementById('inputSection').style.display = 'block';
-      document.getElementById('resultSection').classList.remove('show');
-    }
-
-    function startOver() {
-      clearAll();
-      switchTab('upload');
-      document.querySelector('.tab-btn:nth-child(1)').click();
-      resetToInput();
-    }
-
-    function analyzeAgain() {
-      resetToInput();
-    }
-
-    function showCreditsError() {
-      document.getElementById('loadingSection').classList.remove('show');
-      document.getElementById('resultSection').classList.add('show');
-      document.getElementById('resultGrid').innerHTML = `
-        <div class="result-card" style="grid-column: 1 / -1; text-align: center; background: rgba(255, 68, 68, 0.1); border-color: var(--danger);">
-          <div class="card-icon">⚠️</div>
-          <h3 class="card-title" style="color: var(--danger);">Credits Limit Reached</h3>
-          <div class="card-content">
-            <p>Your AI credits are exhausted. Please upgrade your OpenRouter account to continue.</p>
-            <br>
-            <a href="https://openrouter.ai/settings/credits" target="_blank" style="color: var(--accent); font-weight: bold;">Upgrade Now →</a>
-          </div>
-        </div>
-      `;
-    }
-
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    function logout() { clearData(); window.location.href = 'index.html'; }
   </script>
 </body>
 </html>

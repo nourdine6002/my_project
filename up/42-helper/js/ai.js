@@ -15,7 +15,8 @@ async function sendMessage(userMessage, retryCount = 0) {
     model: CONFIG.AI_MODEL,
     messages: messages,
     max_tokens: 2048,
-    temperature: 0.7
+    temperature: 0.2,
+    top_p: 1
   };
 
   console.log("Request:", JSON.stringify(requestBody, null, 2));
@@ -42,8 +43,11 @@ async function sendMessage(userMessage, retryCount = 0) {
 
     if (!response.ok) {
       let errorMsg = response.status + " - " + responseText.substring(0, 200);
+      if (response.status === 401) {
+        errorMsg = "401 - Invalid API key. Please check your Cerebras API key.";
+      }
       if (response.status === 402) {
-        errorMsg = "402 - Prompt tokens limit exceeded. Please upgrade your OpenRouter account at https://openrouter.ai/settings/credits";
+        errorMsg = "402 - Credits limit exceeded. Please check your Cerebras account.";
       }
       if ((response.status === 504 || response.status === 502) && retryCount < 2) {
         console.log("Retrying...", retryCount + 1);
@@ -57,7 +61,7 @@ async function sendMessage(userMessage, retryCount = 0) {
 
     if (data.error) {
       if (data.error.message.includes('tokens limit') || data.error.message.includes('402')) {
-        throw new Error("402 - Prompt tokens limit exceeded. Please upgrade your OpenRouter account at https://openrouter.ai/settings/credits");
+        throw new Error("402 - Credits limit exceeded. Please check your Cerebras account.");
       }
       if (data.error.message.includes('aborted') && retryCount < 2) {
         console.log("Retrying after abort...", retryCount + 1);

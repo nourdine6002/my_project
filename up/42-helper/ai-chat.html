@@ -6,439 +6,118 @@
   <title>AI Assistant - 42 Cursus Helper</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/components.css">
-  <style>
-    .chat-wrapper {
-      display: flex;
-      flex-direction: column;
-      height: calc(100vh - 140px);
-      background: linear-gradient(135deg, #1a1a2e 0%, #0f1a2e 100%);
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      overflow: auto;
-      box-shadow: 0 8px 40px rgba(0, 186, 188, 0.15);
-    }
-
-    .chat-header {
-      padding: 20px 24px;
-      background: linear-gradient(180deg, rgba(0, 186, 188, 0.15) 0%, transparent 100%);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .chat-header-info {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .chat-avatar {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, #00babc, #00ff88);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      box-shadow: 0 0 20px rgba(0, 186, 188, 0.5);
-    }
-
-    .chat-header-text h2 {
-      color: var(--text);
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .chat-header-text p {
-      color: var(--text-secondary);
-      font-size: 13px;
-    }
-
-    .chat-header-text .status {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--success);
-      font-size: 12px;
-    }
-
-    .chat-header-text .status::before {
-      content: '';
-      width: 8px;
-      height: 8px;
-      background: var(--success);
-      border-radius: 50%;
-      animation: statusPulse 2s ease-in-out infinite;
-    }
-
-    @keyframes statusPulse {
-      0%, 100% { opacity: 1; box-shadow: 0 0 5px var(--success); }
-      50% { opacity: 0.5; box-shadow: 0 0 15px var(--success); }
-    }
-
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .message-wrapper {
-      display: flex;
-      gap: 12px;
-      max-width: 85%;
-      animation: messageSlide 0.3s ease-out;
-    }
-
-    .message-wrapper.user {
-      align-self: flex-end;
-      flex-direction: row-reverse;
-    }
-
-    .message-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-
-    .message-wrapper.ai .message-avatar {
-      background: linear-gradient(135deg, #00babc, #00ff88);
-      box-shadow: 0 0 15px rgba(0, 186, 188, 0.4);
-    }
-
-    .message-wrapper.user .message-avatar {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      box-shadow: 0 0 15px rgba(102, 126, 234, 0.4);
-    }
-
-    .message-content {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .message-bubble {
-      padding: 14px 18px;
-      border-radius: 18px;
-      line-height: 1.6;
-      font-size: 14px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-
-    .message-wrapper.ai .message-bubble {
-      background: linear-gradient(135deg, #1e2a4a 0%, #162240 100%);
-      border: 1px solid var(--border);
-      border-radius: 18px 18px 18px 4px;
-    }
-
-    .message-wrapper.user .message-bubble {
-      background: linear-gradient(135deg, #00babc, #00d4d6);
-      color: #000;
-      border-radius: 18px 18px 4px 18px;
-      font-weight: 500;
-    }
-
-    .message-time {
-      font-size: 11px;
-      color: var(--text-secondary);
-      padding: 0 4px;
-    }
-
-    .message-wrapper.user .message-time {
-      text-align: right;
-    }
-
-    .quick-questions {
-      padding: 16px 20px;
-      border-top: 1px solid var(--border);
-      background: rgba(0, 0, 0, 0.2);
-    }
-
-    .quick-questions-label {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-bottom: 10px;
-      display: block;
-    }
-
-    .quick-btns {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .quick-btn {
-      padding: 8px 14px;
-      background: rgba(0, 186, 188, 0.1);
-      border: 1px solid rgba(0, 186, 188, 0.3);
-      color: var(--accent);
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 12px;
-      transition: all 0.3s ease;
-    }
-
-    .quick-btn:hover {
-      background: var(--accent);
-      color: #000;
-      box-shadow: 0 0 20px rgba(0, 186, 188, 0.4);
-      transform: translateY(-2px);
-    }
-
-    .chat-input-area {
-      display: flex;
-      gap: 12px;
-      padding: 16px 20px;
-      background: rgba(0, 0, 0, 0.3);
-      border-top: 1px solid var(--border);
-    }
-
-    .chat-input {
-      flex: 1;
-      background: #1a1a2e;
-      border: 2px solid #00babc;
-      border-radius: 25px;
-      padding: 14px 20px;
-      color: var(--text);
-      font-size: 14px;
-      outline: none;
-      transition: all 0.3s ease;
-    }
-
-    .chat-input:focus {
-      box-shadow: 0 0 20px rgba(0, 186, 188, 0.3);
-    }
-
-    .chat-input::placeholder {
-      color: var(--text-secondary);
-    }
-
-    .send-btn {
-      width: 50px;
-      height: 50px;
-      background: linear-gradient(135deg, #00babc, #00d4d6);
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 20px rgba(0, 186, 188, 0.4);
-    }
-
-    .send-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 30px rgba(0, 186, 188, 0.6);
-    }
-
-    .send-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    @keyframes messageSlide {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes thinkingPulse {
-      0%, 100% { box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 10px rgba(0, 186, 188, 0.2); }
-      50% { box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 25px rgba(0, 186, 188, 0.4); }
-    }
-
-    .thinking {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 16px 20px;
-      background: linear-gradient(135deg, #1e2a4a 0%, #162240 100%);
-      border-radius: 18px 18px 18px 4px;
-      border: 1px solid var(--border);
-      align-self: flex-start;
-      width: fit-content;
-      animation: thinkingPulse 1.5s ease-in-out infinite;
-    }
-
-    .thinking span {
-      width: 10px;
-      height: 10px;
-      background: var(--accent);
-      border-radius: 50%;
-      animation: bounce 1.2s infinite;
-    }
-
-    .thinking span:nth-child(2) { animation-delay: 0.2s; }
-    .thinking span:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); opacity: 0.4; }
-      50% { transform: translateY(-10px); opacity: 1; }
-    }
-
-    .chat-welcome {
-      text-align: center;
-      padding: 40px 20px;
-    }
-
-    .chat-welcome-icon {
-      font-size: 60px;
-      margin-bottom: 20px;
-      animation: iconFloat 3s ease-in-out infinite;
-    }
-
-    @keyframes iconFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-
-    .chat-welcome h2 {
-      font-size: 24px;
-      color: var(--text);
-      margin-bottom: 12px;
-    }
-
-    .chat-welcome p {
-      color: var(--text-secondary);
-      font-size: 15px;
-      line-height: 1.6;
-    }
-
-    .chat-welcome .suggestions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 30px;
-    }
-
-    .chat-welcome .suggestion-item {
-      padding: 10px 18px;
-      background: rgba(0, 186, 188, 0.1);
-      border: 1px solid rgba(0, 186, 188, 0.3);
-      border-radius: 25px;
-      color: var(--text);
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .chat-welcome .suggestion-item:hover {
-      background: var(--accent);
-      color: #000;
-      box-shadow: 0 0 20px rgba(0, 186, 188, 0.4);
-    }
-  </style>
 </head>
 <body>
-  <div class="sidebar">
-    <div style="text-align:center;margin-bottom:20px;">
-      <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="Profile" style="width:60px;height:60px;border-radius:50%;border:2px solid #00babc;box-shadow:0 0 15px rgba(0,186,188,0.5);">
-      <div style="color:#00babc;font-weight:bold;margin-top:8px;font-size:16px;">Ayanakouji</div>
-    </div>
-    <div class="logo"><span>42</span> Helper</div>
-    <a href="dashboard.html" class="nav-link">
-      <span>🏠</span> <span class="nav-text">Dashboard</span>
-    </a>
-    <a href="project-analyzer.html" class="nav-link">
-      <span>📊</span> <span class="nav-text">Analyzer</span>
-    </a>
-    <a href="tester-project.html" class="nav-link">
-      <span>🧪</span> <span class="nav-text">Project Tester</span>
-    </a>
-    <a href="ai-chat.html" class="nav-link active">
-      <span>🤖</span> <span class="nav-text">AI Chat</span>
-    </a>
-    <button onclick="logout()" class="btn btn-outline logout-btn">
-      <span>🚪</span> <span class="logout-text">Logout</span>
-    </button>
-  </div>
+  <div class="scanline"></div>
+  
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
 
-  <div class="main-content">
-    <div class="page-header">
-      <div class="title-row">
-        <h1 class="page-title">AI Assistant</h1>
-      </div>
-      <button onclick="clearChat()" class="btn btn-outline">Clear Chat</button>
-    </div>
+  <div class="watermark" style="top: 30px; right: 40px; transform: rotate(-10deg);">助手</div>
 
-    <div class="chat-wrapper">
+  <div class="chat-page page-container">
+    <div class="chat-container">
       <div class="chat-header">
-        <div class="chat-header-info">
+        <div class="header-left">
           <div class="chat-avatar">🤖</div>
-          <div class="chat-header-text">
-            <h2>42 AI Assistant</h2>
-            <p>Ask me anything about 42 cursus</p>
-            <div class="status">Online</div>
+          <div class="chat-info">
+            <h2>AI Assistant</h2>
+            <div class="status">◆ ONLINE</div>
           </div>
+        </div>
+        <div class="header-right">
+          <button onclick="clearChat()" class="btn-secondary" style="padding: 8px 16px; font-size: 12px;">Clear</button>
         </div>
       </div>
 
       <div class="chat-messages" id="chatMessages">
-        <div class="chat-welcome">
-          <div class="chat-welcome-icon">🤖</div>
-          <h2>Hello! I'm your 42 cursus AI</h2>
-          <p>Ask me about 42 projects, code, norminette, or coding ONLY.</p>
+        <div class="empty-state">
+          <div class="icon">🤖</div>
+          <h2>System Online</h2>
+          <p>How can I assist you today?</p>
         </div>
       </div>
 
-      <div class="chat-input-area">
-        <input type="text" id="chatInput" class="chat-input" placeholder="Ask about 42 cursus...">
-        <button onclick="handleSendMessage()" class="send-btn" id="sendBtn">➤</button>
+      <div class="quick-actions">
+        <button class="quick-btn" onclick="sendQuick('⚔ Norminette rules')">⚔ Norminette</button>
+        <button class="quick-btn" onclick="sendQuick('◈ libft tips')">◈ libft</button>
+        <button class="quick-btn" onclick="sendQuick('◎ Debug help')">◎ Debug</button>
+        <button class="quick-btn" onclick="sendQuick('◆ push_swap')">◆ push_swap</button>
+        <button class="quick-btn" onclick="sendQuick('◈ minishell tips')">◈ minishell</button>
+        <button class="quick-btn" onclick="sendQuick('⌘ Git commands')">⌘ Git</button>
+        <button class="quick-btn" onclick="sendQuick('🎓 exam02')">🎓 exam02</button>
       </div>
+
+      <div class="chat-input-area">
+        <span class="decor-icon">🌸</span>
+        <input type="text" id="chatInput" class="form-input" placeholder="Ask the system..." maxlength="1000">
+        <button onclick="handleSend()" class="send-btn" id="sendBtn">➤</button>
+      </div>
+      <div class="char-counter" id="charCounter">0 / 1000</div>
     </div>
   </div>
+
+  <!-- Floating Navigation -->
+  <nav class="tokyo-nav">
+    <a href="dashboard.html" class="nav-pill" data-label="Home">🏠</a>
+    <a href="project-analyzer.html" class="nav-pill" data-label="Analyze">🔍</a>
+    <a href="tester-project.html" class="nav-pill" data-label="Test">🧪</a>
+    <a href="ai-chat.html" class="nav-pill active" data-label="AI">🤖</a>
+    <button onclick="logout()" class="nav-pill" data-label="Exit">🚪</button>
+  </nav>
 
   <script src="js/config.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/ai.js"></script>
   <script>
+    const MAX_CHARS = 500;
+
     document.addEventListener("DOMContentLoaded", function() {
       if (!checkAuth()) return;
-
+      
       const chatInput = document.getElementById('chatInput');
       const sendBtn = document.getElementById('sendBtn');
+      const charCounter = document.getElementById('charCounter');
 
       chatInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          handleSendMessage();
-        }
+        if (e.key === 'Enter') handleSend();
       });
 
       chatInput.addEventListener('input', function() {
+        const len = chatInput.value.length;
+        charCounter.textContent = `${len} / 1000`;
+        
+        if (len > MAX_CHARS) charCounter.classList.add('danger');
+        else if (len > MAX_CHARS * 0.8) charCounter.classList.add('warning');
+        else charCounter.classList.remove('warning', 'danger');
+        
         sendBtn.disabled = !chatInput.value.trim();
       });
-
-      sendBtn.addEventListener('click', handleSendMessage);
     });
 
-    function handleSendMessage() {
+    function handleSend() {
       const chatInput = document.getElementById('chatInput');
       const sendBtn = document.getElementById('sendBtn');
-      const userMessage = chatInput.value.trim();
+      const msg = chatInput.value.trim();
 
-      if (!userMessage) return;
+      if (!msg) return;
+      if (msg.length > MAX_CHARS) {
+        showError(`Max ${MAX_CHARS} characters`);
+        return;
+      }
 
       sendBtn.disabled = true;
       chatInput.value = '';
 
-      addUserMessage(userMessage);
+      addUserMessage(msg);
       showThinking();
+      
+      const count = parseInt(localStorage.getItem('chat_messages') || '0');
+      localStorage.setItem('chat_messages', count + 1);
 
-      sendMessage(userMessage).then(response => {
+      sendMessage(msg).then(response => {
         hideThinking();
         addAIMessage(response);
       }).catch(error => {
@@ -450,107 +129,69 @@
       chatInput.focus();
     }
 
-    function sendQuickQuestion(question) {
+    function sendQuick(question) {
       document.getElementById('chatInput').value = question;
-      handleSendMessage();
+      handleSend();
     }
 
     function addUserMessage(text) {
       const container = document.getElementById('chatMessages');
-      const time = formatTime(new Date());
-
-      const welcome = container.querySelector('.chat-welcome');
+      const welcome = container.querySelector('.empty-state');
       if (welcome) welcome.remove();
 
       const html = `
         <div class="message-wrapper user">
           <div class="message-avatar">👤</div>
-          <div class="message-content">
+          <div>
             <div class="message-bubble">${escapeHtml(text)}</div>
-            <div class="message-time">${time}</div>
+            <div class="message-time">${formatTime(new Date())}</div>
           </div>
         </div>
       `;
-
       container.insertAdjacentHTML('beforeend', html);
       scrollToBottom();
     }
 
     function addAIMessage(text) {
       const container = document.getElementById('chatMessages');
-      const time = formatTime(new Date());
-      const formattedText = formatMessage(text);
+      const formatted = formatMessage(text);
 
       const html = `
         <div class="message-wrapper ai">
           <div class="message-avatar">🤖</div>
-          <div class="message-content">
-            <div class="message-bubble">${formattedText}</div>
-            <div class="message-time">${time}</div>
+          <div>
+            <div class="message-bubble">${formatted}</div>
+            <div class="message-time">${formatTime(new Date())}</div>
           </div>
         </div>
       `;
-
       container.insertAdjacentHTML('beforeend', html);
       scrollToBottom();
     }
 
     function showThinking() {
       const container = document.getElementById('chatMessages');
-
-      const html = `
+      container.insertAdjacentHTML('beforeend', `
         <div class="thinking" id="thinkingIndicator">
-          <span></span>
-          <span></span>
-          <span></span>
+          <span></span><span></span><span></span>
         </div>
-      `;
-
-      container.insertAdjacentHTML('beforeend', html);
+      `);
       scrollToBottom();
     }
 
     function hideThinking() {
-      const indicator = document.getElementById('thinkingIndicator');
-      if (indicator) indicator.remove();
+      const el = document.getElementById('thinkingIndicator');
+      if (el) el.remove();
     }
 
     function formatMessage(text) {
       if (!text) return '';
-      
-      // Simple cleanup - remove complex markdown symbols
-      text = text.replace(/[*💫✨]+/g, ' ');
-      text = text.replace(/\s+/g, ' ');
-      
       text = escapeHtml(text);
-
-      // Code blocks - terminal/bash style
-      if (text.includes('```') || text.includes('c\n') || text.includes('bash\n')) {
-        text = text.replace(/```(\w+)?\n?([\s\S]*?)```/g, '<div class="terminal"><div class="terminal-header"><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-title">bash</span></div><pre><code>$2</code></pre></div>');
-        text = text.replace(/```([\s\S]*?)```/g, '<div class="terminal"><div class="terminal-header"><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-title">bash</span></div><pre><code>$1</code></pre></div>');
-      } else if (text.includes('`')) {
-        text = text.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
-      }
-
-      // Headers - simple
-      text = text.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-      text = text.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-      text = text.replace(/^# (.+)$/gm, '<h1>$1</h1>');
-
-      // Bold text
-      text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-
-      // Lists - more flexible pattern
-      text = text.replace(/^\s*[-•]\s+(.+)$/gm, '<li>$1</li>');
-      text = text.replace(/^\s*(\d+)\.\s+(.+)$/gm, '<li>$2</li>');
-
-      // Clean paragraphs
-      text = text.replace(/(\\n)+/g, '<br>');
-      text = text.replace(/\n+/g, '<br>');
-      text = '<div class="msg-text">' + text + '</div>';
       
-      // Fix nested lists
-      text = text.replace(/(<li>[^<]+<\/li>)+/g, '<ul>$&</ul>');
+      text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+      text = text.replace(/```([\s\S]*?)```/g, '<div class="terminal"><div class="terminal-header"><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-title">bash</span></div><pre>$1</pre></div>');
+      text = text.replace(/\n/g, '<br>');
       
       return text;
     }
@@ -562,9 +203,7 @@
     }
 
     function formatTime(date) {
-      const hours = date.getHours().toString().padStart(2, '0');
-      const minutes = date.getMinutes().toString().padStart(2, '0');
-      return `${hours}:${minutes}`;
+      return date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0');
     }
 
     function scrollToBottom() {
@@ -573,27 +212,21 @@
     }
 
     function clearChat() {
-      messages = [
-        {
-          role: "system",
-          content: "You are a helpful AI assistant for 42 school students. ONLY answer questions related to 42 school cursus, programming, and coding (C, Python, Shell, etc.). If the user asks about unrelated topics (weather, sports, politics, entertainment, personal matters, etc.), politely respond: 'I'm here to help with 42 cursus questions only! Ask me about projects, code, norminette, or coding concepts.' You know: 42 cursus projects (libft, ft_printf, get_next_line, born2beroot, so_long, minitalk, push_swap, minishell, philosophers, netpractice, cub3d, inception, ft_containers, cpp modules, webserv, ft_transcendence), C programming, Python, Norminette rules, Shell scripting, Git commands, Algorithms, Docker. Be helpful, friendly and specific. Give code examples when needed."
-        }
-      ];
-      const container = document.getElementById('chatMessages');
-      container.innerHTML = `
-        <div class="chat-welcome">
-          <div class="chat-welcome-icon">🤖</div>
-          <h2>Hello! I'm your 42 cursus AI</h2>
-          <p>Ask me about 42 projects, code, norminette, or coding ONLY.</p>
-          <div class="suggestions">
-            <div class="suggestion-item" onclick="sendQuickQuestion('How to fix norminette errors?')">Fix norminette</div>
-            <div class="suggestion-item" onclick="sendQuickQuestion('Tips for minishell project?')">Minishell</div>
-            <div class="suggestion-item" onclick="sendQuickQuestion('Explain push_swap algorithm')">push_swap</div>
-            <div class="suggestion-item" onclick="sendQuickQuestion('Git commands cheatsheet')">Git</div>
-          </div>
+      
+      
+      messages = [{
+        role: "system",
+        content: "You are a helpful AI assistant for 42 school students. Answer ONLY about 42 coding questions."
+      }];
+      
+      document.getElementById('chatMessages').innerHTML = `
+        <div class="empty-state">
+          <div class="icon">🤖</div>
+          <h2>System Online</h2>
+          <p>How can I assist you today?</p>
         </div>
       `;
-      showSuccess('Chat cleared!');
+      showSuccess('Chat cleared');
     }
 
     function logout() {

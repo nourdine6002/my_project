@@ -8,34 +8,111 @@
   <link rel="stylesheet" href="css/components.css">
 </head>
 <body>
-  <div class="sidebar">
-    <div style="text-align:center;margin-bottom:20px;">
-      <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="Profile" style="width:60px;height:60px;border-radius:50%;border:2px solid #00babc;box-shadow:0 0 15px rgba(0,186,188,0.5);">
-      <div style="color:#00babc;font-weight:bold;margin-top:8px;font-size:16px;">Ayanakouji</div>
+  <div class="scanline"></div>
+  
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
+
+  <div class="watermark" style="top: 40px; left: 40px; transform: rotate(-10deg);">四十二</div>
+
+  <div class="dashboard-page page-container">
+    <div class="dashboard-header">
+      <div class="greeting-row">
+        <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="Avatar" class="user-avatar">
+        <div>
+          <p class="subtitle">HEADQUARTERS</p>
+          <h1><span id="userName">Student</span></h1>
+          <p class="date" id="currentDate"></p>
+        </div>
+      </div>
+      <div class="header-right">
+        
+      </div>
     </div>
-    <div class="logo"><span>42</span> Helper</div>
-    <a href="dashboard.html" class="nav-link active">
-      <span>🏠</span> <span class="nav-text">Dashboard</span>
-    </a>
-    <a href="project-analyzer.html" class="nav-link">
-      <span>📊</span> <span class="nav-text">Analyzer</span>
-    </a>
-    <a href="tester-project.html" class="nav-link">
-      <span>🧪</span> <span class="nav-text">Project Tester</span>
-    </a>
-    <a href="ai-chat.html" class="nav-link">
-      <span>🤖</span> <span class="nav-text">AI Chat</span>
-    </a>
-    <button onclick="logout()" class="btn btn-outline logout-btn">
-      <span>🚪</span> <span class="logout-text">Logout</span>
-    </button>
+
+    <div class="stats-grid">
+      <div class="glass-card stat-card">
+        <div class="icon">⚔</div>
+        <div class="value" id="questsDone">0</div>
+        <div class="label">Projects Done</div>
+      </div>
+      <div class="glass-card stat-card">
+        <div class="icon">✦</div>
+        <div class="value" id="totalXP">0</div>
+        <div class="label">XP Points</div>
+      </div>
+      <div class="glass-card stat-card">
+        <div class="icon">◎</div>
+        <div class="value" id="toolsUsed">3</div>
+        <div class="label">Tools Used</div>
+      </div>
+      <div class="glass-card stat-card">
+        <div class="icon">◈</div>
+        <div class="value" id="dayStreak">1</div>
+        <div class="label">Day Streak</div>
+      </div>
+    </div>
+
+    <div class="tools-section">
+      <h2>Available Tools</h2>
+      
+      <div class="glass-card tool-card analyzer" onclick="window.location.href='project-analyzer.html'">
+        <div class="tool-icon">📊</div>
+        <div class="tool-info">
+          <div class="tool-title">
+            Project Analyzer
+            <span class="rank-badge rank-a">A</span>
+          </div>
+          <div class="tool-desc">AI analysis of 42 project subjects</div>
+          <div class="tool-stats" id="analyzerStats">0 uses</div>
+        </div>
+        <button class="btn-secondary launch-btn">Launch →</button>
+      </div>
+      
+      <div class="glass-card tool-card tester" onclick="window.location.href='tester-project.html'">
+        <div class="tool-icon">🧪</div>
+        <div class="tool-info">
+          <div class="tool-title">
+            Project Tester
+            <span class="rank-badge rank-s">S</span>
+          </div>
+          <div class="tool-desc">Test and grade your 42 projects</div>
+          <div class="tool-stats" id="testerStats">0 uses</div>
+        </div>
+        <button class="btn-secondary launch-btn">Launch →</button>
+      </div>
+      
+      <div class="glass-card tool-card chat" onclick="window.location.href='ai-chat.html'">
+        <div class="tool-icon">🤖</div>
+        <div class="tool-info">
+          <div class="tool-title">
+            AI Assistant
+            <span class="rank-badge rank-a">A</span>
+          </div>
+          <div class="tool-desc">Your personal 42 AI assistant</div>
+          <div class="tool-stats" id="chatStats">0 messages</div>
+        </div>
+        <button class="btn-secondary launch-btn">Launch →</button>
+      </div>
+    </div>
+
+    <div class="glass-card system-message">
+      <p class="quote">"The difference between a novice and a master is that the master has failed more times than the novice has even tried."</p>
+      <p class="author">◆ SYSTEM</p>
+    </div>
   </div>
 
-  <div class="main-content">
-    <div class="page-header">
-      <h1 class="page-title" id="welcomeMessage">Hello!</h1>
-    </div>
-  </div>
+  <!-- Floating Navigation -->
+  <nav class="tokyo-nav">
+    <a href="dashboard.html" class="nav-pill active" data-label="Home">🏠</a>
+    <a href="project-analyzer.html" class="nav-pill" data-label="Analyze">🔍</a>
+    <a href="tester-project.html" class="nav-pill" data-label="Test">🧪</a>
+    <a href="ai-chat.html" class="nav-pill" data-label="AI">🤖</a>
+    <button onclick="logout()" class="nav-pill" data-label="Exit">🚪</button>
+  </nav>
 
   <script src="js/config.js"></script>
   <script src="js/storage.js"></script>
@@ -43,10 +120,57 @@
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       if (!checkAuth()) return;
-
+      
       const user = getUser();
-      document.getElementById('welcomeMessage').textContent = `Hello, ${user.login} 👋`;
+      document.getElementById('userName').textContent = user.login;
+      
+      updateDate();
+      loadStats();
     });
+
+    function updateDate() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+    }
+
+    function loadStats() {
+      const user = getUser();
+      const completed = JSON.parse(localStorage.getItem('projects_completed') || '[]');
+      const loginDate = user?.loginDate || Date.now();
+      const days = Math.max(1, Math.floor((Date.now() - loginDate) / (1000 * 60 * 60 * 24)));
+      
+      const xpValues = {
+        'libft': 375, 'ft_printf': 490, 'get_next_line': 420, 'born2beroot': 350,
+        'so_long': 350, 'push_swap': 475, 'pipex': 350, 'minitalk': 350,
+        'minishell': 490, 'philosophers': 420, 'netpractice': 300,
+        'cub3d': 490, 'inception': 490
+      };
+      
+      let totalXP = 0;
+      completed.forEach(p => {
+        if (xpValues[p.id]) totalXP += xpValues[p.id];
+      });
+      
+      document.getElementById('questsDone').textContent = completed.length;
+      document.getElementById('totalXP').textContent = totalXP;
+      document.getElementById('dayStreak').textContent = days;
+      
+      const analyzerUses = parseInt(localStorage.getItem('analyzer_uses') || '0');
+      const testerUses = parseInt(localStorage.getItem('tester_uses') || '0');
+      const chatMessages = parseInt(localStorage.getItem('chat_messages') || '0');
+      
+      if (document.getElementById('analyzerStats')) {
+        document.getElementById('analyzerStats').textContent = `${analyzerUses} uses`;
+      }
+      if (document.getElementById('testerStats')) {
+        document.getElementById('testerStats').textContent = `${testerUses} uses`;
+      }
+      if (document.getElementById('chatStats')) {
+        document.getElementById('chatStats').textContent = `${chatMessages} messages`;
+      }
+      document.getElementById('toolsUsed').textContent = analyzerUses + testerUses + chatMessages;
+    }
 
     function logout() {
       clearData();

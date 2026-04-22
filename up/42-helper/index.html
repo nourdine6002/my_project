@@ -6,425 +6,68 @@
   <title>42 Cursus Helper - Login</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/components.css">
-  <style>
-    :root {
-      --accent: #00babc;
-      --accent-glow: #00d4d6;
-    }
-    
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    body {
-      min-height: 100vh;
-      background: #0a0a0a;
-      font-family: 'Segoe UI', sans-serif;
-      overflow: hidden;
-    }
-    
-    /* Animated background */
-    .bg-animation {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      overflow: hidden;
-    }
-    
-    .bg-animation::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: 
-        radial-gradient(ellipse at 20% 20%, rgba(0, 186, 188, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(0, 255, 136, 0.08) 0%, transparent 50%);
-      animation: bgPulse 8s ease-in-out infinite;
-    }
-    
-    @keyframes bgPulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
-    }
-    
-    /* Matrix rain effect */
-    .matrix-rain {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      opacity: 0.1;
-    }
-    
-    .matrix-column {
-      position: absolute;
-      top: -100%;
-      font-family: 'Courier New', monospace;
-      font-size: 14px;
-      color: #00babc;
-      writing-mode: vertical-rl;
-      animation: matrixFall 15s linear infinite;
-      text-shadow: 0 0 10px #00babc;
-    }
-    
-    @keyframes matrixFall {
-      0% { transform: translateY(-100%); }
-      100% { transform: translateY(200%); }
-    }
-    
-    /* Scanlines */
-    .scanlines {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0, 0, 0, 0.1) 2px,
-        rgba(0, 0, 0, 0.1) 4px
-      );
-      pointer-events: none;
-      z-index: 1000;
-      opacity: 0.3;
-    }
-    
-    /* Login container */
-    .login-container {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      z-index: 1;
-      padding: 20px;
-    }
-    
-    .login-card {
-      background: rgba(26, 26, 46, 0.7);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(0, 186, 188, 0.3);
-      border-radius: 24px;
-      padding: 50px 40px;
-      width: 100%;
-      max-width: 420px;
-      box-shadow: 
-        0 0 40px rgba(0, 186, 188, 0.2),
-        inset 0 0 60px rgba(0, 186, 188, 0.05);
-      animation: cardAppear 0.6s ease-out;
-    }
-    
-    @keyframes cardAppear {
-      from {
-        opacity: 0;
-        transform: translateY(30px) scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-    
-    .login-avatar {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      border: 3px solid #00babc;
-      box-shadow: 0 0 30px rgba(0, 186, 188, 0.5);
-      margin: 0 auto 30px;
-      display: block;
-      animation: avatarPulse 2s ease-in-out infinite;
-    }
-    
-    @keyframes avatarPulse {
-      0%, 100% { box-shadow: 0 0 30px rgba(0, 186, 188, 0.5); }
-      50% { box-shadow: 0 0 50px rgba(0, 186, 188, 0.8); }
-    }
-    
-    .login-logo {
-      text-align: center;
-      font-size: 48px;
-      font-weight: bold;
-      color: #00babc;
-      text-shadow: 0 0 20px #00babc, 0 0 40px #00babc;
-      margin-bottom: 10px;
-      animation: logoGlow 2s ease-in-out infinite alternate;
-    }
-    
-    @keyframes logoGlow {
-      from { text-shadow: 0 0 20px #00babc, 0 0 40px #00babc; }
-      to { text-shadow: 0 0 30px #00babc, 0 0 60px #00babc, 0 0 80px #00babc; }
-    }
-    
-    .login-title {
-      text-align: center;
-      font-size: 28px;
-      color: #fff;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-    
-    .login-subtitle {
-      text-align: center;
-      color: #a0a0a0;
-      font-size: 14px;
-      margin-bottom: 30px;
-    }
-    
-    .form-group {
-      margin-bottom: 20px;
-      position: relative;
-    }
-    
-    .form-label {
-      display: block;
-      font-size: 12px;
-      color: #a0a0a0;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-    }
-    
-    .form-input {
-      width: 100%;
-      padding: 16px 20px;
-      background: rgba(10, 10, 10, 0.6);
-      border: 1px solid rgba(0, 186, 188, 0.3);
-      border-radius: 12px;
-      color: #fff;
-      font-size: 15px;
-      outline: none;
-      transition: all 0.3s ease;
-    }
-    
-    .form-input:focus {
-      border-color: #00babc;
-      box-shadow: 0 0 20px rgba(0, 186, 188, 0.3);
-    }
-    
-    .form-input::placeholder {
-      color: #666;
-    }
-    
-    .password-wrapper {
-      position: relative;
-    }
-    
-    .password-toggle {
-      position: absolute;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: #a0a0a0;
-      cursor: pointer;
-      font-size: 18px;
-      padding: 4px;
-      transition: color 0.3s;
-    }
-    
-    .password-toggle:hover {
-      color: #00babc;
-    }
-    
-    .remember-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 25px;
-    }
-    
-    .remember-me {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-    }
-    
-    .remember-me input {
-      display: none;
-    }
-    
-    .remember-checkbox {
-      width: 20px;
-      height: 20px;
-      border: 2px solid rgba(0, 186, 188, 0.5);
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s;
-    }
-    
-    .remember-me input:checked + .remember-checkbox {
-      background: #00babc;
-      border-color: #00babc;
-    }
-    
-    .remember-checkbox::after {
-      content: '✓';
-      color: #0a0a0a;
-      font-size: 12px;
-      font-weight: bold;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    
-    .remember-me input:checked + .remember-checkbox::after {
-      opacity: 1;
-    }
-    
-    .remember-me span {
-      color: #a0a0a0;
-      font-size: 14px;
-    }
-    
-    .login-btn {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, #00babc, #00d4d6);
-      border: none;
-      border-radius: 12px;
-      color: #0a0a0a;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .login-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-      transition: left 0.5s;
-    }
-    
-    .login-btn:hover::before {
-      left: 100%;
-    }
-    
-    .login-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(0, 186, 188, 0.4);
-    }
-    
-    .login-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-    
-    .login-btn:disabled:hover::before {
-      left: -100%;
-    }
-    
-    .login-error {
-      color: #ff4444;
-      font-size: 13px;
-      margin-top: 15px;
-      text-align: center;
-      padding: 10px;
-      background: rgba(255, 68, 68, 0.1);
-      border-radius: 8px;
-      border: 1px solid rgba(255, 68, 68, 0.3);
-      display: none;
-    }
-    
-    .login-error.show {
-      display: block;
-      animation: shake 0.5s ease;
-    }
-    
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
-    
-    .login-footer {
-      text-align: center;
-      margin-top: 30px;
-      color: #666;
-      font-size: 13px;
-    }
-    
-    .login-footer span {
-      color: #00babc;
-    }
-    
-    .spinner {
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      border: 2px solid transparent;
-      border-top-color: #0a0a0a;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-  </style>
 </head>
 <body>
-  <div class="bg-animation">
-    <div class="matrix-rain" id="matrixRain"></div>
-  </div>
-  <div class="scanlines"></div>
+  <div class="scanline"></div>
+  
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
 
-  <div class="login-container">
-    <div class="login-card">
-      <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="42" class="login-avatar">
-      <div class="login-logo">42</div>
-      <h1 class="login-title">Cursus Helper</h1>
-      <p class="login-subtitle">Your personal assistant for 42 journey</p>
-      
-      <form id="loginForm">
-        <div class="form-group">
-          <label class="form-label">Login (42 username)</label>
-          <input type="text" id="loginInput" class="form-input" placeholder="Enter your 42 login" required>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Password</label>
-          <div class="password-wrapper">
-            <input type="password" id="passwordInput" class="form-input" placeholder="Enter your password" required>
-            <button type="button" class="password-toggle" onclick="togglePassword()">👁</button>
+  <div class="watermark" style="top: 30px; right: 40px; transform: rotate(-15deg);">四十二</div>
+
+  <div class="login-page">
+    <div class="login-hero">
+      <div class="big-42">42</div>
+      <div class="subtitle-main">Cursus Helper</div>
+      <div class="subtitle-jp">Your 42 Journey</div>
+    </div>
+
+    <div class="login-form-side">
+      <div class="glass-card login-card">
+        <div class="header-row">
+          <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="Avatar" class="avatar-img">
+          <div>
+            <div class="welcome-text">Welcome back,</div>
+            <div class="username" id="displayUsername">Student</div>
           </div>
         </div>
-        
-        <div class="remember-row">
-          <label class="remember-me">
-            <input type="checkbox" id="rememberMe">
-            <div class="remember-checkbox"></div>
-            <span>Remember me</span>
-          </label>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <span class="input-icon">👤</span>
+            <input type="text" id="loginInput" class="form-input" placeholder="42 Username" required>
+          </div>
+
+          <div class="form-group">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="passwordInput" class="form-input password-field" placeholder="Password" required>
+            <button type="button" class="password-toggle" onclick="togglePassword()">👁</button>
+          </div>
+
+          <div class="remember-row">
+            <label class="remember-me">
+              <input type="checkbox" id="rememberMe">
+              <div class="remember-checkbox"></div>
+              <span>Remember me</span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn-primary login-btn" id="loginBtn">
+            Authenticate →
+          </button>
+
+          <div class="login-error" id="loginError"></div>
+        </form>
+
+        <div class="login-footer">
+          Made for 42 students • Tokyo Style
         </div>
-        
-        <button type="submit" class="login-btn" id="loginBtn">Get Started</button>
-        
-        <div class="login-error" id="loginError"></div>
-      </form>
-      
-      <div class="login-footer">
-        Made for <span>42 students</span> • nodoulah
       </div>
     </div>
   </div>
@@ -433,73 +76,61 @@
   <script src="js/storage.js"></script>
   <script src="js/utils.js"></script>
   <script>
-    // Matrix rain effect
-    function createMatrixRain() {
-      const container = document.getElementById('matrixRain');
-      const columns = Math.floor(window.innerWidth / 20);
-      const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
-      
-      for (let i = 0; i < columns; i++) {
-        const column = document.createElement('div');
-        column.className = 'matrix-column';
-        column.style.left = (i * 20) + 'px';
-        column.style.animationDelay = (Math.random() * 10) + 's';
-        column.style.animationDuration = (10 + Math.random() * 10) + 's';
-        
-        let text = '';
-        for (let j = 0; j < 20; j++) {
-          text += chars[Math.floor(Math.random() * chars.length)] + '\n';
-        }
-        column.textContent = text;
-        container.appendChild(column);
-      }
-    }
-    
-    createMatrixRain();
-    
-    // Toggle password visibility
     function togglePassword() {
-      const passwordInput = document.getElementById('passwordInput');
-      const toggleBtn = document.querySelector('.password-toggle');
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        toggleBtn.textContent = '🔒';
+      const input = document.getElementById('passwordInput');
+      const btn = document.querySelector('.password-toggle');
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🔒';
       } else {
-        passwordInput.type = 'password';
-        toggleBtn.textContent = '👁';
+        input.type = 'password';
+        btn.textContent = '👁';
       }
     }
-    
-    // Check for existing user
-    const existingUser = getUser();
-    if (existingUser) {
-      window.location.href = 'dashboard.html';
+
+    // Password typing effect
+    const passwordInput = document.getElementById('passwordInput');
+    passwordInput.addEventListener('input', function() {
+      if (this.value.length > 0) {
+        this.classList.add('typing');
+        setTimeout(() => this.classList.remove('typing'), 500);
+      }
+    });
+
+    // If not logged in, redirect to landing page
+    if (!getUser()) {
+      window.location.href = 'landing.html';
+      return;
     }
-    
-    // Login validation
+
     const VALID_USER = 'nodoulah';
     const VALID_PASS = 'Pop#2006husa';
-    
+
     const loginForm = document.getElementById('loginForm');
     const loginBtn = document.getElementById('loginBtn');
     const loginError = document.getElementById('loginError');
-    
+
+    const loginInput = document.getElementById('loginInput');
+    loginInput.addEventListener('input', function() {
+      document.getElementById('displayUsername').textContent = this.value.trim() || 'Student';
+    });
+
     loginForm.addEventListener('submit', function(e) {
       e.preventDefault();
-      
+
       const login = document.getElementById('loginInput').value.trim();
       const password = document.getElementById('passwordInput').value;
-      
+
       if (login !== VALID_USER || password !== VALID_PASS) {
-        loginError.textContent = '✗ Invalid username or password';
+        loginError.textContent = '✗ Invalid credentials';
         loginError.classList.add('show');
         return;
       }
-      
+
       loginError.classList.remove('show');
       loginBtn.disabled = true;
-      loginBtn.innerHTML = '<span class="spinner"></span>Loading...';
-      
+      loginBtn.innerHTML = '<span class="spinner-btn"></span>Authenticating...';
+
       setTimeout(() => {
         const userData = {
           login: login,
@@ -510,12 +141,12 @@
           skills: [],
           loginDate: Date.now()
         };
-        
+
         if (saveUser(userData)) {
           window.location.href = 'dashboard.html';
         } else {
           loginBtn.disabled = false;
-          loginBtn.textContent = 'Get Started';
+          loginBtn.textContent = 'Authenticate →';
           loginError.textContent = '✗ Failed to save data';
           loginError.classList.add('show');
         }
