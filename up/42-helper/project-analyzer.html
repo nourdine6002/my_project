@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Analyzer - 42 Cursus Helper</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/components.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+   <title>Project Analyzer</title>
+   <link rel="stylesheet" href="css/style.css">
+   <link rel="stylesheet" href="css/components.css">
+   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <style>
     .analyzer-container {
       max-width: 700px;
@@ -353,9 +354,6 @@
 
     document.addEventListener("DOMContentLoaded", function() {
       if (!checkAuth()) return;
-      
-      const uses = parseInt(localStorage.getItem('analyzer_uses') || '0');
-      localStorage.setItem('analyzer_uses', uses + 1);
 
       // Drag and drop handlers
       const uploadArea = document.getElementById('uploadArea');
@@ -495,10 +493,14 @@ Subject:\n${text.slice(0, 4000)}`;
       document.getElementById('resultState').classList.remove('hidden');
     }
 
-    function displayResult(response) {
-      showResultState();
+     function displayResult(response) {
+       showResultState();
 
-      // Parse PROJECT name
+       // Increment usage counter
+       const uses = parseInt(localStorage.getItem('analyzer_uses') || '0');
+       localStorage.setItem('analyzer_uses', uses + 1);
+
+       // Parse PROJECT name
       const projectMatch = response.match(/PROJECT:\s*(.+?)(?:\n|$)/i);
       document.getElementById('resultTitle').textContent = projectMatch ? projectMatch[1].trim() : '42 Project';
 

@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - 42 Cursus Helper</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/components.css">
+   <title>Dashboard</title>
+   <link rel="stylesheet" href="css/style.css">
+   <link rel="stylesheet" href="css/components.css">
+   <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body>
   <div class="scanline"></div>
@@ -16,9 +17,17 @@
   <div class="sakura-petal"></div>
   <div class="sakura-petal"></div>
 
-  <div class="watermark" style="top: 40px; left: 40px; transform: rotate(-10deg);">四十二</div>
+   <div class="watermark" style="top: 40px; left: 40px; transform: rotate(-10deg);">四十二</div>
 
-  <div class="dashboard-page page-container">
+   <!-- Post-it Note -->
+   <div class="post-it-note" id="quotePostIt">
+     <div class="post-it-content">
+       <p class="post-it-quote">"The difference between a novice and a master is that the master has failed more times than the novice has even tried."</p>
+       <div class="tape tape-top"></div>
+     </div>
+   </div>
+
+   <div class="dashboard-page page-container">
     <div class="dashboard-header">
       <div class="greeting-row">
         <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="Avatar" class="user-avatar">
@@ -97,16 +106,11 @@
         </div>
         <button class="btn-secondary launch-btn">Launch →</button>
       </div>
-    </div>
+       </div>
+     </div>
 
-    <div class="glass-card system-message">
-      <p class="quote">"The difference between a novice and a master is that the master has failed more times than the novice has even tried."</p>
-      <p class="author">◆ SYSTEM</p>
-    </div>
-  </div>
-
-  <!-- Floating Navigation -->
-  <nav class="tokyo-nav">
+     <!-- Floating Navigation -->
+   <nav class="tokyo-nav">
     <a href="dashboard.html" class="nav-pill active" data-label="Home">🏠</a>
     <a href="project-analyzer.html" class="nav-pill" data-label="Analyze">🔍</a>
     <a href="tester-project.html" class="nav-pill" data-label="Test">🧪</a>

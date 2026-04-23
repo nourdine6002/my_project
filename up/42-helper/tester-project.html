@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Tester - 42 Cursus Helper</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/components.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+   <title>Project Tester</title>
+   <link rel="stylesheet" href="css/style.css">
+   <link rel="stylesheet" href="css/components.css">
+   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
   <div class="scanline"></div>
@@ -202,12 +203,16 @@ Return ONLY the bash script, no explanations.`;
           if (script.startsWith('bash')) script = script.substring(4).trim();
         }
         
-        generatedScript = script;
-        document.getElementById('scriptContent').textContent = script;
-        document.getElementById('genBtn').innerHTML = '⚡ Generate test.sh';
-        showSuccess('test.sh generated!');
-        
-      } catch (e) {
+         generatedScript = script;
+         document.getElementById('scriptContent').textContent = script;
+         document.getElementById('genBtn').innerHTML = '⚡ Generate test.sh';
+         showSuccess('test.sh generated!');
+
+         // Increment tester usage counter
+         const testerUses = parseInt(localStorage.getItem('tester_uses') || '0');
+         localStorage.setItem('tester_uses', testerUses + 1);
+         
+       } catch (e) {
         showError(e.message);
         setPhase(1);
         document.getElementById('genBtn').disabled = false;
