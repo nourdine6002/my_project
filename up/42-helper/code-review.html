@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Code Review</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <style>
+    .review-page {
+      padding: 30px 20px 120px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .review-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .review-header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 36px;
+      color: var(--neon-pink);
+      text-shadow: 0 0 20px var(--neon-pink);
+      margin-bottom: 10px;
+    }
+    
+    .review-header .subtitle {
+      color: var(--text-muted);
+      font-size: 16px;
+    }
+    
+    .review-card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glow);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 24px;
+    }
+    
+    .language-selector {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    
+    .lang-btn {
+      padding: 10px 20px;
+      background: rgba(255, 45, 120, 0.1);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+    
+    .lang-btn:hover {
+      background: rgba(255, 45, 120, 0.2);
+    }
+    
+    .lang-btn.active {
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+      border-color: var(--neon-pink);
+      color: white;
+    }
+    
+    .code-input-area {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    
+    .code-input {
+      width: 100%;
+      min-height: 300px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', 'Consolas', monospace;
+      font-size: 14px;
+      padding: 20px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+    
+    .code-input:focus {
+      outline: none;
+      border-color: var(--neon-purple);
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+    }
+    
+    .code-input::placeholder {
+      color: var(--text-muted);
+    }
+    
+    .char-counter {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: right;
+      margin-top: 8px;
+    }
+    
+    .char-counter.warning {
+      color: var(--neon-yellow);
+    }
+    
+    .char-counter.danger {
+      color: #ef4444;
+    }
+    
+    .review-options {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    
+    .option-btn {
+      padding: 8px 16px;
+      background: rgba(255, 45, 120, 0.08);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 13px;
+    }
+    
+    .option-btn:hover, .option-btn.active {
+      background: rgba(255, 45, 120, 0.15);
+      border-color: var(--neon-pink);
+      color: var(--neon-pink);
+    }
+    
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    /* Result Styles */
+    .result-area {
+      margin-top: 30px;
+    }
+    
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .result-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px;
+      color: var(--neon-pink);
+    }
+    
+    .result-score {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      padding: 8px 20px;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+      border-radius: 20px;
+      color: white;
+    }
+    
+    .review-section {
+      margin-bottom: 24px;
+    }
+    
+    .review-section h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      color: var(--neon-yellow);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .review-content {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      font-size: 14px;
+    }
+    
+    .review-content code {
+      background: rgba(255, 45, 120, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--neon-pink);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .review-content strong {
+      color: var(--text-primary);
+    }
+    
+    .suggestion-item {
+      background: rgba(255, 45, 120, 0.08);
+      border-left: 3px solid var(--neon-pink);
+      border-radius: 0 8px 8px 0;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    
+    .suggestion-item h4 {
+      color: var(--neon-pink);
+      margin-bottom: 8px;
+    }
+    
+    .loading-spinner {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 45, 120, 0.2);
+      border-top-color: var(--neon-pink);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="scanline"></div>
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
+  
+  <div class="watermark" style="top: 40px; right: 40px; transform: rotate(-10deg);">🔍</div>
+  
+  <div class="review-page">
+    <div class="review-header">
+      <h1>Code Review AI</h1>
+      <p class="subtitle">Get AI-powered code analysis and suggestions</p>
+    </div>
+    
+    <div class="review-card">
+      <p style="color: var(--text-muted); margin-bottom: 20px;">Paste your code below to get a detailed review from our AI assistant.</p>
+      
+      <div class="language-selector">
+        <button class="lang-btn active" data-lang="c">C</button>
+        <button class="lang-btn" data-lang="python">Python</button>
+        <button class="lang-btn" data-lang="shell">Shell</button>
+        <button class="lang-btn" data-lang="generic">Other</button>
+      </div>
+      
+      <div class="code-input-area">
+        <textarea class="code-input" id="codeInput" placeholder="Paste your code here..." maxlength="15000"></textarea>
+        <div class="char-counter" id="charCounter">0 / 15,000</div>
+      </div>
+      
+      <div class="review-options">
+        <button class="option-btn" data-opt="bugs">🐛 Bug Detection</button>
+        <button class="option-btn" data-opt="style">📝 Style/Norminette</button>
+        <button class="option-btn" data-opt="memory">💾 Memory Leaks</button>
+        <button class="option-btn" data-opt="performance">⚡ Performance</button>
+        <button class="option-btn" data-opt="security">🛡️ Security</button>
+        <button class="option-btn active" data-opt="general">🎯 All</button>
+      </div>
+      
+      <button class="btn-primary submit-btn" id="reviewBtn" onclick="submitReview()" disabled>
+        🔍 Analyze Code
+      </button>
+    </div>
+    
+    <!-- Loading State -->
+    <div class="loading-spinner hidden" id="loadingState">
+      <div class="spinner"></div>
+      <h3 style="color: var(--neon-pink); font-family: 'Orbitron', sans-serif;">Analyzing your code...</h3>
+      <p style="color: var(--text-muted);">AI is processing your review</p>
+    </div>
+    
+    <!-- Results State -->
+    <div class="result-area hidden" id="resultArea">
+      <div class="review-card">
+        <div class="result-header">
+          <div class="result-title">Review Results</div>
+        </div>
+        
+        <div id="resultsContent">
+          <!-- Results will be inserted here -->
+        </div>
+        
+        <button class="btn-primary submit-btn" onclick="startNewReview()">
+          🔄 New Review
+        </button>
+      </div>
+    </div>
+   </div>
+  
+  <script src="js/config.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    let selectedLang = 'c';
+    let selectedOptions = ['general'];
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      if (!checkAuth()) return;
+      
+      const codeInput = document.getElementById('codeInput');
+      const charCounter = document.getElementById('charCounter');
+      
+      codeInput.addEventListener('input', function() {
+        const len = this.value.length;
+        charCounter.textContent = len.toLocaleString() + ' / 15,000';
+        
+        if (len > 12000) {
+          charCounter.classList.add('warning');
+          charCounter.classList.remove('danger');
+        } else if (len > 14500) {
+          charCounter.classList.add('danger');
+          charCounter.classList.remove('warning');
+        } else {
+          charCounter.classList.remove('warning', 'danger');
+        }
+        
+        document.getElementById('reviewBtn').disabled = len === 0;
+      });
+      
+      // Language buttons
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          selectedLang = this.dataset.lang;
+        });
+      });
+      
+      // Option buttons
+      document.querySelectorAll('.option-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if (this.dataset.opt === 'general') {
+            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            selectedOptions = ['general'];
+          } else {
+            document.querySelector('[data-opt="general"]').classList.remove('active');
+            this.classList.toggle('active');
+            selectedOptions = Array.from(document.querySelectorAll('.option-btn.active')).map(b => b.dataset.opt);
+            if (selectedOptions.length === 0) {
+              selectedOptions = ['general'];
+              document.querySelector('[data-opt="general"]').classList.add('active');
+            }
+          }
+        });
+      });
+    });
+    
+    async function submitReview() {
+      const code = document.getElementById('codeInput').value.trim();
+      if (!code) return;
+      
+      // Increment counter
+      const reviews = parseInt(localStorage.getItem('code_reviews') || '0');
+      localStorage.setItem('code_reviews', reviews + 1);
+      
+      // Show loading
+      document.getElementById('loadingState').classList.remove('hidden');
+      document.getElementById('resultArea').classList.add('hidden');
+      
+      const langNames = {
+        c: 'C',
+        python: 'Python',
+        shell: 'Shell',
+        generic: 'Generic'
+      };
+      
+      const optDescriptions = {
+        bugs: 'bug detection',
+        style: 'style and norminette compliance',
+        memory: 'memory leaks and allocation',
+        performance: 'performance optimization',
+        security: 'security vulnerabilities',
+        general: 'overall quality'
+      };
+      
+      const focusAreas = selectedOptions.map(o => optDescriptions[o]).join(', ');
+      
+      const PROMPT = `Review this ${langNames[selectedLang]} code. Focus on: ${focusAreas}.
+
+Provide a structured review with these sections:
+
+1. OVERALL SCORE: [1-10]
+2. OVERVIEW: [brief summary, 1-2 sentences]
+3. KEY FINDINGS: [bullet points of main issues/strengths]
+4. SUGGESTIONS: [specific improvement suggestions with code examples]
+5. PRIORITY FIXES: [top 3 things to fix first]
+
+Code:
+${code.slice(0, 5000)}`;
+      
+      try {
+        const response = await sendMessage(PROMPT);
+        displayResults(response, code);
+      } catch (e) {
+        document.getElementById('loadingState').classList.add('hidden');
+        alert('Error: ' + e.message);
+      }
+    }
+    
+    function displayResults(response, originalCode) {
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('resultArea').classList.remove('hidden');
+      
+      // Parse score
+      const scoreMatch = response.match(/OVERALL\s+SCORE:\s*(\d+)/i);
+      const score = scoreMatch ? parseInt(scoreMatch[1]) : 7;
+      
+      let html = `
+        <div class="result-header">
+          <div class="result-title">Review Results</div>
+        </div>
+      `;
+      
+      // Score section
+      html += `
+        <div class="review-section">
+          <h3>📊 Overall Score</h3>
+          <div class="review-content" style="text-align: center; padding: 30px;">
+            <span style="font-family: 'Orbitron', sans-serif; font-size: 64px; color: ${getScoreColor(score)}; text-shadow: 0 0 30px ${getScoreColor(score)}40;">${score}/10</span>
+          </div>
+        </div>
+      `;
+      
+      // Parse sections
+      const sections = [
+        { key: 'OVERVIEW', icon: '📋', title: 'Overview' },
+        { key: 'KEY FINDINGS', icon: '🔍', title: 'Key Findings' },
+        { key: 'SUGGESTIONS', icon: '💡', title: 'Suggestions' },
+        { key: 'PRIORITY FIXES', icon: '⚡', title: 'Priority Fixes' }
+      ];
+      
+      sections.forEach(section => {
+        const content = extractSection(response, section.key);
+        if (content) {
+          html += `
+            <div class="review-section">
+              <h3>${section.icon} ${section.title}</h3>
+              <div class="review-content">${formatContent(content)}</div>
+            </div>
+          `;
+        }
+      });
+      
+      document.getElementById('resultsContent').innerHTML = html;
+      
+      // Scroll to results
+      document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    function extractSection(text, sectionName) {
+      const regex = new RegExp(`${sectionName}:\\s*(.*?)(?=\\n\\n[A-Z]|\\n\\n$|$)`, 'is');
+      const match = text.match(regex);
+      return match ? match[1].trim() : null;
+    }
+    
+    function formatContent(text) {
+      return text
+        .replace(/\n-/g, '<br>-')
+        .replace(/```([\s\S]*?)```/g, '<code>$1</code>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>')
+        .replace(/<p>/g, '<p style="margin-bottom: 12px;">')
+        .replace(/<\?p>/g, '<p>');
+    }
+    
+    function getScoreColor(score) {
+      if (score >= 8) return '#4ade80';
+      if (score >= 6) return '#fbbf24';
+      if (score >= 4) return '#fb923c';
+      return '#f87171';
+    }
+    
+    function startNewReview() {
+      document.getElementById('codeInput').value = '';
+      document.getElementById('charCounter').textContent = '0 / 15,000';
+      document.getElementById('charCounter').classList.remove('warning', 'danger');
+      document.getElementById('reviewBtn').disabled = true;
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('resultArea').classList.add('hidden');
+      
+      // Reset selections
+      selectedLang = 'c';
+      selectedOptions = ['general'];
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('[data-lang="c"]').classList.add('active');
+      document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('[data-opt="general"]').classList.add('active');
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    function logout() {
+      clearData();
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

@@ -65,58 +65,23 @@
       </div>
     </div>
 
-    <div class="tools-section">
-      <h2>Available Tools</h2>
+     <div class="tools-section">
+      <h2>AI Tools</h2>
       
-      <div class="glass-card tool-card analyzer" onclick="window.location.href='project-analyzer.html'">
-        <div class="tool-icon">📊</div>
+      <div class="glass-card tool-card" onclick="window.location.href='ai-tools.html'" style="border-color: var(--neon-yellow);">
+        <div class="tool-icon">🛠️</div>
         <div class="tool-info">
           <div class="tool-title">
-            Project Analyzer
-            <span class="rank-badge rank-a">A</span>
-          </div>
-          <div class="tool-desc">AI analysis of 42 project subjects</div>
-          <div class="tool-stats" id="analyzerStats">0 uses</div>
-        </div>
-        <button class="btn-secondary launch-btn">Launch →</button>
-      </div>
-      
-      <div class="glass-card tool-card tester" onclick="window.location.href='tester-project.html'">
-        <div class="tool-icon">🧪</div>
-        <div class="tool-info">
-          <div class="tool-title">
-            Project Tester
+            AI Tools Hub
             <span class="rank-badge rank-s">S</span>
           </div>
-          <div class="tool-desc">Test and grade your 42 projects</div>
-          <div class="tool-stats" id="testerStats">0 uses</div>
+          <div class="tool-desc">All AI tools in one consolidated hub</div>
+          <div class="tool-stats" id="toolsHubStats">-</div>
         </div>
         <button class="btn-secondary launch-btn">Launch →</button>
       </div>
-      
-      <div class="glass-card tool-card chat" onclick="window.location.href='ai-chat.html'">
-        <div class="tool-icon">🤖</div>
-        <div class="tool-info">
-          <div class="tool-title">
-            AI Assistant
-            <span class="rank-badge rank-a">A</span>
-          </div>
-          <div class="tool-desc">Your personal 42 AI assistant</div>
-          <div class="tool-stats" id="chatStats">0 messages</div>
-        </div>
-        <button class="btn-secondary launch-btn">Launch →</button>
-      </div>
-       </div>
-     </div>
-
-     <!-- Floating Navigation -->
-   <nav class="tokyo-nav">
-    <a href="dashboard.html" class="nav-pill active" data-label="Home">🏠</a>
-    <a href="project-analyzer.html" class="nav-pill" data-label="Analyze">🔍</a>
-    <a href="tester-project.html" class="nav-pill" data-label="Test">🧪</a>
-    <a href="ai-chat.html" class="nav-pill" data-label="AI">🤖</a>
-    <button onclick="logout()" class="nav-pill" data-label="Exit">🚪</button>
-  </nav>
+    </div>
+  </div>
 
   <script src="js/config.js"></script>
   <script src="js/storage.js"></script>
@@ -160,20 +125,25 @@
       document.getElementById('totalXP').textContent = totalXP;
       document.getElementById('dayStreak').textContent = days;
       
-      const analyzerUses = parseInt(localStorage.getItem('analyzer_uses') || '0');
-      const testerUses = parseInt(localStorage.getItem('tester_uses') || '0');
-      const chatMessages = parseInt(localStorage.getItem('chat_messages') || '0');
-      
-      if (document.getElementById('analyzerStats')) {
-        document.getElementById('analyzerStats').textContent = `${analyzerUses} uses`;
-      }
-      if (document.getElementById('testerStats')) {
-        document.getElementById('testerStats').textContent = `${testerUses} uses`;
-      }
-      if (document.getElementById('chatStats')) {
-        document.getElementById('chatStats').textContent = `${chatMessages} messages`;
-      }
-      document.getElementById('toolsUsed').textContent = analyzerUses + testerUses + chatMessages;
+       const analyzerUses = parseInt(localStorage.getItem('analyzer_uses') || '0');
+       const testerUses = parseInt(localStorage.getItem('tester_uses') || '0');
+       const chatMessages = parseInt(localStorage.getItem('chat_messages') || '0');
+       const codeReviews = parseInt(localStorage.getItem('code_reviews') || '0');
+       
+       if (document.getElementById('analyzerStats')) {
+         document.getElementById('analyzerStats').textContent = `${analyzerUses} uses`;
+       }
+       if (document.getElementById('testerStats')) {
+         document.getElementById('testerStats').textContent = `${testerUses} uses`;
+       }
+       if (document.getElementById('chatStats')) {
+         document.getElementById('chatStats').textContent = `${chatMessages} messages`;
+       }
+       if (document.getElementById('toolsHubStats')) {
+         const totalToolUses = analyzerUses + testerUses + chatMessages + codeReviews;
+         document.getElementById('toolsHubStats').textContent = `${totalToolUses} total uses`;
+       }
+       document.getElementById('toolsUsed').textContent = analyzerUses + testerUses + chatMessages + codeReviews;
     }
 
     function logout() {

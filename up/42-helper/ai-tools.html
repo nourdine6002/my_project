@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>AI Tools</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+</head>
+<body>
+  <div class="scanline"></div>
+  
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
+  <div class="sakura-petal"></div>
+
+    <div class="watermark" style="top: 40px; left: 40px; transform: rotate(-10deg);">🤖</div>
+
+  <div class="ai-tools-page page-container">
+    <div class="dashboard-header">
+      <div class="greeting-row">
+        <a href="dashboard.html" style="margin-right: 15px; font-size: 24px; color: var(--text-secondary);" title="Dashboard">🏠</a>
+        <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="Avatar" class="user-avatar">
+        <div>
+          <p class="subtitle">AI TOOLS HUB</p>
+          <h1><span id="userName">Student</span></h1>
+          <p class="date" id="currentDate"></p>
+        </div>
+      </div>
+      <div class="header-right">
+        <button onclick="logout()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-secondary);" title="Sign Out">🚪</button>
+      </div>
+    </div>
+
+    <div class="tools-section">
+      <h2>Available AI Tools</h2>
+      <p class="tools-subtitle">All your 42 AI assistance tools in one place</p>
+      
+      <div class="tools-grid">
+        <!-- AI Assistant Chat -->
+        <div class="glass-card tool-card chat">
+          <div class="tool-icon">🤖</div>
+          <div class="tool-info">
+            <div class="tool-title">
+              AI Assistant
+              <span class="rank-badge rank-a">A</span>
+            </div>
+            <div class="tool-desc">Personal AI assistant for 42 questions</div>
+            <div class="tool-stats" id="chatStats">0 messages</div>
+          </div>
+          <p class="tool-usage">Get instant help with code, debugging, and explanations</p>
+          <div class="tool-actions">
+            <button class="btn-primary launch-btn" onclick="window.location.href='ai-chat.html'">Launch →</button>
+          </div>
+        </div>
+        
+        <!-- Project Analyzer -->
+        <div class="glass-card tool-card analyzer">
+          <div class="tool-icon">📊</div>
+          <div class="tool-info">
+            <div class="tool-title">
+              Project Analyzer
+              <span class="rank-badge rank-a">A</span>
+            </div>
+            <div class="tool-desc">AI-powered project roadmap generator</div>
+            <div class="tool-stats" id="analyzerStats">0 uses</div>
+          </div>
+          <p class="tool-usage">Upload subject PDF to get daily task plans</p>
+          <div class="tool-actions">
+            <button class="btn-primary launch-btn" onclick="window.location.href='project-analyzer.html'">Launch →</button>
+          </div>
+        </div>
+        
+        <!-- Project Tester -->
+        <div class="glass-card tool-card tester">
+          <div class="tool-icon">🧪</div>
+          <div class="tool-info">
+            <div class="tool-title">
+              Project Tester
+              <span class="rank-badge rank-s">S</span>
+            </div>
+            <div class="tool-desc">AI-generated test.sh scripts</div>
+            <div class="tool-stats" id="testerStats">0 uses</div>
+          </div>
+          <p class="tool-usage">Generate automated test scripts for your projects</p>
+          <div class="tool-actions">
+            <button class="btn-primary launch-btn" onclick="window.location.href='tester-project.html'">Launch →</button>
+          </div>
+        </div>
+
+        <!-- Code Review Tool -->
+        <div class="glass-card tool-card code-review">
+          <div class="tool-icon">🔍</div>
+          <div class="tool-info">
+            <div class="tool-title">
+              Code Review
+              <span class="rank-badge rank-b">B</span>
+            </div>
+            <div class="tool-desc">AI code quality checker</div>
+            <div class="tool-stats" id="reviewStats">0 reviews</div>
+          </div>
+          <p class="tool-usage">Paste your code for AI-powered review & suggestions</p>
+          <div class="tool-actions">
+            <button class="btn-primary launch-btn" onclick="openCodeReview()">Launch →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions-section">
+        <h3>Quick Prompts</h3>
+        <div class="quick-prompts-grid">
+          <button class="quick-prompt-btn" onclick="sendQuickPrompt('norminette')">⚔ Norminette Help</button>
+          <button class="quick-prompt-btn" onclick="sendQuickPrompt('debug')">◈ Debug Helper</button>
+          <button class="quick-prompt-btn" onclick="sendQuickPrompt('git')">⌘ Git Commands</button>
+          <button class="quick-prompt-btn" onclick="sendQuickPrompt('c-basics')">◎ C Basics</button>
+          <button class="quick-prompt-btn" onclick="sendQuickPrompt('push_swap')">◆ push_swap Tips</button>
+          <button class="quick-prompt-btn" onclick="sendQuickPrompt('minishell')">◈ minishell Guide</button>
+        </div>
+      </div>
+
+      <!-- Usage Stats -->
+      <div class="stats-section">
+        <h3>Your Usage This Week</h3>
+        <div class="stats-grid-mini">
+          <div class="mini-stat">
+            <div class="mini-stat-value" id="totalAIUses">0</div>
+            <div class="mini-stat-label">Total AI Uses</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-value" id="favoriteTool">-</div>
+            <div class="mini-stat-label">Most Used</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-value" id="efficiency">0%</div>
+            <div class="mini-stat-label">Time Saved</div>
+          </div>
+        </div>
+      </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (!checkAuth()) return;
+      
+      const user = getUser();
+      document.getElementById('userName').textContent = user.login;
+      
+      updateDate();
+      loadStats();
+      loadToolsStats();
+    });
+
+    function updateDate() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+    }
+
+    function loadStats() {
+      const completed = JSON.parse(localStorage.getItem('projects_completed') || '[]');
+      const loginDate = getUser()?.loginDate || Date.now();
+      const days = Math.max(1, Math.floor((Date.now() - loginDate) / (1000 * 60 * 60 * 24)));
+      
+      let totalXP = 0;
+      const xpValues = {
+        'libft': 375, 'ft_printf': 490, 'get_next_line': 420, 'born2beroot': 350,
+        'so_long': 350, 'push_swap': 475, 'pipex': 350, 'minitalk': 350,
+        'minishell': 490, 'philosophers': 420, 'netpractice': 300,
+        'cub3d': 490, 'inception': 490
+      };
+      
+      completed.forEach(p => {
+        if (xpValues[p.id]) totalXP += xpValues[p.id];
+      });
+      
+      document.getElementById('questsDone').textContent = completed.length;
+      document.getElementById('totalXP').textContent = totalXP;
+      document.getElementById('dayStreak').textContent = days;
+    }
+
+    function loadToolsStats() {
+      const analyzerUses = parseInt(localStorage.getItem('analyzer_uses') || '0');
+      const testerUses = parseInt(localStorage.getItem('tester_uses') || '0');
+      const chatMessages = parseInt(localStorage.getItem('chat_messages') || '0');
+      const codeReviews = parseInt(localStorage.getItem('code_reviews') || '0');
+      
+      document.getElementById('chatStats').textContent = chatMessages + ' messages';
+      document.getElementById('analyzerStats').textContent = analyzerUses + ' uses';
+      document.getElementById('testerStats').textContent = testerUses + ' uses';
+      document.getElementById('reviewStats').textContent = codeReviews + ' reviews';
+      
+      // Total AI uses
+      const totalUses = analyzerUses + testerUses + chatMessages + codeReviews;
+      document.getElementById('totalAIUses').textContent = totalUses;
+      
+      // Most used tool
+      const tools = [
+        { name: 'AI Assistant', uses: chatMessages },
+        { name: 'Project Analyzer', uses: analyzerUses },
+        { name: 'Project Tester', uses: testerUses },
+        { name: 'Code Review', uses: codeReviews }
+      ];
+      const mostUsed = tools.reduce((a, b) => a.uses > b.uses ? a : b);
+      document.getElementById('favoriteTool').textContent = mostUsed.name.split(' ')[0];
+      
+      // Efficiency estimate (rough calculation)
+      const estimatedHours = totalUses * 0.5; // assume 30 min saved per use
+      const efficiency = Math.min(99, Math.floor((estimatedHours / 100) * 100));
+      document.getElementById('efficiency').textContent = efficiency + '%';
+    }
+
+    function openCodeReview() {
+      // Increment counter
+      const reviews = parseInt(localStorage.getItem('code_reviews') || '0');
+      localStorage.setItem('code_reviews', reviews + 1);
+      
+      // Open in new window with code review interface
+      window.open('code-review.html', '_blank');
+    }
+
+    function sendQuickPrompt(type) {
+      // Increment chat counter
+      let messages = parseInt(localStorage.getItem('chat_messages') || '0');
+      localStorage.setItem('chat_messages', messages + 1);
+      
+      // Navigate to chat with preset prompt
+      const prompts = {
+        'norminette': 'Can you explain the main norminette rules and common violations I should watch out for?',
+        'debug': 'What are the best debugging techniques for C programs?',
+        'git': 'What are the essential Git commands for 42 projects?',
+        'c-basics': 'What are some key C programming concepts every 42 student should master?',
+        'push_swap': 'What are some key strategies for the push_swap project?',
+        'minishell': 'What are the main components to focus on for the minishell project?'
+      };
+      
+      // Store prompt for ai-chat to pick up
+      localStorage.setItem('quick_prompt', prompts[type]);
+      window.location.href = 'ai-chat.html';
+    }
+
+    function logout() {
+      clearData();
+      window.location.href = 'index.html';
+    }
+  </script>
+  
+  <style>
+    .ai-tools-page {
+      padding: 30px 20px 120px;
+    }
+    
+    .tools-section h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 28px;
+      color: var(--neon-pink);
+      text-shadow: 0 0 20px var(--neon-pink);
+      margin-bottom: 8px;
+    }
+    
+    .tools-subtitle {
+      color: var(--text-muted);
+      font-size: 15px;
+      margin-bottom: 30px;
+    }
+    
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 50px;
+    }
+    
+    .tool-card {
+      padding: 30px;
+    }
+    
+    .tool-usage {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin: 12px 0 20px;
+      line-height: 1.5;
+    }
+    
+    .tool-actions {
+      margin-top: auto;
+    }
+    
+    .launch-btn {
+      width: 100% !important;
+    }
+    
+    .live-badge {
+      color: #4ade80;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      background: rgba(74, 222, 128, 0.1);
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      border-radius: 20px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    
+    .quick-actions-section {
+      margin-bottom: 50px;
+    }
+    
+    .quick-actions-section h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      color: var(--neon-purple);
+      margin-bottom: 20px;
+    }
+    
+    .quick-prompts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    
+    .quick-prompt-btn {
+      padding: 14px 20px;
+      background: rgba(255, 45, 120, 0.08);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .quick-prompt-btn:hover {
+      background: rgba(255, 45, 120, 0.15);
+      border-color: var(--neon-pink);
+      color: var(--neon-pink);
+      transform: translateY(-2px);
+    }
+    
+    .stats-section {
+      margin-bottom: 50px;
+    }
+    
+    .stats-section h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      color: var(--neon-yellow);
+      margin-bottom: 20px;
+    }
+    
+    .stats-grid-mini {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    
+    .mini-stat {
+      background: rgba(255, 45, 120, 0.08);
+      border: 1px solid rgba(255, 45, 120, 0.15);
+      border-radius: 16px;
+      padding: 24px 16px;
+      text-align: center;
+    }
+    
+    .mini-stat-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--neon-pink);
+      text-shadow: 0 0 15px var(--neon-pink);
+    }
+    
+    .mini-stat-label {
+      color: var(--text-muted);
+      font-size: 12px;
+      margin-top: 6px;
+    }
+    
+    @media (max-width: 768px) {
+      .tools-grid {
+        grid-template-columns: 1fr;
+      }
+      .stats-grid-mini {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</body>
+</html>
