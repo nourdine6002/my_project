@@ -391,10 +391,76 @@ a:hover {
 }
 
 .page-container {
-  animation: fadeSlideUp 0.6s ease;
-  padding: 40px 20px 120px;
-  max-width: 1200px;
-  margin: 0 auto;
+   animation: fadeSlideUp 0.6s ease;
+   padding: 40px 20px 120px;
+   max-width: 1200px;
+   margin: 0 auto;
+}
+
+/* Header Navigation */
+.header-nav {
+   display: flex;
+   justify-content: flex-end;
+   gap: 15px;
+   margin-bottom: 20px;
+   flex-wrap: wrap;
+}
+
+.nav-btn {
+   background: rgba(255,45,120,0.2);
+   border: 1px solid var(--border-glow);
+   color: var(--neon-pink);
+   padding: 8px 16px;
+   border-radius: 30px;
+   font-size: 13px;
+   font-weight: 500;
+   backdrop-filter: blur(10px);
+   transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+   background: rgba(255,45,120,0.3);
+   transform: translateY(-2px);
+   box-shadow: 0 0 15px rgba(255,45,120,0.4);
+}
+
+.nav-btn:active {
+   transform: translateY(0);
+}
+
+.dashboard-btn {
+   background: rgba(0,240,255,0.2);
+   border-color: var(--neon-blue);
+   color: var(--neon-blue);
+}
+
+.dashboard-btn:hover {
+   background: rgba(0,240,255,0.3);
+   box-shadow: 0 0 15px rgba(0,240,255,0.4);
+}
+
+.signout-btn {
+   background: rgba(239, 68, 68, 0.2);
+   border-color: #ef4444;
+   color: #ef4444;
+}
+
+.signout-btn:hover {
+   background: rgba(239, 68, 68, 0.3);
+   box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+   .header-nav {
+      justify-content: center;
+      margin-bottom: 15px;
+   }
+   
+   .nav-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+   }
 }
 
 .toast {
@@ -509,4 +575,5 @@ a:hover {
   .dashboard-page .post-it-note {
     transform: rotate(0);
   }
+}
 }

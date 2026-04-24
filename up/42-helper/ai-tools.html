@@ -3,143 +3,274 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>AI Tools</title>
+  <title>AI Tools - 42 Assistant Hub</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body>
   <div class="scanline"></div>
-  
   <div class="sakura-petal"></div>
   <div class="sakura-petal"></div>
   <div class="sakura-petal"></div>
   <div class="sakura-petal"></div>
   <div class="sakura-petal"></div>
 
-    <div class="watermark" style="top: 40px; left: 40px; transform: rotate(-10deg);">🤖</div>
+  <div class="watermark" style="top: 40px; left: 40px; transform: rotate(-10deg);">🤖</div>
 
   <div class="ai-tools-page page-container">
-    <div class="dashboard-header">
-      <div class="greeting-row">
-        <a href="dashboard.html" style="margin-right: 15px; font-size: 24px; color: var(--text-secondary);" title="Dashboard">🏠</a>
-        <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="Avatar" class="user-avatar">
-        <div>
-          <p class="subtitle">AI TOOLS HUB</p>
-          <h1><span id="userName">Student</span></h1>
-          <p class="date" id="currentDate"></p>
+    <!-- Hero Header -->
+    <div class="hero-header">
+      <div class="hero-glow"></div>
+      <div class="hero-content">
+        <div class="hero-top">
+          <a href="dashboard.html" class="home-btn" title="Dashboard">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </a>
+          <div class="user-profile">
+            <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="Avatar" class="avatar-img">
+            <div class="user-info">
+              <span class="badge">AI TOOLS HUB</span>
+              <h1><span id="userName">Student</span></h1>
+              <p class="date" id="currentDate"></p>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="header-right">
-        <button onclick="logout()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-secondary);" title="Sign Out">🚪</button>
+        <div class="hero-stats">
+          <div class="stat-badge">
+            <span class="stat-value" id="totalAIUses">0</span>
+            <span class="stat-label">Total Uses</span>
+          </div>
+          <div class="stat-badge">
+            <span class="stat-value" id="favoriteTool">-</span>
+            <span class="stat-label">Top Tool</span>
+          </div>
+          <div class="stat-badge">
+            <span class="stat-value" id="efficiency">0%</span>
+            <span class="stat-label">Efficiency</span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="tools-section">
-      <h2>Available AI Tools</h2>
-      <p class="tools-subtitle">All your 42 AI assistance tools in one place</p>
-      
+    <!-- Tools Grid -->
+    <section class="tools-container">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="title-icon">⚡</span>
+          AI Tools Arsenal
+        </h2>
+        <p class="section-subtitle">Your complete suite of intelligent assistants</p>
+      </div>
+
       <div class="tools-grid">
-        <!-- AI Assistant Chat -->
-        <div class="glass-card tool-card chat">
-          <div class="tool-icon">🤖</div>
-          <div class="tool-info">
-            <div class="tool-title">
-              AI Assistant
-              <span class="rank-badge rank-a">A</span>
+        <!-- AI Chat Card -->
+        <div class="tool-card glass-card" data-tool="chat">
+          <div class="card-glow"></div>
+          <div class="tool-header">
+            <div class="tool-icon-wrapper">
+              <div class="tool-icon">🤖</div>
+              <div class="live-indicator">
+                <span class="pulse"></span>
+                <span>Online</span>
+              </div>
             </div>
-            <div class="tool-desc">Personal AI assistant for 42 questions</div>
+            <span class="rank-badge rank-a">A-Tier</span>
+          </div>
+          <div class="tool-body">
+            <h3 class="tool-title">AI Assistant</h3>
+            <p class="tool-desc">Personal AI mentor for 42 curriculum</p>
             <div class="tool-stats" id="chatStats">0 messages</div>
           </div>
-          <p class="tool-usage">Get instant help with code, debugging, and explanations</p>
-          <div class="tool-actions">
-            <button class="btn-primary launch-btn" onclick="window.location.href='ai-chat.html'">Launch →</button>
+          <div class="tool-footer">
+            <p class="tool-usage">Instant help with code, debugging, and project guidance</p>
+            <button class="btn-primary launch-btn" onclick="window.location.href='ai-chat.html'">
+              <span>Launch</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
           </div>
         </div>
-        
-        <!-- Project Analyzer -->
-        <div class="glass-card tool-card analyzer">
-          <div class="tool-icon">📊</div>
-          <div class="tool-info">
-            <div class="tool-title">
-              Project Analyzer
-              <span class="rank-badge rank-a">A</span>
+
+        <!-- Project Analyzer Card -->
+        <div class="tool-card glass-card" data-tool="analyzer">
+          <div class="card-glow"></div>
+          <div class="tool-header">
+            <div class="tool-icon-wrapper">
+              <div class="tool-icon">📊</div>
+              <div class="live-indicator">
+                <span class="pulse"></span>
+                <span>Ready</span>
+              </div>
             </div>
-            <div class="tool-desc">AI-powered project roadmap generator</div>
+            <span class="rank-badge rank-a">A-Tier</span>
+          </div>
+          <div class="tool-body">
+            <h3 class="tool-title">Project Analyzer</h3>
+            <p class="tool-desc">AI-powered roadmap generator</p>
             <div class="tool-stats" id="analyzerStats">0 uses</div>
           </div>
-          <p class="tool-usage">Upload subject PDF to get daily task plans</p>
-          <div class="tool-actions">
-            <button class="btn-primary launch-btn" onclick="window.location.href='project-analyzer.html'">Launch →</button>
+          <div class="tool-footer">
+            <p class="tool-usage">Upload PDF subjects to generate daily task plans</p>
+            <button class="btn-primary launch-btn" onclick="window.location.href='project-analyzer.html'">
+              <span>Launch</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
           </div>
         </div>
-        
-        <!-- Project Tester -->
-        <div class="glass-card tool-card tester">
-          <div class="tool-icon">🧪</div>
-          <div class="tool-info">
-            <div class="tool-title">
-              Project Tester
-              <span class="rank-badge rank-s">S</span>
+
+        <!-- Project Tester Card -->
+        <div class="tool-card glass-card" data-tool="tester">
+          <div class="card-glow"></div>
+          <div class="tool-header">
+            <div class="tool-icon-wrapper">
+              <div class="tool-icon">🧪</div>
+              <div class="live-indicator premium">
+                <span class="pulse"></span>
+                <span>Premium</span>
+              </div>
             </div>
-            <div class="tool-desc">AI-generated test.sh scripts</div>
+            <span class="rank-badge rank-s">S-Tier</span>
+          </div>
+          <div class="tool-body">
+            <h3 class="tool-title">Project Tester</h3>
+            <p class="tool-desc">AI test script generator</p>
             <div class="tool-stats" id="testerStats">0 uses</div>
           </div>
-          <p class="tool-usage">Generate automated test scripts for your projects</p>
-          <div class="tool-actions">
-            <button class="btn-primary launch-btn" onclick="window.location.href='tester-project.html'">Launch →</button>
+          <div class="tool-footer">
+            <p class="tool-usage">Generate automated test.sh scripts instantly</p>
+            <button class="btn-primary launch-btn" onclick="window.location.href='tester-project.html'">
+              <span>Launch</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
           </div>
         </div>
 
-        <!-- Code Review Tool -->
-        <div class="glass-card tool-card code-review">
-          <div class="tool-icon">🔍</div>
-          <div class="tool-info">
-            <div class="tool-title">
-              Code Review
-              <span class="rank-badge rank-b">B</span>
+        <!-- Code Review Card -->
+        <div class="tool-card glass-card" data-tool="review">
+          <div class="card-glow"></div>
+          <div class="tool-header">
+            <div class="tool-icon-wrapper">
+              <div class="tool-icon">🔍</div>
+              <div class="live-indicator">
+                <span class="pulse"></span>
+                <span>Active</span>
+              </div>
             </div>
-            <div class="tool-desc">AI code quality checker</div>
+            <span class="rank-badge rank-b">B-Tier</span>
+          </div>
+          <div class="tool-body">
+            <h3 class="tool-title">Code Review</h3>
+            <p class="tool-desc">AI code quality checker</p>
             <div class="tool-stats" id="reviewStats">0 reviews</div>
           </div>
-          <p class="tool-usage">Paste your code for AI-powered review & suggestions</p>
-          <div class="tool-actions">
-            <button class="btn-primary launch-btn" onclick="openCodeReview()">Launch →</button>
+          <div class="tool-footer">
+            <p class="tool-usage">Paste code for AI-powered review and suggestions</p>
+            <button class="btn-primary launch-btn" onclick="openCodeReview()">
+              <span>Launch</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
           </div>
         </div>
       </div>
+    </section>
 
-      <!-- Quick Actions -->
-      <div class="quick-actions-section">
-        <h3>Quick Prompts</h3>
-        <div class="quick-prompts-grid">
-          <button class="quick-prompt-btn" onclick="sendQuickPrompt('norminette')">⚔ Norminette Help</button>
-          <button class="quick-prompt-btn" onclick="sendQuickPrompt('debug')">◈ Debug Helper</button>
-          <button class="quick-prompt-btn" onclick="sendQuickPrompt('git')">⌘ Git Commands</button>
-          <button class="quick-prompt-btn" onclick="sendQuickPrompt('c-basics')">◎ C Basics</button>
-          <button class="quick-prompt-btn" onclick="sendQuickPrompt('push_swap')">◆ push_swap Tips</button>
-          <button class="quick-prompt-btn" onclick="sendQuickPrompt('minishell')">◈ minishell Guide</button>
-        </div>
+    <!-- Quick Prompts -->
+    <section class="quick-prompts-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="title-icon">⚡</span>
+          Quick Prompts
+        </h2>
+        <p class="section-subtitle">Jump-start your workflow with one-click actions</p>
       </div>
+      <div class="prompts-grid">
+        <button class="prompt-card glass-card" onclick="sendQuickPrompt('norminette')">
+          <span class="prompt-icon">⚔</span>
+          <span class="prompt-text">Norminette Help</span>
+        </button>
+        <button class="prompt-card glass-card" onclick="sendQuickPrompt('debug')">
+          <span class="prompt-icon">◈</span>
+          <span class="prompt-text">Debug Helper</span>
+        </button>
+        <button class="prompt-card glass-card" onclick="sendQuickPrompt('git')">
+          <span class="prompt-icon">⌘</span>
+          <span class="prompt-text">Git Commands</span>
+        </button>
+        <button class="prompt-card glass-card" onclick="sendQuickPrompt('c-basics')">
+          <span class="prompt-icon">◎</span>
+          <span class="prompt-text">C Basics</span>
+        </button>
+        <button class="prompt-card glass-card" onclick="sendQuickPrompt('push_swap')">
+          <span class="prompt-icon">◆</span>
+          <span class="prompt-text">push_swap Tips</span>
+        </button>
+        <button class="prompt-card glass-card" onclick="sendQuickPrompt('minishell')">
+          <span class="prompt-icon">◈</span>
+          <span class="prompt-text">minishell Guide</span>
+        </button>
+      </div>
+    </section>
 
-      <!-- Usage Stats -->
-      <div class="stats-section">
-        <h3>Your Usage This Week</h3>
-        <div class="stats-grid-mini">
-          <div class="mini-stat">
-            <div class="mini-stat-value" id="totalAIUses">0</div>
-            <div class="mini-stat-label">Total AI Uses</div>
+    <!-- Weekly Stats -->
+    <section class="weekly-stats-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="title-icon">📈</span>
+          Your Performance
+        </h2>
+        <p class="section-subtitle">Weekly analytics and productivity metrics</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card glass-card">
+          <div class="stat-icon">💬</div>
+          <div class="stat-value" id="chatMessagesStat">0</div>
+          <div class="stat-label">Messages</div>
+          <div class="stat-bar">
+            <div class="bar-fill" style="--bar-color: var(--neon-blue); width: 0%;"></div>
           </div>
-          <div class="mini-stat">
-            <div class="mini-stat-value" id="favoriteTool">-</div>
-            <div class="mini-stat-label">Most Used</div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-value" id="analyzerUsesStat">0</div>
+          <div class="stat-label">Analyzer Uses</div>
+          <div class="stat-bar">
+            <div class="bar-fill" style="--bar-color: var(--neon-purple); width: 0%;"></div>
           </div>
-          <div class="mini-stat">
-            <div class="mini-stat-value" id="efficiency">0%</div>
-            <div class="mini-stat-label">Time Saved</div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">🧪</div>
+          <div class="stat-value" id="testerUsesStat">0</div>
+          <div class="stat-label">Tests Generated</div>
+          <div class="stat-bar">
+            <div class="bar-fill" style="--bar-color: var(--neon-yellow); width: 0%;"></div>
+          </div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">🔍</div>
+          <div class="stat-value" id="codeReviewsStat">0</div>
+          <div class="stat-label">Code Reviews</div>
+          <div class="stat-bar">
+            <div class="bar-fill" style="--bar-color: var(--neon-pink); width: 0%;"></div>
           </div>
         </div>
       </div>
+    </section>
+  </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -151,6 +282,9 @@
       updateDate();
       loadStats();
       loadToolsStats();
+      
+      // Animate cards on scroll
+      observeCards();
     });
 
     function updateDate() {
@@ -176,9 +310,10 @@
         if (xpValues[p.id]) totalXP += xpValues[p.id];
       });
       
-      document.getElementById('questsDone').textContent = completed.length;
-      document.getElementById('totalXP').textContent = totalXP;
-      document.getElementById('dayStreak').textContent = days;
+      // Populate stats with animation
+      animateValue('questsDone', 0, completed.length, 1000);
+      animateValue('totalXP', 0, totalXP, 1000);
+      animateValue('dayStreak', 0, days, 1000);
     }
 
     function loadToolsStats() {
@@ -187,14 +322,34 @@
       const chatMessages = parseInt(localStorage.getItem('chat_messages') || '0');
       const codeReviews = parseInt(localStorage.getItem('code_reviews') || '0');
       
+      // Update individual card stats
       document.getElementById('chatStats').textContent = chatMessages + ' messages';
       document.getElementById('analyzerStats').textContent = analyzerUses + ' uses';
       document.getElementById('testerStats').textContent = testerUses + ' uses';
       document.getElementById('reviewStats').textContent = codeReviews + ' reviews';
       
+      // Update weekly stats with bars
+      const stats = [
+        { id: 'chatMessagesStat', value: chatMessages, max: 50 },
+        { id: 'analyzerUsesStat', value: analyzerUses, max: 20 },
+        { id: 'testerUsesStat', value: testerUses, max: 15 },
+        { id: 'codeReviewsStat', value: codeReviews, max: 25 }
+      ];
+      
+      stats.forEach(stat => {
+        const el = document.getElementById(stat.id);
+        const bar = el.parentElement.querySelector('.bar-fill');
+        const percent = Math.min(100, (stat.value / stat.max) * 100);
+        
+        el.textContent = stat.value;
+        setTimeout(() => {
+          bar.style.width = percent + '%';
+        }, 300);
+      });
+      
       // Total AI uses
       const totalUses = analyzerUses + testerUses + chatMessages + codeReviews;
-      document.getElementById('totalAIUses').textContent = totalUses;
+      animateValue('totalAIUses', 0, totalUses, 1500);
       
       // Most used tool
       const tools = [
@@ -206,27 +361,22 @@
       const mostUsed = tools.reduce((a, b) => a.uses > b.uses ? a : b);
       document.getElementById('favoriteTool').textContent = mostUsed.name.split(' ')[0];
       
-      // Efficiency estimate (rough calculation)
-      const estimatedHours = totalUses * 0.5; // assume 30 min saved per use
+      // Efficiency estimate
+      const estimatedHours = totalUses * 0.5;
       const efficiency = Math.min(99, Math.floor((estimatedHours / 100) * 100));
       document.getElementById('efficiency').textContent = efficiency + '%';
     }
 
     function openCodeReview() {
-      // Increment counter
       const reviews = parseInt(localStorage.getItem('code_reviews') || '0');
       localStorage.setItem('code_reviews', reviews + 1);
-      
-      // Open in new window with code review interface
       window.open('code-review.html', '_blank');
     }
 
     function sendQuickPrompt(type) {
-      // Increment chat counter
       let messages = parseInt(localStorage.getItem('chat_messages') || '0');
       localStorage.setItem('chat_messages', messages + 1);
       
-      // Navigate to chat with preset prompt
       const prompts = {
         'norminette': 'Can you explain the main norminette rules and common violations I should watch out for?',
         'debug': 'What are the best debugging techniques for C programs?',
@@ -236,7 +386,6 @@
         'minishell': 'What are the main components to focus on for the minishell project?'
       };
       
-      // Store prompt for ai-chat to pick up
       localStorage.setItem('quick_prompt', prompts[type]);
       window.location.href = 'ai-chat.html';
     }
@@ -245,149 +394,656 @@
       clearData();
       window.location.href = 'index.html';
     }
+
+    function animateValue(id, start, end, duration) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const range = end - start;
+      const startTime = performance.now();
+      
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.floor(start + range * easeOut);
+        
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        }
+      }
+      
+      requestAnimationFrame(update);
+    }
+
+    function observeCards() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      document.querySelectorAll('.tool-card, .prompt-card, .stat-card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(card);
+      });
+    }
   </script>
-  
+
   <style>
-    .ai-tools-page {
-      padding: 30px 20px 120px;
+    /* Hero Header */
+    .hero-header {
+      position: relative;
+      margin-bottom: 60px;
+      padding: 40px;
+      background: linear-gradient(135deg, rgba(255,45,120,0.12) 0%, rgba(180,79,255,0.1) 50%, rgba(0,240,255,0.08) 100%);
+      border-radius: 28px;
+      overflow: hidden;
+      border: 1px solid rgba(255,45,120,0.2);
     }
-    
-    .tools-section h2 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 28px;
+
+    .hero-glow {
+      position: absolute;
+      top: -50%;
+      right: -30%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255,45,120,0.15) 0%, transparent 70%);
+      filter: blur(60px);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .home-btn {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,45,120,0.15);
+      border: 1px solid rgba(255,45,120,0.3);
+      border-radius: 14px;
       color: var(--neon-pink);
-      text-shadow: 0 0 20px var(--neon-pink);
-      margin-bottom: 8px;
+      transition: all 0.3s ease;
+      text-decoration: none;
     }
-    
-    .tools-subtitle {
+
+    .home-btn:hover {
+      background: rgba(255,45,120,0.25);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(255,45,120,0.3);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex: 1;
+    }
+
+    .user-profile .avatar-img {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      border: 3px solid var(--neon-pink);
+      box-shadow: 0 0 25px rgba(255,45,120,0.5);
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .user-profile .avatar-img:hover {
+      transform: scale(1.05) rotate(3deg);
+    }
+
+    .user-info {
+      flex: 1;
+    }
+
+    .user-info .badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+      border-radius: 50px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: white;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 15px rgba(255,45,120,0.4);
+    }
+
+    .user-info h1 {
+      font-size: 28px;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, #fff, var(--text-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .user-info .date {
+      font-size: 13px;
       color: var(--text-muted);
-      font-size: 15px;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 0;
+    }
+
+    .stat-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      background: rgba(20,15,40,0.6);
+      border: 1px solid rgba(255,45,120,0.15);
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .stat-badge:hover {
+      background: rgba(255,45,120,0.1);
+      border-color: var(--neon-pink);
+      transform: translateY(-3px);
+    }
+
+    .stat-badge .stat-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--neon-pink);
+      text-shadow: 0 0 10px rgba(255,45,120,0.5);
+    }
+
+    .stat-badge .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    /* Section Headers */
+    .section-header {
       margin-bottom: 30px;
     }
-    
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 22px;
+      margin-bottom: 6px;
+      color: var(--text-primary);
+    }
+
+    .title-icon {
+      font-size: 26px;
+    }
+
+    .section-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-left: 38px;
+    }
+
+    /* Tools Grid */
+    .tools-container {
+      margin-bottom: 60px;
+    }
+
     .tools-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 24px;
-      margin-bottom: 50px;
     }
-    
+
     .tool-card {
+      position: relative;
       padding: 30px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      overflow: hidden;
+      border: 1px solid rgba(255,45,120,0.2);
     }
-    
+
+    .card-glow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 50% 0%, rgba(255,45,120,0.1) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-8px) scale(1.01);
+      border-color: var(--neon-pink);
+      box-shadow: 
+        0 20px 60px rgba(255,45,120,0.25),
+        0 0 40px rgba(255,45,120,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .tool-card:hover .card-glow {
+      opacity: 1;
+    }
+
+    .tool-card[data-tool="analyzer"] { border-color: rgba(255,45,120,0.25); }
+    .tool-card[data-tool="tester"] { border-color: rgba(180,79,255,0.25); }
+    .tool-card[data-tool="chat"] { border-color: rgba(0,240,255,0.25); }
+    .tool-card[data-tool="review"] { border-color: rgba(255,45,120,0.25); }
+
+    .tool-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .tool-icon-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tool-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+      box-shadow: 0 8px 25px rgba(255,45,120,0.4);
+      transition: all 0.3s ease;
+    }
+
+    .tool-card[data-tool="tester"] .tool-icon {
+      background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+      box-shadow: 0 8px 25px rgba(180,79,255,0.4);
+    }
+
+    .tool-card[data-tool="chat"] .tool-icon {
+      background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink));
+      box-shadow: 0 8px 25px rgba(0,240,255,0.4);
+    }
+
+    .tool-card:hover .tool-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #4ade80;
+      font-weight: 500;
+      padding: 4px 10px;
+      background: rgba(74, 222, 128, 0.1);
+      border-radius: 20px;
+      border: 1px solid rgba(74, 222, 128, 0.2);
+    }
+
+    .live-indicator.premium {
+      color: var(--neon-yellow);
+      background: rgba(255, 230, 0, 0.1);
+      border-color: rgba(255, 230, 0, 0.2);
+    }
+
+    .pulse {
+      width: 6px;
+      height: 6px;
+      background: currentColor;
+      border-radius: 50%;
+      animation: pulseLive 2s ease-in-out infinite;
+    }
+
+    @keyframes pulseLive {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
+    .tool-body {
+      flex: 1;
+      margin-bottom: 16px;
+    }
+
+    .tool-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tool-desc {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .tool-stats {
+      font-size: 12px;
+      color: var(--neon-blue);
+      font-family: 'Share Tech Mono', monospace;
+      background: rgba(0,240,255,0.1);
+      padding: 4px 10px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .tool-footer {
+      border-top: 1px solid rgba(255,45,120,0.15);
+      padding-top: 16px;
+    }
+
     .tool-usage {
       color: var(--text-muted);
       font-size: 13px;
-      margin: 12px 0 20px;
       line-height: 1.5;
+      margin-bottom: 14px;
     }
-    
-    .tool-actions {
-      margin-top: auto;
-    }
-    
+
     .launch-btn {
-      width: 100% !important;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 24px;
+      position: relative;
+      overflow: hidden;
     }
-    
-    .live-badge {
-      color: #4ade80;
+
+    .launch-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .launch-btn:hover::before {
+      left: 100%;
+    }
+
+    /* Ranks */
+    .rank-badge {
+      padding: 4px 12px;
+      border-radius: 6px;
       font-family: 'Orbitron', sans-serif;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 6px 12px;
-      background: rgba(74, 222, 128, 0.1);
-      border: 1px solid rgba(74, 222, 128, 0.3);
-      border-radius: 20px;
-      animation: pulse 2s ease-in-out infinite;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      backdrop-filter: blur(10px);
     }
-    
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
+
+    .rank-s {
+      background: linear-gradient(135deg, var(--neon-yellow), #ffd700);
+      color: #000;
+      box-shadow: 0 0 15px rgba(255,230,0,0.4);
     }
-    
-    .quick-actions-section {
-      margin-bottom: 50px;
+
+    .rank-a {
+      background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+      color: white;
+      box-shadow: 0 0 15px rgba(180,79,255,0.4);
     }
-    
-    .quick-actions-section h3 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 18px;
-      color: var(--neon-purple);
-      margin-bottom: 20px;
+
+    .rank-b {
+      background: linear-gradient(135deg, var(--neon-blue), #00aaff);
+      color: white;
+      box-shadow: 0 0 15px rgba(0,240,255,0.4);
     }
-    
-    .quick-prompts-grid {
+
+    /* Quick Prompts */
+    .quick-prompts-section {
+      margin-bottom: 60px;
+    }
+
+    .prompts-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 12px;
-    }
-    
-    .quick-prompt-btn {
-      padding: 14px 20px;
-      background: rgba(255, 45, 120, 0.08);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      color: var(--text-secondary);
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .quick-prompt-btn:hover {
-      background: rgba(255, 45, 120, 0.15);
-      border-color: var(--neon-pink);
-      color: var(--neon-pink);
-      transform: translateY(-2px);
-    }
-    
-    .stats-section {
-      margin-bottom: 50px;
-    }
-    
-    .stats-section h3 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 18px;
-      color: var(--neon-yellow);
-      margin-bottom: 20px;
-    }
-    
-    .stats-grid-mini {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 16px;
     }
-    
-    .mini-stat {
-      background: rgba(255, 45, 120, 0.08);
-      border: 1px solid rgba(255, 45, 120, 0.15);
-      border-radius: 16px;
-      padding: 24px 16px;
+
+    .prompt-card {
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
       text-align: center;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid rgba(255,45,120,0.15);
+      cursor: pointer;
+      background: transparent;
     }
-    
-    .mini-stat-value {
+
+    .prompt-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      border-color: var(--neon-pink);
+      background: rgba(255,45,120,0.12);
+      box-shadow: 
+        0 15px 40px rgba(255,45,120,0.2),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .prompt-icon {
+      font-size: 32px;
+      transition: transform 0.3s ease;
+    }
+
+    .prompt-card:hover .prompt-icon {
+      transform: scale(1.2) rotate(10deg);
+    }
+
+    .prompt-text {
       font-family: 'Orbitron', sans-serif;
-      font-size: 28px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: 0.03em;
+    }
+
+    .prompt-card:hover .prompt-text {
+      color: var(--neon-pink);
+      text-shadow: 0 0 10px var(--neon-pink);
+    }
+
+    /* Weekly Stats */
+    .weekly-stats-section {
+      margin-bottom: 40px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .stat-card {
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, var(--neon-pink) 0%, transparent 70%);
+      opacity: 0.1;
+      pointer-events: none;
+    }
+
+    .stat-icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 0 10px currentColor);
+    }
+
+    .stat-card .stat-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 32px;
       font-weight: 700;
       color: var(--neon-pink);
-      text-shadow: 0 0 15px var(--neon-pink);
+      text-shadow: 0 0 15px rgba(255,45,120,0.6);
+      margin-bottom: 4px;
     }
-    
-    .mini-stat-label {
-      color: var(--text-muted);
+
+    .stat-card .stat-label {
       font-size: 12px;
-      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
     }
-    
+
+    .stat-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(255,45,120,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: var(--bar-color, var(--neon-pink));
+      border-radius: 2px;
+      width: 0%;
+      transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 0 10px var(--bar-color, var(--neon-pink));
+      position: relative;
+    }
+
+    .bar-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 4px;
+      height: 100%;
+      background: white;
+      border-radius: 2px;
+      filter: blur(2px);
+      opacity: 0.8;
+    }
+
+    /* Responsive Adjustments */
     @media (max-width: 768px) {
+      .hero-header {
+        padding: 24px;
+      }
+
+      .hero-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .home-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+      }
+
+      .user-profile .avatar-img {
+        width: 56px;
+        height: 56px;
+      }
+
+      .user-info h1 {
+        font-size: 24px;
+      }
+
+      .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .stat-badge {
+        padding: 16px;
+      }
+
+      .stat-badge .stat-value {
+        font-size: 20px;
+      }
+
       .tools-grid {
         grid-template-columns: 1fr;
       }
-      .stats-grid-mini {
+
+      .prompts-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .prompt-card {
+        padding: 20px 16px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .stat-card .stat-value {
+        font-size: 26px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .prompts-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-grid {
         grid-template-columns: 1fr;
       }
     }
