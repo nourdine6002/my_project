@@ -850,31 +850,47 @@
       });
     });
     
-    async function submitReview() {
-      const code = document.getElementById('codeInput').value.trim();
-      if (!code) return;
-      
-      // Increment counter
-      const reviews = parseInt(localStorage.getItem('code_reviews') || '0');
-      localStorage.setItem('code_reviews', reviews + 1);
-      
-       // Show loading
-       document.getElementById('loadingState').classList.remove('hidden');
-       document.getElementById('resultArea').classList.add('hidden');
+     async function submitReview() {
+       const code = document.getElementById('codeInput').value.trim();
+       if (!code) {
+         showError('Please paste your code first');
+         return;
+       }
 
-       // Dynamic loading messages
-       const loadingMessages = [
-         'Parsing your code...',
-         'Analyzing structure...',
-         'Checking for issues...',
-         'Evaluating best practices...',
-         'Generating recommendations...'
-       ];
-       let idx = 0;
-       const loadingInterval = setInterval(() => {
-         document.getElementById('loadingSub').textContent = loadingMessages[idx];
-         idx = (idx + 1) % loadingMessages.length;
-       }, 600);
+       // Disable button during validation
+       const reviewBtn = document.getElementById('reviewBtn');
+       const originalBtnText = reviewBtn.innerHTML;
+       reviewBtn.disabled = true;
+       reviewBtn.innerHTML = '⏳ Validating...';
+
+       // Syntax validation before analysis (async)
+       let syntaxValid;
+       try {
+         syntaxValid = await validateSyntax(code, selectedLang);
+       } catch (e) {
+         reviewBtn.disabled = false;
+         reviewBtn.innerHTML = originalBtnText;
+         showError('Validation error: ' + e.message);
+         return;
+       }
+
+       if (!syntaxValid.valid) {
+         reviewBtn.disabled = false;
+         reviewBtn.innerHTML = originalBtnText;
+         showError('Syntax Error: ' + syntaxValid.error);
+         return;
+       }
+
+       // Show syntax check success briefly
+       reviewBtn.innerHTML = '✓ Syntax OK';
+       reviewBtn.style.background = 'linear-gradient(135deg, #4ade80, #22c55e)';
+       await new Promise(resolve => setTimeout(resolve, 600));
+       reviewBtn.innerHTML = originalBtnText;
+       reviewBtn.style.background = '';
+
+       // Increment counter
+       const reviews = parseInt(localStorage.getItem('code_reviews') || '0');
+       localStorage.setItem('code_reviews', reviews + 1);
 
        const langNames = {
          c: 'C',
@@ -893,8 +909,8 @@
        };
 
        const focusAreas = selectedOptions.map(o => optDescriptions[o]).join(', ');
-      
-      const PROMPT = `Review this ${langNames[selectedLang]} code. Focus on: ${focusAreas}.
+
+       const PROMPT = `Review this ${langNames[selectedLang]} code. Focus on: ${focusAreas}.
 
 Provide a structured review with these sections:
 
@@ -906,17 +922,675 @@ Provide a structured review with these sections:
 
 Code:
 ${code.slice(0, 5000)}`;
-      
+
        try {
          const response = await sendMessage(PROMPT);
          clearInterval(loadingInterval);
          displayResults(response, code);
+         // Re-enable button
+         reviewBtn.disabled = false;
+         reviewBtn.innerHTML = originalBtnText;
        } catch (e) {
          clearInterval(loadingInterval);
          document.getElementById('loadingState').classList.add('hidden');
+         reviewBtn.disabled = false;
+         reviewBtn.innerHTML = originalBtnText;
          showError('AI Error: ' + e.message);
        }
-    }
+     }
+
+     // Syntax validation functions
+     async function validateSyntax(code, lang) {
+       // Try real compiler first using Piston API
+       return await validateWithRealCompiler(code, lang);
+     }
+
+     async function validateWithRealCompiler(code, lang) {
+       // Map language to Piston language ID
+       const languageMap = {
+         'c': 'c',
+         'python': 'python3',
+         'shell': 'bash',
+         'generic': 'text' // fallback
+       };
+
+       const pistonLang = languageMap[lang] || 'text';
+
+       // For generic, skip real compilation
+       if (lang === 'generic') {
+         return validateGenericSyntax(code);
+       }
+
+       try {
+         const response = await fetch(CONFIG.PISTON_API_URL, {
+           method: 'POST',
+           headers: {
+             'Content-Type': 'application/json',
+           },
+           body: JSON.stringify({
+             language: pistonLang,
+             version: '*',
+             files: [{ name: 'main', content: code }],
+             stdin: '',
+             args: [],
+             compile_timeout: 10000,
+             run_timeout: 5000,
+             compile_memory_limit: -1,
+             run_memory_limit: -1
+           })
+         });
+
+         if (!response.ok) {
+           console.warn('Piston API unavailable, falling back to basic validation');
+           return fallbackValidate(code, lang);
+         }
+
+         const result = await response.json();
+         const compileResult = result.compile;
+
+         if (compileResult && compileResult.code !== 0 && compileResult.stderr) {
+           // Parse compiler errors
+           const error = parseCompilerError(compileResult.stderr, lang);
+           return { valid: false, error: error };
+         }
+
+         return { valid: true };
+
+       } catch (error) {
+         console.warn('Compiler API error:', error);
+         // Fallback to basic validation if API fails
+         return fallbackValidate(code, lang);
+       }
+     }
+
+     function parseCompilerError(stderr, lang) {
+       const lines = stderr.split('\n');
+       const errors = [];
+
+       for (const line of lines) {
+         if (line.includes('error:') || line.includes('Error:') || line.includes('ERROR')) {
+           errors.push(line.trim());
+         }
+       }
+
+       if (errors.length > 0) {
+         // Return first error, but clean it up
+         let err = errors[0];
+         // Truncate long messages
+         if (err.length > 150) err = err.substring(0, 150) + '...';
+         return err;
+       }
+
+       // Fallback: return first non-empty line
+       for (const line of lines) {
+         if (line.trim()) return line.trim();
+       }
+
+       return 'Syntax error detected';
+     }
+
+     function fallbackValidate(code, lang) {
+       // Basic regex fallback if API fails
+       switch(lang) {
+         case 'c':
+           return validateCSyntaxFallback(code);
+         case 'python':
+           return validatePythonSyntaxFallback(code);
+         case 'shell':
+           return validateShellSyntaxFallback(code);
+         default:
+           return { valid: true };
+       }
+     }
+
+     function validateCSyntaxFallback(code) {
+       // Simpler version: just check for balanced brackets and basic structure
+       const errors = [];
+
+       // Check for unclosed braces
+       let braceCount = 0;
+       let inString = false;
+       let stringChar = null;
+
+       for (let i = 0; i < code.length; i++) {
+         const char = code[i];
+         const prevChar = i > 0 ? code[i-1] : '';
+
+         if (!inString && (char === '"' || char === '\'')) {
+           if (prevChar !== '\\') {
+             inString = true;
+             stringChar = char;
+           }
+         } else if (inString && char === stringChar && prevChar !== '\\') {
+           inString = false;
+           stringChar = null;
+         }
+
+         if (!inString) {
+           if (char === '{') braceCount++;
+           else if (char === '}') braceCount--;
+         }
+       }
+
+       if (inString) errors.push('Unclosed string literal');
+       if (braceCount < 0) errors.push('Unmatched closing brace');
+       if (braceCount > 0) errors.push('Missing closing brace(s)');
+
+       // Missing semicolon check (simplified)
+       const lines = code.split('\n');
+       for (let i = 0; i < lines.length; i++) {
+         let line = lines[i].trim();
+         if (!line || line.startsWith('#') || line.startsWith('//') ||
+             line.startsWith('if') || line.startsWith('for') || line.startsWith('while') ||
+             line.startsWith('switch') || line.startsWith('do') || line.startsWith('else') ||
+             line.startsWith('return') || line.startsWith('{') || line.startsWith('}')) {
+           continue;
+         }
+
+         // Skip function definitions
+         if (line.includes('(') && line.includes(')') && line.endsWith('{')) continue;
+
+         // Check for expression without semicolon
+         if (line && !line.endsWith(';') && !line.endsWith(',') &&
+             (line.includes('=') || /^[a-z_]+\s+[a-z_]/i.test(line))) {
+           // Could be missing semicolon - but be careful not to flag struct/array init
+           if (!line.endsWith('{') && !line.endsWith('}')) {
+             // errors.push(`Line ${i+1}: Missing semicolon`); // Too many false positives
+           }
+         }
+       }
+
+       if (errors.length > 0) {
+         return { valid: false, error: errors[0] + (errors.length > 1 ? ` (+${errors.length-1} more)` : '') };
+       }
+       return { valid: true };
+     }
+
+     function validatePythonSyntaxFallback(code) {
+       // Check for basic Python syntax issues
+       const errors = [];
+       const lines = code.split('\n');
+
+       // Track indentation
+       const indentStack = [0];
+       let inMultilineString = false;
+
+       for (let i = 0; i < lines.length; i++) {
+         let line = lines[i];
+
+         // Handle triple-quoted strings
+         if (inMultilineString) {
+           if (line.includes('"""') || line.includes("'''")) {
+             inMultilineString = false;
+           }
+           continue;
+         }
+
+         if (line.includes('"""') || line.includes("'''")) {
+           inMultilineString = true;
+           continue;
+         }
+
+         // Remove comments
+         const commentIdx = line.indexOf('#');
+         if (commentIdx !== -1) line = line.substring(0, commentIdx);
+
+         if (line.trim()) {
+           const indent = line.length - line.trimLeft().length;
+           const lastIndent = indentStack[indentStack.length - 1];
+
+           if (indent > lastIndent) {
+             indentStack.push(indent);
+           } else if (indent < lastIndent) {
+             while (indentStack.length > 1 && indent < indentStack[indentStack.length - 1]) {
+               indentStack.pop();
+             }
+             if (indent !== indentStack[indentStack.length - 1]) {
+               errors.push(`Line ${i+1}: Inconsistent indentation`);
+             }
+           }
+
+           // Check colon for compound statements
+           const trimmed = line.trim();
+           if (trimmed.startsWith('if ') || trimmed.startsWith('for ') ||
+               trimmed.startsWith('while ') || trimmed.startsWith('def ') ||
+               trimmed.startsWith('class ')) {
+             if (!trimmed.endsWith(':')) {
+               errors.push(`Line ${i+1}: Missing colon ':'`);
+             }
+           }
+         }
+       }
+
+       if (errors.length > 0) {
+         return { valid: false, error: errors[0] };
+       }
+       return { valid: true };
+     }
+
+     function validateShellSyntaxFallback(code) {
+       // Basic shell syntax checks
+       const errors = [];
+       const lines = code.split('\n');
+
+       for (let i = 0; i < lines.length; i++) {
+         let line = lines[i].trim();
+
+         // Remove comments
+         if (line.includes('#')) {
+           line = line.substring(0, line.indexOf('#')).trim();
+         }
+
+         if (!line) continue;
+
+         // Check for unclosed quotes
+         const doubleQuotes = (line.match(/"/g) || []).length;
+         const singleQuotes = (line.match(/'/g) || []).length;
+         if (doubleQuotes % 2 !== 0) errors.push(`Line ${i+1}: Unclosed double quote`);
+         if (singleQuotes % 2 !== 0) errors.push(`Line ${i+1}: Unclosed single quote`);
+
+         // Check unclosed parentheses
+         let parenCount = 0;
+         let inQuote = false;
+         let quoteChar = null;
+
+         for (const char of line) {
+           if (!inQuote && (char === '"' || char === "'")) {
+             inQuote = true;
+             quoteChar = char;
+           } else if (inQuote && char === quoteChar) {
+             inQuote = false;
+           }
+
+           if (!inQuote) {
+             if (char === '(') parenCount++;
+             else if (char === ')') parenCount--;
+           }
+         }
+
+         if (parenCount < 0) {
+           errors.push(`Line ${i+1}: Unexpected closing parenthesis`);
+         }
+       }
+
+       if (errors.length > 0) {
+         return { valid: false, error: errors[0] + (errors.length > 1 ? ` (+${errors.length-1} more)` : '') };
+       }
+       return { valid: true };
+     }
+
+     function validateGenericSyntax(code) {
+       // Basic checks for any code: unmatched brackets, quotes
+       const errors = [];
+       const stack = [];
+       const pairs = { ')': '(', ']': '[', '}': '{' };
+
+       for (let i = 0; i < code.length; i++) {
+         const char = code[i];
+
+         if (char === '"' || char === "'" || char === '`') {
+           const quoteChar = char;
+           let j = i + 1;
+           while (j < code.length && code[j] !== quoteChar) {
+             if (code[j] === '\\') j++;
+             j++;
+           }
+           if (j >= code.length) {
+             errors.push(`Unclosed ${quoteChar} string at position ${i+1}`);
+             break;
+           }
+           i = j;
+         } else if (char === '(' || char === '[' || char === '{') {
+           stack.push({ char, pos: i + 1 });
+         } else if (char === ')' || char === ']' || char === '}') {
+           if (stack.length === 0) {
+             errors.push(`Unexpected closing '${char}' at position ${i+1}`);
+           } else {
+             const last = stack.pop();
+             if (pairs[char] !== last.char) {
+               errors.push(`Mismatched: expected '${last.char}' but found '${char}'`);
+             }
+           }
+         }
+       }
+
+       for (const item of stack) {
+         errors.push(`Unclosed '${item.char}' at position ${item.pos}`);
+       }
+
+       if (errors.length > 0) {
+         return { valid: false, error: errors[0] + (errors.length > 1 ? ` (+${errors.length-1} more)` : '') };
+       }
+       return { valid: true };
+     }
+
+     function validateCSyntax(code) {
+       const lines = code.split('\n');
+       const errors = [];
+
+       // Check for basic structure
+       let inMultilineComment = false;
+       let braceCount = 0;
+       let parenCount = 0;
+       let bracketCount = 0;
+       let inString = false;
+       let stringChar = null;
+
+       for (let i = 0; i < lines.length; i++) {
+         let line = lines[i];
+
+         // Remove single-line comments
+         const commentIndex = line.indexOf('//');
+         if (commentIndex !== -1) {
+           line = line.substring(0, commentIndex);
+         }
+
+         // Handle multi-line comments
+         if (inMultilineComment) {
+           const endComment = line.indexOf('*/');
+           if (endComment !== -1) {
+             inMultilineComment = false;
+             line = line.substring(endComment + 2);
+           } else {
+             continue;
+           }
+         }
+
+         const startComment = line.indexOf('/*');
+         if (startComment !== -1) {
+           const endComment = line.indexOf('*/', startComment);
+           if (endComment === -1) {
+             inMultilineComment = true;
+             line = line.substring(0, startComment);
+           } else {
+             line = line.substring(0, startComment) + line.substring(endComment + 2);
+           }
+         }
+
+         // Skip empty lines
+         line = line.trim();
+         if (!line) continue;
+
+         // Check string literals
+         for (let j = 0; j < line.length; j++) {
+           const char = line[j];
+           const prevChar = j > 0 ? line[j-1] : '';
+
+           if (!inString && (char === '"' || char === '\'')) {
+             if (prevChar !== '\\') {
+               inString = true;
+               stringChar = char;
+             }
+           } else if (inString && char === stringChar && prevChar !== '\\') {
+             inString = false;
+             stringChar = null;
+           }
+         }
+
+         if (inString) {
+           errors.push(`Line ${i+1}: Unclosed string literal`);
+           break;
+         }
+
+         // Count braces (skip inside strings)
+         if (!inString) {
+           for (let char of line) {
+             if (char === '{') braceCount++;
+             else if (char === '}') braceCount--;
+             else if (char === '(') parenCount++;
+             else if (char === ')') parenCount--;
+             else if (char === '[') bracketCount++;
+             else if (char === ']') bracketCount--;
+           }
+
+           if (braceCount < 0) {
+             errors.push(`Line ${i+1}: Unexpected closing brace '}}'`);
+           }
+           if (parenCount < 0) {
+             errors.push(`Line ${i+1}: Unexpected closing parenthesis ')'`);
+           }
+           if (bracketCount < 0) {
+             errors.push(`Line ${i+1}: Unexpected closing bracket ']'`);
+           }
+         }
+       }
+
+       if (inMultilineComment) {
+         errors.push('Unclosed multi-line comment (/* ... */)');
+       }
+
+       if (inString) {
+         errors.push('Unclosed string literal');
+       }
+
+       if (braceCount > 0) {
+         errors.push(`Missing ${braceCount} closing brace(s) '}}'`);
+       }
+       if (parenCount > 0) {
+         errors.push(`Missing ${parenCount} closing parenthesis(es)`);
+       }
+       if (bracketCount > 0) {
+         errors.push(`Missing ${bracketCount} closing bracket(s)`);
+       }
+
+       // Check for common C syntax issues
+       if (errors.length === 0) {
+         // Check for missing semicolons on declaration/expression statements (non-control, non-function)
+         for (let i = 0; i < lines.length; i++) {
+           let line = lines[i].trim();
+
+           // Skip preprocessor lines, control flow keywords, empty lines, comments, and function definitions
+           if (!line ||
+               line.startsWith('#') ||
+               line.startsWith('//') ||
+               line.startsWith('/*') ||
+               line.startsWith('* ') ||
+               line.startsWith('if ') ||
+               line.startsWith('for ') ||
+               line.startsWith('while ') ||
+               line.startsWith('switch ') ||
+               line.startsWith('do ') ||
+               line.startsWith('else') ||
+               line.startsWith('return ') ||
+               line.startsWith('break') ||
+               line.startsWith('continue') ||
+               line.startsWith('goto') ||
+               (line.includes('{') && line.includes('}')) ||
+               line.endsWith(';') ||
+               line.endsWith('{') ||
+               line.endsWith('}')) {
+             continue;
+           }
+
+           // Check if it looks like a function definition
+           if (line.includes('(') && line.includes(')')) {
+             const parenStart = line.indexOf('(');
+             const parenEnd = line.indexOf(')');
+             if (parenStart < parenEnd && parenEnd > parenStart) {
+               // Could be function def or call - skip for now
+               continue;
+             }
+           }
+
+           // Check if line contains assignment or expression that should end with semicolon
+           const operators = ['=', '+=', '-=', '*=', '/=', '%=', '<<=', '>>=', '&=', '|=', '^='];
+           const hasAssignment = operators.some(op => line.includes(op));
+           const hasIncrement = line.includes('++') || line.includes('--');
+
+           if (hasAssignment || hasIncrement || (line.match(/[a-zA-Z_]\w*\s+[a-zA-Z_]/) && !line.includes('('))) {
+             // Might be a declaration or statement missing semicolon
+             // But only flag if line doesn't end with comma (e.g., in struct/array init)
+             if (!line.endsWith(',')) {
+               errors.push(`Line ${i+1}: Missing semicolon ';'`);
+             }
+           }
+         }
+       }
+
+       if (errors.length > 0) {
+         return { valid: false, error: errors[0] + (errors.length > 1 ? ` (+${errors.length-1} more)` : '') };
+       }
+       return { valid: true };
+     }
+
+     function validatePythonSyntax(code) {
+       const errors = [];
+
+       // Check indentation consistency
+       const lines = code.split('\n');
+       const indentStack = [0];
+       let inMultilineString = false;
+       let multilineStringChar = null;
+
+       for (let i = 0; i < lines.length; i++) {
+         let line = lines[i];
+         const origLine = line;
+
+         // Handle triple-quoted strings (multi-line)
+         if (inMultilineString) {
+           const endPattern = new RegExp(multilineStringChar, 'g');
+           let match;
+           while ((match = endPattern.exec(line)) !== null) {
+             inMultilineString = false;
+             multilineStringChar = null;
+             line = line.substring(match.index + 1);
+           }
+           continue;
+         }
+
+         // Check for triple-quoted string start
+         const tripleSingle = line.indexOf("'''");
+         const tripleDouble = line.indexOf('"""');
+         if (tripleSingle !== -1 || tripleDouble !== -1) {
+           inMultilineString = true;
+           multilineStringChar = tripleSingle !== -1 ? "'''" : '"""';
+           continue;
+         }
+
+         // Remove single-line comments
+         const commentIndex = line.indexOf('#');
+         if (commentIndex !== -1) {
+           line = line.substring(0, commentIndex);
+         }
+
+         // Remove string literals to avoid confusing colons
+         let processedLine = line;
+         const regex = /("(?:\\"|[^"])*"|'(?:\\'|[^'])*')/g;
+         processedLine = processedLine.replace(regex, '');
+
+         // Check indentation
+         if (processedLine.trim()) {
+           const indent = line.length - line.trimLeft().length;
+           const lastIndent = indentStack[indentStack.length - 1];
+
+           if (indent > lastIndent) {
+             indentStack.push(indent);
+           } else if (indent < lastIndent) {
+             while (indentStack.length > 1 && indent < indentStack[indentStack.length - 1]) {
+               indentStack.pop();
+             }
+             if (indent !== indentStack[indentStack.length - 1]) {
+               errors.push(`Line ${i+1}: Inconsistent indentation`);
+             }
+           }
+
+            // Check for missing colon on compound statements
+            const trimmed = processedLine.trim();
+            const compoundKeywords = ['if', 'elif', 'else', 'for', 'while', 'def', 'class', 'try', 'except', 'finally', 'with'];
+
+            // Check if line starts with a compound keyword (including else: which must have colon)
+            const isCompoundStart = compoundKeywords.some(kw => {
+              const pattern = `^${kw}\\b`;
+              return trimmed.match(new RegExp(pattern, 'i'));
+            });
+
+            if (isCompoundStart && !trimmed.includes(':')) {
+              if (trimmed.startsWith('#') || trimmed.startsWith('"""') || trimmed.startsWith("'''")) {
+                // skip
+              } else if (!trimmed.endsWith('\\')) {
+                // Line continuation case: colon might be on next line
+                // Only flag if it's a simple one-liner expectation
+                if (['if', 'elif', 'for', 'while', 'def', 'class'].some(kw => trimmed.startsWith(kw))) {
+                  // These typically require colons on same line
+                  errors.push(`Line ${i+1}: Missing colon ':' after ${trimmed.split(' ')[0]}`);
+                }
+              }
+            }
+         }
+       }
+
+       if (errors.length > 0) {
+         return { valid: false, error: errors[0] };
+       }
+       return { valid: true };
+     }
+
+     function validateShellSyntax(code) {
+       const errors = [];
+       const lines = code.split('\n');
+
+       for (let i = 0; i < lines.length; i++) {
+         let line = lines[i].trim();
+
+         // Remove comments
+         if (line.includes('#')) {
+           line = line.substring(0, line.indexOf('#')).trim();
+         }
+
+         if (!line) continue;
+
+         // Check for unbalanced quotes
+         const doubleQuotes = (line.match(/"/g) || []).length;
+         const singleQuotes = (line.match(/'/g) || []).length;
+         if (doubleQuotes % 2 !== 0) {
+           errors.push(`Line ${i+1}: Unclosed double quote`);
+         }
+         if (singleQuotes % 2 !== 0) {
+           errors.push(`Line ${i+1}: Unclosed single quote`);
+         }
+
+         // Check for unclosed backticks
+         const backticks = (line.match(/`/g) || []).length;
+         if (backticks % 2 !== 0) {
+           errors.push(`Line ${i+1}: Unclosed backtick`);
+         }
+
+         // Check for missing 'fi' for if statements
+         const lowerLine = line.toLowerCase();
+         if (lowerLine.startsWith('if ') && !lowerLine.endsWith(';') && !lowerLine.endsWith('then')) {
+           // This is normal - 'then' might be on next line
+         }
+
+         // Check for unbalanced parentheses in arithmetic expressions
+         let parenCount = 0;
+         let inQuote = false;
+         let quoteChar = null;
+
+         for (let char of line) {
+           if (!inQuote && (char === '"' || char === "'")) {
+             inQuote = true;
+             quoteChar = char;
+           } else if (inQuote && char === quoteChar) {
+             inQuote = false;
+             quoteChar = null;
+           }
+
+           if (!inQuote) {
+             if (char === '(') parenCount++;
+             else if (char === ')') parenCount--;
+           }
+         }
+
+         if (parenCount < 0) {
+           errors.push(`Line ${i+1}: Unexpected closing parenthesis`);
+         }
+       }
+
+       if (errors.length > 0) {
+         return { valid: false, error: errors[0] + (errors.length > 1 ? ` (+${errors.length-1} more)` : '') };
+       }
+       return { valid: true };
+     }
     
     function displayResults(response, originalCode) {
       document.getElementById('loadingState').classList.add('hidden');

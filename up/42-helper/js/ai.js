@@ -24,40 +24,63 @@ async function sendMessage(userMessage, retryCount = 0) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 30000);
 
-  try {
-    const response = await fetch(CONFIG.AI_BASE_URL, {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer " + CONFIG.OPENROUTER_KEY,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(requestBody),
-      signal: controller.signal
-    });
+   try {
+     const response = await fetch(CONFIG.AI_BASE_URL, {
+       method: "POST",
+       headers: {
+         "Authorization": "Bearer " + CONFIG.OPENROUTER_KEY,
+         "Content-Type": "application/json"
+       },
+       body: JSON.stringify(requestBody),
+       signal: controller.signal
+     });
 
-    clearTimeout(timeoutId);
+     clearTimeout(timeoutId);
 
-    const responseText = await response.text();
-    console.log("Status:", response.status);
-    console.log("Response:", responseText);
+     const responseText = await response.text();
+     console.log("Status:", response.status);
+     console.log("Response:", responseText.substring(0, 500));
 
-    if (!response.ok) {
-      let errorMsg = response.status + " - " + responseText.substring(0, 200);
-      if (response.status === 401) {
-        errorMsg = "401 - Invalid API key. Please check your Cerebras API key.";
-      }
-      if (response.status === 402) {
-        errorMsg = "402 - Credits limit exceeded. Please check your Cerebras account.";
-      }
-      if ((response.status === 504 || response.status === 502) && retryCount < 2) {
-        console.log("Retrying...", retryCount + 1);
-        messages.pop();
-        return sendMessage(userMessage, retryCount + 1);
-      }
-      throw new Error(errorMsg);
-    }
+     if (!response.ok) {
+       let errorMsg = response.status + " - ";
+       
+       // Try to parse JSON error
+       try {
+         const errorData = JSON.parse(responseText);
+         errorMsg += (errorData.error?.message || errorData.message || JSON.stringify(errorData)).substring(0, 200);
+       } catch {
+         // Not JSON - probably HTML error page
+         errorMsg += responseText.substring(0, 150) + (responseText.length > 150 ? '...' : '');
+       }
+       
+       if (response.status === 401) {
+         errorMsg = "401 - Invalid API key. Please check your configuration.";
+       }
+       if (response.status === 402) {
+         errorMsg = "402 - Credits limit exceeded. Please check your account.";
+       }
+       if ((response.status === 504 || response.status === 502) && retryCount < 2) {
+         console.log("Retrying...", retryCount + 1);
+         messages.pop();
+         return sendMessage(userMessage, retryCount + 1);
+       }
+       throw new Error(errorMsg);
+     }
 
-    const data = JSON.parse(responseText);
+     // Try to parse JSON response
+     let data;
+     try {
+       data = JSON.parse(responseText);
+     } catch (parseError) {
+       console.error("Failed to parse JSON:", responseText.substring(0, 200));
+       
+       // Check if response is HTML (starts with <!DOCTYPE or <html)
+       if (responseText.trim().startsWith('<!DOCTYPE') || responseText.trim().startsWith('<html')) {
+         throw new Error('Server returned HTML error page. Check API endpoint and key.');
+       }
+       
+       throw new Error('Invalid response format from AI server.');
+     }
 
     if (data.error) {
       const errorMessage = data.error.message || data.error || JSON.stringify(data.error);
