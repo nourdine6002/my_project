@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Dashboard</title>
-   <link rel="stylesheet" href="css/style.css">
-   <link rel="stylesheet" href="css/components.css">
-   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>Dashboard - 42 Assistant</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body>
   <div class="scanline"></div>
@@ -17,73 +17,175 @@
   <div class="sakura-petal"></div>
   <div class="sakura-petal"></div>
 
-   <div class="watermark" style="top: 40px; left: 40px; transform: rotate(-10deg);">四十二</div>
+  <div class="watermark" style="top: 40px; left: 40px; transform: rotate(-10deg);">四十二</div>
 
-   <!-- Post-it Note -->
-   <div class="post-it-note" id="quotePostIt">
-     <div class="post-it-content">
-       <p class="post-it-quote">"The difference between a novice and a master is that the master has failed more times than the novice has even tried."</p>
-       <div class="tape tape-top"></div>
-     </div>
-   </div>
-
-    <div class="dashboard-page page-container">
-     <div class="header-nav">
-       <a href="index.html" class="nav-btn signout-btn" onclick="logout()">Sign Out</a>
-     </div>
-     <div class="dashboard-header">
-       <div class="greeting-row">
-         <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="Avatar" class="user-avatar">
-         <div>
-           <p class="subtitle">HEADQUARTERS</p>
-           <h1><span id="userName">Student</span></h1>
-           <p class="date" id="currentDate"></p>
-         </div>
-       </div>
-       <div class="header-right">
-         
-       </div>
-     </div>
-
-    <div class="stats-grid">
-      <div class="glass-card stat-card">
-        <div class="icon">⚔</div>
-        <div class="value" id="questsDone">0</div>
-        <div class="label">Projects Done</div>
-      </div>
-      <div class="glass-card stat-card">
-        <div class="icon">✦</div>
-        <div class="value" id="totalXP">0</div>
-        <div class="label">XP Points</div>
-      </div>
-      <div class="glass-card stat-card">
-        <div class="icon">◎</div>
-        <div class="value" id="toolsUsed">3</div>
-        <div class="label">Tools Used</div>
-      </div>
-      <div class="glass-card stat-card">
-        <div class="icon">◈</div>
-        <div class="value" id="dayStreak">1</div>
-        <div class="label">Day Streak</div>
-      </div>
+  <!-- Post-it Note -->
+  <div class="post-it-note" id="quotePostIt">
+    <div class="post-it-content">
+      <p class="post-it-quote">"The difference between a novice and a master is that the master has failed more times than the novice has even tried."</p>
+      <div class="tape tape-top"></div>
     </div>
+  </div>
 
-     <div class="tools-section">
-      <h2>AI Tools</h2>
-      
-      <div class="glass-card tool-card" onclick="window.location.href='ai-tools.html'" style="border-color: var(--neon-yellow);">
-        <div class="tool-icon">🛠️</div>
-        <div class="tool-info">
-          <div class="tool-title">
-            AI Tools Hub
-            <span class="rank-badge rank-s">S</span>
+  <!-- Tokyo Navigation -->
+  <nav class="tokyo-nav">
+    <a href="dashboard.html" class="nav-pill active" data-label="Dashboard">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="7" height="7"/>
+        <rect x="14" y="3" width="7" height="7"/>
+        <rect x="14" y="14" width="7" height="7"/>
+        <rect x="3" y="14" width="7" height="7"/>
+      </svg>
+    </a>
+    <a href="ai-tools.html" class="nav-pill" data-label="AI Tools">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+        <path d="M2 17l10 5 10-5"/>
+        <path d="M2 12l10 5 10-5"/>
+      </svg>
+    </a>
+    <a href="index.html" class="nav-pill" data-label="Sign Out" onclick="logout()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+    </a>
+  </nav>
+
+  <div class="dashboard-page page-container">
+    <!-- Hero Header -->
+    <div class="hero-header">
+      <div class="hero-glow"></div>
+      <div class="hero-content">
+        <div class="hero-top">
+          <div class="user-profile">
+            <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="Avatar" class="avatar-img">
+            <div class="user-info">
+              <span class="badge">HEADQUARTERS</span>
+              <h1><span id="userName">Student</span></h1>
+              <p class="date" id="currentDate"></p>
+            </div>
           </div>
-          <div class="tool-desc">All AI tools in one consolidated hub</div>
-          <div class="tool-stats" id="toolsHubStats">-</div>
+          <div class="level-badge">
+            <span class="level-icon">⚔</span>
+            <span>Level 42</span>
+          </div>
         </div>
-        <button class="btn-secondary launch-btn">Launch →</button>
+        
+        <div class="hero-stats">
+          <div class="stat-badge">
+            <span class="stat-value" id="questsDone">0</span>
+            <span class="stat-label">Projects Done</span>
+          </div>
+          <div class="stat-badge">
+            <span class="stat-value" id="totalXP">0</span>
+            <span class="stat-label">XP Points</span>
+          </div>
+          <div class="stat-badge">
+            <span class="stat-value" id="dayStreak">1</span>
+            <span class="stat-label">Day Streak</span>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- Progress Section -->
+    <section class="progress-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="title-icon">🎯</span>
+          42 School Progress
+        </h2>
+        <p class="section-subtitle">Track your journey through the curriculum</p>
+      </div>
+      
+      <div class="progress-container">
+        <div class="progress-card glass-card">
+          <div class="progress-ring-container">
+            <svg class="progress-ring" width="180" height="180">
+              <circle class="bg" cx="90" cy="90" r="85"/>
+              <circle class="progress" cx="90" cy="90" r="85" id="progressCircle"/>
+            </svg>
+            <div class="progress-content">
+              <div class="progress-value" id="progressPercent">0%</div>
+              <div class="progress-label">Curriculum Completed</div>
+            </div>
+          </div>
+          
+          <div class="progress-details">
+            <div class="detail-row">
+              <span class="detail-label">Total Projects</span>
+              <span class="detail-value" id="projectsCount">0/13</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Current Rank</span>
+              <span class="detail-value rank-text" id="currentRank">Beginner</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="projects-list glass-card">
+          <h3 class="projects-title">Project Status</h3>
+          <div class="projects-grid" id="projectsGrid">
+            <!-- Projects will be populated by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Tools Quick Access -->
+    <section class="tools-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="title-icon">⚡</span>
+          AI Tools Hub
+        </h2>
+        <p class="section-subtitle">Your intelligent assistants await</p>
+      </div>
+      
+      <div class="tools-grid">
+        <div class="tool-card glass-card" onclick="window.location.href='ai-tools.html'">
+          <div class="card-glow"></div>
+          <div class="tool-header">
+            <div class="tool-icon-wrapper">
+              <div class="tool-icon">🤖</div>
+              <div class="live-indicator">
+                <span class="pulse"></span>
+                <span>Online</span>
+              </div>
+            </div>
+            <span class="rank-badge rank-s">S-Tier</span>
+          </div>
+          <div class="tool-body">
+            <h3 class="tool-title">AI Tools Hub</h3>
+            <p class="tool-desc">All AI tools in one consolidated hub</p>
+            <div class="tool-stats" id="toolsHubStats">-</div>
+          </div>
+          <div class="tool-footer">
+            <p class="tool-usage">Access AI Assistant, Project Analyzer, Tester & Code Review</p>
+            <button class="btn-primary launch-btn">
+              <span>Open Hub</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- System Message -->
+    <section class="system-section">
+      <div class="system-card glass-card">
+        <div class="system-header">
+          <span class="system-icon">💡</span>
+          <h3>Pro Tip</h3>
+        </div>
+        <p class="system-text">Use the AI Tools Hub to streamline your workflow. The Project Analyzer can break down complex subjects into daily tasks, while the AI Assistant is always ready to help with norminette errors or debugging challenges.</p>
+      </div>
+    </section>
   </div>
 
   <script src="js/config.js"></script>
@@ -98,6 +200,9 @@
       
       updateDate();
       loadStats();
+      loadProjects();
+      animateProgress();
+      observeCards();
     });
 
     function updateDate() {
@@ -124,35 +229,866 @@
         if (xpValues[p.id]) totalXP += xpValues[p.id];
       });
       
-      document.getElementById('questsDone').textContent = completed.length;
-      document.getElementById('totalXP').textContent = totalXP;
-      document.getElementById('dayStreak').textContent = days;
+      // Animate values
+      animateValue('questsDone', 0, completed.length, 1200);
+      animateValue('totalXP', 0, totalXP, 1500);
+      animateValue('dayStreak', 0, days, 1000);
       
-       const analyzerUses = parseInt(localStorage.getItem('analyzer_uses') || '0');
-       const testerUses = parseInt(localStorage.getItem('tester_uses') || '0');
-       const chatMessages = parseInt(localStorage.getItem('chat_messages') || '0');
-       const codeReviews = parseInt(localStorage.getItem('code_reviews') || '0');
-       
-       if (document.getElementById('analyzerStats')) {
-         document.getElementById('analyzerStats').textContent = `${analyzerUses} uses`;
-       }
-       if (document.getElementById('testerStats')) {
-         document.getElementById('testerStats').textContent = `${testerUses} uses`;
-       }
-       if (document.getElementById('chatStats')) {
-         document.getElementById('chatStats').textContent = `${chatMessages} messages`;
-       }
-       if (document.getElementById('toolsHubStats')) {
-         const totalToolUses = analyzerUses + testerUses + chatMessages + codeReviews;
-         document.getElementById('toolsHubStats').textContent = `${totalToolUses} total uses`;
-       }
-       document.getElementById('toolsUsed').textContent = analyzerUses + testerUses + chatMessages + codeReviews;
+      // Update tools stats
+      const analyzerUses = parseInt(localStorage.getItem('analyzer_uses') || '0');
+      const testerUses = parseInt(localStorage.getItem('tester_uses') || '0');
+      const chatMessages = parseInt(localStorage.getItem('chat_messages') || '0');
+      const codeReviews = parseInt(localStorage.getItem('code_reviews') || '0');
+      
+      if (document.getElementById('toolsHubStats')) {
+        const totalToolUses = analyzerUses + testerUses + chatMessages + codeReviews;
+        document.getElementById('toolsHubStats').textContent = `${totalToolUses} total uses`;
+      }
+      document.getElementById('toolsUsed').textContent = analyzerUses + testerUses + chatMessages + codeReviews;
+    }
+
+    function animateProgress() {
+      const completed = JSON.parse(localStorage.getItem('projects_completed') || '[]');
+      const totalProjects = 13; // 42 curriculum core projects
+      const percent = Math.round((completed.length / totalProjects) * 100);
+      
+      // Animate the circular progress
+      setTimeout(() => {
+        document.getElementById('progressPercent').textContent = percent + '%';
+        updateProgressCircle(percent);
+      }, 500);
+      
+      // Animate the progress text
+      animateValue('projectsCount', 0, completed.length, 1500, totalProjects);
+    }
+
+    function updateProgressCircle(percent) {
+      const circle = document.getElementById('progressCircle');
+      const radius = 85;
+      const circumference = 2 * Math.PI * radius;
+      const offset = circumference - (percent / 100) * circumference;
+      
+      circle.style.strokeDasharray = `${circumference} ${circumference}`;
+      circle.style.strokeDashoffset = circumference;
+      circle.style.transition = 'stroke-dashoffset 2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+      
+      setTimeout(() => {
+        circle.style.strokeDashoffset = offset;
+      }, 100);
+    }
+
+    function loadProjects() {
+      const completed = JSON.parse(localStorage.getItem('projects_completed') || '[]');
+      const completedIds = completed.map(p => p.id);
+      
+      const projects = [
+        { id: 'libft', name: 'libft', icon: '📚', status: 'completed' },
+        { id: 'ft_printf', name: 'ft_printf', icon: '🖨️', status: 'completed' },
+        { id: 'get_next_line', name: 'get_next_line', icon: '📄', status: 'in-progress' },
+        { id: 'born2beroot', name: 'born2beroot', icon: '🌱', status: 'pending' },
+        { id: 'so_long', name: 'so_long', icon: '🎮', status: 'pending' },
+        { id: 'push_swap', name: 'push_swap', icon: '🔄', status: 'pending' },
+        { id: 'pipex', name: 'pipex', icon: '🔧', status: 'pending' },
+        { id: 'minitalk', name: 'minitalk', icon: '💬', status: 'pending' },
+        { id: 'minishell', name: 'minishell', icon: '🐚', status: 'pending' },
+        { id: 'philosophers', name: 'philosophers', icon: '🍽️', status: 'pending' },
+        { id: 'netpractice', name: 'netpractice', icon: '🌐', status: 'pending' },
+        { id: 'cub3d', name: 'cub3d', icon: '🎯', status: 'pending' },
+        { id: 'inception', name: 'inception', icon: '🎬', status: 'pending' }
+      ];
+      
+      const grid = document.getElementById('projectsGrid');
+      grid.innerHTML = '';
+      
+      projects.forEach(project => {
+        const isCompleted = completedIds.includes(project.id);
+        const item = document.createElement('div');
+        item.className = `project-item ${isCompleted ? 'completed' : project.status}`;
+        item.innerHTML = `
+          <div class="status-dot ${isCompleted ? 'clear' : project.status}"></div>
+          <span class="project-icon">${project.icon}</span>
+          <span class="project-name">${project.name}</span>
+          <span class="project-status ${isCompleted ? 'clear' : project.status}">
+            ${isCompleted ? '✓ Done' : project.status === 'in-progress' ? 'In Progress' : 'Locked'}
+          </span>
+        `;
+        grid.appendChild(item);
+      });
     }
 
     function logout() {
       clearData();
       window.location.href = 'index.html';
     }
+
+    function animateValue(id, start, end, duration, suffix = '') {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const range = end - start;
+      const startTime = performance.now();
+      
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const current = Math.floor(start + range * easeOut);
+        el.textContent = current + (suffix || '');
+        
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        }
+      }
+      
+      requestAnimationFrame(update);
+    }
+
+    function observeCards() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      document.querySelectorAll('.glass-card, .tool-card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(card);
+      });
+    }
   </script>
+
+  <style>
+    /* Hero Header */
+    .hero-header {
+      position: relative;
+      margin-bottom: 50px;
+      padding: 40px;
+      background: linear-gradient(135deg, rgba(255,45,120,0.12) 0%, rgba(180,79,255,0.1) 50%, rgba(0,240,255,0.08) 100%);
+      border-radius: 28px;
+      overflow: hidden;
+      border: 1px solid rgba(255,45,120,0.2);
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: -50%;
+      right: -30%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255,45,120,0.15) 0%, transparent 70%);
+      filter: blur(60px);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .user-profile .avatar-img {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      border: 3px solid var(--neon-pink);
+      box-shadow: 0 0 25px rgba(255,45,120,0.5);
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .user-profile .avatar-img:hover {
+      transform: scale(1.05) rotate(3deg);
+    }
+
+    .user-info {
+      flex: 1;
+    }
+
+    .user-info .badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+      border-radius: 50px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: white;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 15px rgba(255,45,120,0.4);
+    }
+
+    .user-info h1 {
+      font-size: 28px;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, #fff, var(--text-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .user-info .date {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .level-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+      border-radius: 50px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: white;
+      box-shadow: 0 4px 20px rgba(180,79,255,0.5);
+      animation: tokyoDrift 4s ease-in-out infinite;
+    }
+
+    .level-icon {
+      font-size: 18px;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .stat-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      background: rgba(20,15,40,0.6);
+      border: 1px solid rgba(255,45,120,0.15);
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .stat-badge:hover {
+      background: rgba(255,45,120,0.1);
+      border-color: var(--neon-pink);
+      transform: translateY(-3px);
+    }
+
+    .stat-badge .stat-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--neon-pink);
+      text-shadow: 0 0 10px rgba(255,45,120,0.5);
+    }
+
+    .stat-badge .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    /* Section Headers */
+    .section-header {
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 20px;
+      margin-bottom: 6px;
+      color: var(--text-primary);
+    }
+
+    .title-icon {
+      font-size: 24px;
+    }
+
+    .section-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-left: 38px;
+    }
+
+    /* Progress Section */
+    .progress-section {
+      margin-bottom: 50px;
+    }
+
+    .progress-container {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 24px;
+    }
+
+    .progress-card {
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .progress-ring-container {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      margin-bottom: 20px;
+    }
+
+    .progress-ring {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .progress-ring .bg {
+      stroke: rgba(255,255,255,0.1);
+    }
+
+    .progress-ring .progress {
+      stroke: var(--neon-pink);
+      stroke-dasharray: 534;
+      stroke-dashoffset: 534;
+      transition: stroke-dashoffset 2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      filter: drop-shadow(0 0 8px var(--neon-pink));
+    }
+
+    .progress-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .progress-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--neon-pink);
+      text-shadow: 0 0 15px rgba(255,45,120,0.6);
+    }
+
+    .progress-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .progress-details {
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,45,120,0.15);
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-label {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .detail-value {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 600;
+      color: var(--neon-pink);
+      font-size: 14px;
+    }
+
+    .rank-text {
+      color: var(--neon-purple);
+    }
+
+    /* Projects List */
+    .projects-list {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .projects-title {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: var(--text-primary);
+    }
+
+    .projects-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+
+    .project-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(255,45,120,0.06);
+      border: 1px solid rgba(255,45,120,0.12);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .project-item:hover {
+      background: rgba(255,45,120,0.12);
+      border-color: var(--neon-pink);
+      transform: translateX(6px);
+      box-shadow: 0 4px 20px rgba(255,45,120,0.15);
+    }
+
+    .project-item.completed {
+      border-color: rgba(6, 214, 160, 0.3);
+      background: rgba(6, 214, 160, 0.06);
+    }
+
+    .project-item.completed:hover {
+      border-color: #06d6a0;
+      box-shadow: 0 4px 20px rgba(6, 214, 160, 0.15);
+    }
+
+    .project-item.in-progress {
+      border-color: rgba(180, 79, 255, 0.3);
+      background: rgba(180, 79, 255, 0.06);
+    }
+
+    .project-item.in-progress:hover {
+      border-color: var(--neon-purple);
+      box-shadow: 0 4px 20px rgba(180, 79, 255, 0.15);
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-dot.clear {
+      background: #06d6a0;
+      box-shadow: 0 0 10px #06d6a0;
+    }
+
+    .status-dot.in-progress {
+      background: transparent;
+      border: 2px solid var(--neon-purple);
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.pending {
+      background: var(--text-muted);
+    }
+
+    .project-icon {
+      font-size: 20px;
+    }
+
+    .project-name {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .project-status {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .project-status.clear {
+      background: rgba(6, 214, 160, 0.2);
+      color: #06d6a0;
+    }
+
+    .project-status.in-progress {
+      background: rgba(180, 79, 255, 0.2);
+      color: var(--neon-purple);
+    }
+
+    .project-status.pending {
+      background: rgba(107, 100, 128, 0.2);
+      color: var(--text-muted);
+    }
+
+    /* Tools Grid */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      margin-bottom: 20px;
+    }
+
+    .tool-card {
+      position: relative;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      overflow: hidden;
+      border: 1px solid rgba(255,45,120,0.2);
+    }
+
+    .card-glow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 50% 0%, rgba(255,45,120,0.1) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-8px) scale(1.01);
+      border-color: var(--neon-pink);
+      box-shadow: 
+        0 20px 60px rgba(255,45,120,0.25),
+        0 0 40px rgba(255,45,120,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .tool-card:hover .card-glow {
+      opacity: 1;
+    }
+
+    .tool-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .tool-icon-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tool-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      background: linear-gradient(135deg, var(--neon-yellow), #ffd700);
+      box-shadow: 0 8px 25px rgba(255,230,0,0.4);
+      transition: all 0.3s ease;
+    }
+
+    .tool-card:hover .tool-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--neon-yellow);
+      font-weight: 500;
+      padding: 4px 10px;
+      background: rgba(255, 230, 0, 0.1);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 230, 0, 0.2);
+    }
+
+    .pulse {
+      width: 6px;
+      height: 6px;
+      background: currentColor;
+      border-radius: 50%;
+      animation: pulseLive 2s ease-in-out infinite;
+    }
+
+    @keyframes pulseLive {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
+    .tool-body {
+      flex: 1;
+      margin-bottom: 16px;
+    }
+
+    .tool-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tool-desc {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .tool-stats {
+      font-size: 12px;
+      color: var(--neon-blue);
+      font-family: 'Share Tech Mono', monospace;
+      background: rgba(0,240,255,0.1);
+      padding: 4px 10px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .tool-footer {
+      border-top: 1px solid rgba(255,45,120,0.15);
+      padding-top: 16px;
+    }
+
+    .tool-usage {
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .launch-btn {
+      width: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .launch-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .launch-btn:hover::before {
+      left: 100%;
+    }
+
+    /* System Section */
+    .system-section {
+      margin-top: 50px;
+    }
+
+    .system-card {
+      padding: 30px;
+      border-left: 4px solid var(--neon-pink);
+    }
+
+    .system-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .system-icon {
+      font-size: 28px;
+    }
+
+    .system-header h3 {
+      font-size: 18px;
+      color: var(--text-primary);
+    }
+
+    .system-text {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* Stats Grid for Top Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 50px;
+    }
+
+    .stat-card {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(255,45,120,0.2);
+    }
+
+    .stat-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .stat-card .stat-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--neon-pink);
+      text-shadow: 0 0 10px rgba(255,45,120,0.5);
+      margin-bottom: 4px;
+    }
+
+    .stat-card .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Ranks */
+    .rank-badge {
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      backdrop-filter: blur(10px);
+    }
+
+    .rank-s {
+      background: linear-gradient(135deg, var(--neon-yellow), #ffd700);
+      color: #000;
+      box-shadow: 0 0 15px rgba(255,230,0,0.4);
+    }
+
+    .rank-a {
+      background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+      color: white;
+      box-shadow: 0 0 15px rgba(180,79,255,0.4);
+    }
+
+    .rank-b {
+      background: linear-gradient(135deg, var(--neon-blue), #00aaff);
+      color: white;
+      box-shadow: 0 0 15px rgba(0,240,255,0.4);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-header {
+        padding: 24px;
+      }
+
+      .hero-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .user-profile .avatar-img {
+        width: 56px;
+        height: 56px;
+      }
+
+      .user-info h1 {
+        font-size: 24px;
+      }
+
+      .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .stat-badge {
+        padding: 16px;
+      }
+
+      .stat-badge .stat-value {
+        font-size: 20px;
+      }
+
+      .progress-container {
+        grid-template-columns: 1fr;
+      }
+
+      .tools-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .stat-card .stat-value {
+        font-size: 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Post-it adjustments */
+    @media (max-width: 1024px) {
+      .dashboard-page .post-it-note {
+        transform: rotate(0);
+      }
+    }
+  </style>
 </body>
 </html>
