@@ -7,268 +7,756 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <style>
-    .review-page {
-      padding: 30px 20px 120px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    
-    .review-header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-    
-    .review-header h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 36px;
-      color: var(--neon-pink);
-      text-shadow: 0 0 20px var(--neon-pink);
-      margin-bottom: 10px;
-    }
-    
-    .review-header .subtitle {
-      color: var(--text-muted);
-      font-size: 16px;
-    }
-    
-    .review-card {
-      background: var(--bg-glass);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border-glow);
-      border-radius: 20px;
-      padding: 30px;
-      margin-bottom: 24px;
-    }
-    
-    .language-selector {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-    
-    .lang-btn {
-      padding: 10px 20px;
-      background: rgba(255, 45, 120, 0.1);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 14px;
-    }
-    
-    .lang-btn:hover {
-      background: rgba(255, 45, 120, 0.2);
-    }
-    
-    .lang-btn.active {
-      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
-      border-color: var(--neon-pink);
-      color: white;
-    }
-    
-    .code-input-area {
-      position: relative;
-      margin-bottom: 20px;
-    }
-    
-    .code-input {
-      width: 100%;
-      min-height: 300px;
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      color: var(--text-primary);
-      font-family: 'JetBrains Mono', 'Consolas', monospace;
-      font-size: 14px;
-      padding: 20px;
-      resize: vertical;
-      line-height: 1.6;
-    }
-    
-    .code-input:focus {
-      outline: none;
-      border-color: var(--neon-purple);
-      box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
-    }
-    
-    .code-input::placeholder {
-      color: var(--text-muted);
-    }
-    
-    .char-counter {
-      font-size: 12px;
-      color: var(--text-muted);
-      text-align: right;
-      margin-top: 8px;
-    }
-    
-    .char-counter.warning {
-      color: var(--neon-yellow);
-    }
-    
-    .char-counter.danger {
-      color: #ef4444;
-    }
-    
-    .review-options {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
-    
-    .option-btn {
-      padding: 8px 16px;
-      background: rgba(255, 45, 120, 0.08);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 13px;
-    }
-    
-    .option-btn:hover, .option-btn.active {
-      background: rgba(255, 45, 120, 0.15);
-      border-color: var(--neon-pink);
-      color: var(--neon-pink);
-    }
-    
-    .submit-btn {
-      width: 100%;
-      padding: 16px;
-      font-size: 16px;
-      font-weight: 600;
-    }
-    
-    /* Result Styles */
-    .result-area {
-      margin-top: 30px;
-    }
-    
-    .result-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    
-    .result-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 20px;
-      color: var(--neon-pink);
-    }
-    
-    .result-score {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 18px;
-      padding: 8px 20px;
-      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
-      border-radius: 20px;
-      color: white;
-    }
-    
-    .review-section {
-      margin-bottom: 24px;
-    }
-    
-    .review-section h3 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 14px;
-      color: var(--neon-yellow);
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .review-content {
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 12px;
-      padding: 20px;
-      color: var(--text-secondary);
-      line-height: 1.8;
-      font-size: 14px;
-    }
-    
-    .review-content code {
-      background: rgba(255, 45, 120, 0.1);
-      padding: 2px 6px;
-      border-radius: 4px;
-      color: var(--neon-pink);
-      font-family: 'JetBrains Mono', monospace;
-    }
-    
-    .review-content strong {
-      color: var(--text-primary);
-    }
-    
-    .suggestion-item {
-      background: rgba(255, 45, 120, 0.08);
-      border-left: 3px solid var(--neon-pink);
-      border-radius: 0 8px 8px 0;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-    
-    .suggestion-item h4 {
-      color: var(--neon-pink);
-      margin-bottom: 8px;
-    }
-    
-    .loading-spinner {
-      text-align: center;
-      padding: 60px 20px;
-    }
-    
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid rgba(255, 45, 120, 0.2);
-      border-top-color: var(--neon-pink);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 20px;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    .hidden { display: none !important; }
-  </style>
-</head>
-<body>
+   <style>
+     /* Base Styles */
+     .review-page {
+       padding: 30px 20px 120px;
+       max-width: 900px;
+       margin: 0 auto;
+     }
+
+     /* Hero Header */
+     .hero-header {
+       position: relative;
+       margin-bottom: 40px;
+       padding: 40px;
+       background: linear-gradient(135deg, rgba(255,45,120,0.12) 0%, rgba(180,79,255,0.1) 50%, rgba(0,240,255,0.08) 100%);
+       border-radius: 28px;
+       overflow: hidden;
+       border: 1px solid rgba(255,45,120,0.2);
+     }
+
+     .hero-glow {
+       position: absolute;
+       top: -50%;
+       right: -30%;
+       width: 400px;
+       height: 400px;
+       background: radial-gradient(circle, rgba(255,45,120,0.15) 0%, transparent 70%);
+       filter: blur(60px);
+       pointer-events: none;
+     }
+
+     .hero-content {
+       position: relative;
+       z-index: 1;
+     }
+
+     .hero-top {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       margin-bottom: 0;
+     }
+
+     .user-profile {
+       display: flex;
+       align-items: center;
+       gap: 16px;
+     }
+
+     .user-profile .avatar-img {
+       width: 64px;
+       height: 64px;
+       border-radius: 20px;
+       border: 3px solid var(--neon-pink);
+       box-shadow: 0 0 25px rgba(255,45,120,0.5);
+       object-fit: cover;
+       transition: transform 0.3s ease;
+     }
+
+     .user-profile .avatar-img:hover {
+       transform: scale(1.05) rotate(3deg);
+     }
+
+     .user-info .badge {
+       display: inline-block;
+       padding: 6px 16px;
+       background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+       border-radius: 50px;
+       font-family: 'Orbitron', sans-serif;
+       font-size: 11px;
+       font-weight: 600;
+       letter-spacing: 0.1em;
+       color: white;
+       margin-bottom: 6px;
+       box-shadow: 0 4px 15px rgba(255,45,120,0.4);
+     }
+
+     .user-info h1 {
+       font-size: 24px;
+       margin-bottom: 0;
+       background: linear-gradient(135deg, #fff, var(--text-secondary));
+       -webkit-background-clip: text;
+       -webkit-text-fill-color: transparent;
+       background-clip: text;
+     }
+
+     /* Review Header */
+     .review-header {
+       margin-bottom: 30px;
+       text-align: center;
+     }
+
+     .review-header h1 {
+       font-family: 'Orbitron', sans-serif;
+       font-size: 28px;
+       background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+       -webkit-background-clip: text;
+       -webkit-text-fill-color: transparent;
+       background-clip: text;
+       margin-bottom: 6px;
+     }
+
+     .review-header .subtitle {
+       color: var(--text-muted);
+       font-size: 14px;
+     }
+
+     /* Input Card */
+     .review-card {
+       background: var(--bg-glass);
+       backdrop-filter: blur(20px);
+       border: 1px solid var(--border-glow);
+       border-radius: 24px;
+       padding: 32px;
+       margin-bottom: 24px;
+       transition: all 0.3s ease;
+     }
+
+     .review-card:hover {
+       border-color: rgba(255,45,120,0.3);
+     }
+
+     /* Language Selector */
+     .language-selector {
+       display: flex;
+       gap: 10px;
+       margin-bottom: 24px;
+       flex-wrap: wrap;
+     }
+
+     .lang-btn {
+       padding: 10px 20px;
+       background: rgba(255, 45, 120, 0.08);
+       border: 1px solid var(--border-subtle);
+       border-radius: 12px;
+       color: var(--text-secondary);
+       cursor: pointer;
+       transition: all 0.3s ease;
+       font-size: 14px;
+       font-weight: 500;
+     }
+
+     .lang-btn:hover {
+       background: rgba(255, 45, 120, 0.15);
+       border-color: var(--neon-pink);
+       transform: translateY(-2px);
+     }
+
+     .lang-btn.active {
+       background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+       border-color: var(--neon-pink);
+       color: white;
+       box-shadow: 0 4px 15px rgba(255,45,120,0.3);
+     }
+
+     /* Code Input */
+     .code-input-area {
+       position: relative;
+       margin-bottom: 24px;
+     }
+
+     .code-input {
+       width: 100%;
+       min-height: 280px;
+       background: rgba(0, 0, 0, 0.4);
+       border: 1px solid var(--border-subtle);
+       border-radius: 16px;
+       color: var(--text-primary);
+       font-family: 'JetBrains Mono', 'Consolas', monospace;
+       font-size: 14px;
+       padding: 20px;
+       resize: vertical;
+       line-height: 1.7;
+       transition: all 0.3s ease;
+     }
+
+     .code-input:focus {
+       outline: none;
+       border-color: var(--neon-purple);
+       box-shadow: 0 0 30px rgba(180, 79, 255, 0.3), inset 0 0 20px rgba(180, 79, 255, 0.05);
+     }
+
+     .code-input::placeholder {
+       color: var(--text-muted);
+     }
+
+     /* Character Counter */
+     .char-counter {
+       position: absolute;
+       bottom: -22px;
+       right: 4px;
+       font-size: 11px;
+       color: var(--text-muted);
+       background: var(--bg-void);
+       padding: 2px 8px;
+       border-radius: 4px;
+     }
+
+     .char-counter.warning {
+       color: var(--neon-yellow);
+     }
+
+     .char-counter.danger {
+       color: #ef4444;
+     }
+
+     /* Options Grid */
+     .review-options {
+       display: grid;
+       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+       gap: 10px;
+       margin-bottom: 24px;
+     }
+
+     .option-btn {
+       padding: 12px 16px;
+       background: rgba(255, 45, 120, 0.06);
+       border: 1px solid var(--border-subtle);
+       border-radius: 12px;
+       color: var(--text-secondary);
+       cursor: pointer;
+       transition: all 0.3s ease;
+       font-size: 13px;
+       font-weight: 500;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       gap: 6px;
+     }
+
+     .option-btn:hover {
+       background: rgba(255, 45, 120, 0.12);
+       border-color: var(--neon-pink);
+       transform: translateY(-2px);
+     }
+
+     .option-btn.active {
+       background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+       border-color: var(--neon-pink);
+       color: white;
+       box-shadow: 0 4px 15px rgba(255,45,120,0.3);
+     }
+
+     /* Submit Button */
+     .submit-btn {
+       width: 100%;
+       padding: 16px;
+       font-size: 16px;
+       font-weight: 600;
+       position: relative;
+       overflow: hidden;
+     }
+
+     .submit-btn::before {
+       content: '';
+       position: absolute;
+       top: 0;
+       left: -100%;
+       width: 100%;
+       height: 100%;
+       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+       transition: left 0.5s ease;
+     }
+
+     .submit-btn:hover::before {
+       left: 100%;
+     }
+
+     .submit-btn:disabled {
+       opacity: 0.4;
+       cursor: not-allowed;
+     }
+
+     /* Loading Spinner */
+     .loading-spinner {
+       text-align: center;
+       padding: 80px 20px;
+     }
+
+     .spinner {
+       width: 70px;
+       height: 70px;
+       border: 4px solid rgba(255, 45, 120, 0.2);
+       border-top-color: var(--neon-pink);
+       border-radius: 50%;
+       animation: spin 1s linear infinite;
+       margin: 0 auto 24px;
+       box-shadow: 0 0 20px rgba(255,45,120,0.3);
+     }
+
+     @keyframes spin {
+       to { transform: rotate(360deg); }
+     }
+
+     .loading-text {
+       font-family: 'Orbitron', sans-serif;
+       font-size: 20px;
+       color: var(--neon-pink);
+       margin-bottom: 8px;
+     }
+
+     .loading-sub {
+       color: var(--text-muted);
+       font-size: 14px;
+     }
+
+     /* Result Area */
+     .result-area {
+       margin-top: 30px;
+       opacity: 0;
+       transform: translateY(30px);
+       transition: all 0.6s ease;
+     }
+
+     .result-area.show {
+       opacity: 1;
+       transform: translateY(0);
+     }
+
+     .result-hero {
+       background: linear-gradient(135deg, rgba(255,45,120,0.12) 0%, rgba(180,79,255,0.1) 50%, rgba(0,240,255,0.08) 100%);
+       border: 1px solid rgba(255,45,120,0.2);
+       border-radius: 24px;
+       padding: 40px;
+       margin-bottom: 30px;
+       position: relative;
+       overflow: hidden;
+     }
+
+     .result-hero::before {
+       content: '';
+       position: absolute;
+       top: -50%;
+       right: -20%;
+       width: 300px;
+       height: 300px;
+       background: radial-gradient(circle, rgba(255,45,120,0.15) 0%, transparent 70%);
+       filter: blur(60px);
+       pointer-events: none;
+     }
+
+     .result-hero .header-top {
+       display: flex;
+       justify-content: space-between;
+       align-items: flex-start;
+       margin-bottom: 20px;
+       position: relative;
+       z-index: 1;
+     }
+
+     .result-title {
+       font-family: 'Orbitron', sans-serif;
+       font-size: 26px;
+       color: var(--text-primary);
+       margin: 0;
+     }
+
+     .result-badge {
+       padding: 8px 16px;
+       background: linear-gradient(135deg, var(--neon-yellow), #ffd700);
+       border-radius: 20px;
+       font-family: 'Orbitron', sans-serif;
+       font-size: 12px;
+       font-weight: 700;
+       color: #000;
+       box-shadow: 0 4px 15px rgba(255,230,0,0.4);
+     }
+
+     /* Score Display */
+     .score-display {
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       gap: 60px;
+       margin: 20px 0;
+       position: relative;
+       z-index: 1;
+     }
+
+     .score-ring-container {
+       position: relative;
+       width: 160px;
+       height: 160px;
+     }
+
+     .score-ring {
+       width: 100%;
+       height: 100%;
+       transform: rotate(-90deg);
+     }
+
+     .score-ring .bg-circle {
+       fill: none;
+       stroke: rgba(255,255,255,0.08);
+       stroke-width: 12;
+     }
+
+     .score-ring .progress-circle {
+       fill: none;
+       stroke-width: 12;
+       stroke-linecap: round;
+       stroke-dasharray: 452;
+       stroke-dashoffset: 452;
+       transition: stroke-dashoffset 2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+       filter: drop-shadow(0 0 10px currentColor);
+     }
+
+     .score-ring .progress-circle.excellent { stroke: #4ade80; }
+     .score-ring .progress-circle.good { stroke: #fbbf24; }
+     .score-ring .progress-circle.average { stroke: #fb923c; }
+     .score-ring .progress-circle.poor { stroke: #f87171; }
+
+     .score-value {
+       position: absolute;
+       top: 50%;
+       left: 50%;
+       transform: translate(-50%, -50%);
+       text-align: center;
+     }
+
+     .score-value .number {
+       font-family: 'Orbitron', sans-serif;
+       font-size: 48px;
+       font-weight: 900;
+       color: var(--neon-pink);
+       text-shadow: 0 0 20px rgba(255,45,120,0.6);
+       line-height: 1;
+     }
+
+     .score-value .label {
+       font-size: 12px;
+       color: var(--text-muted);
+       text-transform: uppercase;
+       letter-spacing: 0.05em;
+       margin-top: 4px;
+     }
+
+     .score-feedback {
+       text-align: left;
+       max-width: 280px;
+     }
+
+     .score-feedback h3 {
+       font-family: 'Orbitron', sans-serif;
+       font-size: 18px;
+       color: var(--neon-pink);
+       margin-bottom: 8px;
+     }
+
+     .score-feedback p {
+       color: var(--text-secondary);
+       font-size: 14px;
+       line-height: 1.6;
+     }
+
+     /* Review Sections */
+     .review-sections-grid {
+       display: grid;
+       gap: 20px;
+       margin-bottom: 30px;
+     }
+
+     .review-section-card {
+       background: var(--bg-glass);
+       backdrop-filter: blur(20px);
+       border: 1px solid var(--border-glow);
+       border-radius: 20px;
+       padding: 28px;
+       transition: all 0.3s ease;
+       position: relative;
+       overflow: hidden;
+     }
+
+     .review-section-card::before {
+       content: '';
+       position: absolute;
+       top: 0;
+       left: 0;
+       width: 4px;
+       height: 100%;
+       background: linear-gradient(180deg, var(--neon-pink), var(--neon-purple));
+     }
+
+     .review-section-card:hover {
+       border-color: var(--neon-pink);
+       transform: translateX(6px);
+       box-shadow: 0 8px 30px rgba(255,45,120,0.15);
+     }
+
+     .section-header {
+       display: flex;
+       align-items: center;
+       gap: 12px;
+       margin-bottom: 16px;
+     }
+
+     .section-icon {
+       font-size: 24px;
+       width: 40px;
+       height: 40px;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       background: rgba(255,45,120,0.15);
+       border-radius: 12px;
+     }
+
+     .section-title {
+       font-family: 'Orbitron', sans-serif;
+       font-size: 16px;
+       font-weight: 600;
+       color: var(--text-primary);
+       margin: 0;
+     }
+
+     .section-content {
+       color: var(--text-secondary);
+       font-size: 14px;
+       line-height: 1.8;
+     }
+
+     /* Suggestion Items */
+     .suggestion-list {
+       display: flex;
+       flex-direction: column;
+       gap: 14px;
+     }
+
+     .suggestion-item {
+       background: rgba(255,45,120,0.06);
+       border-left: 3px solid var(--neon-pink);
+       border-radius: 0 12px 12px 0;
+       padding: 18px;
+       transition: all 0.3s ease;
+     }
+
+     .suggestion-item:hover {
+       background: rgba(255,45,120,0.1);
+       border-left-width: 5px;
+     }
+
+     .suggestion-item h4 {
+       color: var(--neon-pink);
+       font-size: 15px;
+       margin-bottom: 8px;
+       font-weight: 600;
+     }
+
+     .suggestion-item p {
+       color: var(--text-secondary);
+       font-size: 14px;
+       line-height: 1.6;
+       margin: 0;
+     }
+
+     /* Priority Fixes */
+     .priority-fix {
+       display: flex;
+       gap: 12px;
+       padding: 16px;
+       background: rgba(255,45,120,0.06);
+       border: 1px solid rgba(255,45,120,0.15);
+       border-radius: 12px;
+       margin-bottom: 12px;
+       transition: all 0.3s ease;
+     }
+
+     .priority-fix:hover {
+       background: rgba(255,45,120,0.1);
+       transform: translateX(4px);
+     }
+
+     .priority-number {
+       width: 32px;
+       height: 32px;
+       background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+       border-radius: 50%;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       font-family: 'Orbitron', sans-serif;
+       font-size: 14px;
+       font-weight: 700;
+       color: white;
+       flex-shrink: 0;
+     }
+
+     .priority-content h4 {
+       color: var(--text-primary);
+       font-size: 14px;
+       margin-bottom: 4px;
+     }
+
+     .priority-content p {
+       color: var(--text-secondary);
+       font-size: 13px;
+       line-height: 1.5;
+       margin: 0;
+     }
+
+     /* Code Blocks */
+     .code-block {
+       background: rgba(0, 0, 0, 0.4);
+       border: 1px solid var(--border-subtle);
+       border-radius: 12px;
+       padding: 16px;
+       margin: 12px 0;
+       overflow-x: auto;
+     }
+
+     .code-block code {
+       font-family: 'JetBrains Mono', monospace;
+       font-size: 13px;
+       color: #00ff88;
+       line-height: 1.6;
+     }
+
+     /* Highlight Styles */
+     .highlight-green {
+       color: #4ade80;
+       font-weight: 600;
+     }
+
+     .highlight-yellow {
+       color: var(--neon-yellow);
+       font-weight: 600;
+     }
+
+     .highlight-red {
+       color: #ef4444;
+       font-weight: 600;
+     }
+
+     /* Reset Button */
+     .reset-btn {
+       width: 100%;
+       padding: 16px;
+       font-size: 15px;
+       position: relative;
+       overflow: hidden;
+     }
+
+     .reset-btn::before {
+       content: '';
+       position: absolute;
+       top: 0;
+       left: -100%;
+       width: 100%;
+       height: 100%;
+       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+       transition: left 0.5s ease;
+     }
+
+     .reset-btn:hover::before {
+       left: 100%;
+     }
+
+     /* Responsive */
+     @media (max-width: 768px) {
+       .hero-header {
+         padding: 24px;
+       }
+
+       .hero-top {
+         flex-direction: column;
+         align-items: flex-start;
+       }
+
+       .user-profile .avatar-img {
+         width: 56px;
+         height: 56px;
+       }
+
+       .score-display {
+         flex-direction: column;
+         gap: 30px;
+       }
+
+       .score-feedback {
+         text-align: center;
+         max-width: 100%;
+       }
+
+       .review-options {
+         grid-template-columns: repeat(2, 1fr);
+       }
+     }
+
+     @media (max-width: 480px) {
+       .review-options {
+         grid-template-columns: 1fr;
+       }
+
+       .result-title {
+         font-size: 22px;
+       }
+     }
+
+     .hidden {
+       display: none !important;
+     }
+   </style>
+ </head>
+ <body>
   <div class="scanline"></div>
   <div class="sakura-petal"></div>
   <div class="sakura-petal"></div>
-  
+
   <div class="watermark" style="top: 40px; right: 40px; transform: rotate(-10deg);">🔍</div>
-  
+
+  <!-- Tokyo Navigation -->
+  <nav class="tokyo-nav">
+    <a href="dashboard.html" class="nav-pill" data-label="Dashboard">🏠</a>
+    <a href="ai-tools.html" class="nav-pill" data-label="AI Tools">⚡</a>
+    <a href="code-review.html" class="nav-pill active" data-label="Code Review">🔍</a>
+    <button onclick="logout()" class="nav-pill" data-label="Sign Out">🚪</button>
+  </nav>
+
   <div class="review-page">
-    <div class="review-header">
-      <h1>Code Review AI</h1>
-      <p class="subtitle">Get AI-powered code analysis and suggestions</p>
+    <!-- Hero Section -->
+    <div class="hero-header">
+      <div class="hero-glow"></div>
+      <div class="hero-content">
+        <div class="hero-top">
+          <div class="user-profile">
+            <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="Avatar" class="avatar-img">
+            <div class="user-info">
+              <span class="badge">CODE REVIEW</span>
+              <h1><span id="userNameDisplay">Student</span></h1>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    
-    <div class="review-card">
-      <p style="color: var(--text-muted); margin-bottom: 20px;">Paste your code below to get a detailed review from our AI assistant.</p>
-      
+
+    <!-- Input Card -->
+    <div class="review-card glass-card" id="inputCard">
+      <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 14px;">Paste your code below to get a detailed AI-powered review with scoring and improvement suggestions.</p>
+
       <div class="language-selector">
         <button class="lang-btn active" data-lang="c">C</button>
         <button class="lang-btn" data-lang="python">Python</button>
         <button class="lang-btn" data-lang="shell">Shell</button>
         <button class="lang-btn" data-lang="generic">Other</button>
       </div>
-      
+
       <div class="code-input-area">
         <textarea class="code-input" id="codeInput" placeholder="Paste your code here..." maxlength="15000"></textarea>
         <div class="char-counter" id="charCounter">0 / 15,000</div>
       </div>
-      
+
       <div class="review-options">
         <button class="option-btn" data-opt="bugs">🐛 Bug Detection</button>
         <button class="option-btn" data-opt="style">📝 Style/Norminette</button>
@@ -277,49 +765,44 @@
         <button class="option-btn" data-opt="security">🛡️ Security</button>
         <button class="option-btn active" data-opt="general">🎯 All</button>
       </div>
-      
+
       <button class="btn-primary submit-btn" id="reviewBtn" onclick="submitReview()" disabled>
         🔍 Analyze Code
       </button>
     </div>
-    
+
     <!-- Loading State -->
     <div class="loading-spinner hidden" id="loadingState">
       <div class="spinner"></div>
-      <h3 style="color: var(--neon-pink); font-family: 'Orbitron', sans-serif;">Analyzing your code...</h3>
-      <p style="color: var(--text-muted);">AI is processing your review</p>
+      <div class="loading-text">AI is analyzing...</div>
+      <div class="loading-sub" id="loadingSub">Processing your code</div>
     </div>
-    
-    <!-- Results State -->
+
+    <!-- Results Area -->
     <div class="result-area hidden" id="resultArea">
-      <div class="review-card">
-        <div class="result-header">
-          <div class="result-title">Review Results</div>
-        </div>
-        
-        <div id="resultsContent">
-          <!-- Results will be inserted here -->
-        </div>
-        
-        <button class="btn-primary submit-btn" onclick="startNewReview()">
-          🔄 New Review
-        </button>
-      </div>
+      <div id="resultsContent"></div>
     </div>
-   </div>
+  </div>
   
-  <script src="js/config.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/utils.js"></script>
-  <script>
-    let selectedLang = 'c';
-    let selectedOptions = ['general'];
-    
-    document.addEventListener('DOMContentLoaded', function() {
-      if (!checkAuth()) return;
-      
-      const codeInput = document.getElementById('codeInput');
-      const charCounter = document.getElementById('charCounter');
+   <script src="js/config.js"></script>
+   <script src="js/storage.js"></script>
+   <script src="js/utils.js"></script>
+   <script src="js/ai.js"></script>
+   <script>
+     let selectedLang = 'c';
+     let selectedOptions = ['general'];
+
+     document.addEventListener('DOMContentLoaded', function() {
+       if (!checkAuth()) return;
+
+       const user = getUser();
+       const userNameDisplay = document.getElementById('userNameDisplay');
+       if (userNameDisplay && user) {
+         userNameDisplay.textContent = user.login;
+       }
+
+       const codeInput = document.getElementById('codeInput');
+       const charCounter = document.getElementById('charCounter');
       
       codeInput.addEventListener('input', function() {
         const len = this.value.length;
@@ -375,27 +858,41 @@
       const reviews = parseInt(localStorage.getItem('code_reviews') || '0');
       localStorage.setItem('code_reviews', reviews + 1);
       
-      // Show loading
-      document.getElementById('loadingState').classList.remove('hidden');
-      document.getElementById('resultArea').classList.add('hidden');
-      
-      const langNames = {
-        c: 'C',
-        python: 'Python',
-        shell: 'Shell',
-        generic: 'Generic'
-      };
-      
-      const optDescriptions = {
-        bugs: 'bug detection',
-        style: 'style and norminette compliance',
-        memory: 'memory leaks and allocation',
-        performance: 'performance optimization',
-        security: 'security vulnerabilities',
-        general: 'overall quality'
-      };
-      
-      const focusAreas = selectedOptions.map(o => optDescriptions[o]).join(', ');
+       // Show loading
+       document.getElementById('loadingState').classList.remove('hidden');
+       document.getElementById('resultArea').classList.add('hidden');
+
+       // Dynamic loading messages
+       const loadingMessages = [
+         'Parsing your code...',
+         'Analyzing structure...',
+         'Checking for issues...',
+         'Evaluating best practices...',
+         'Generating recommendations...'
+       ];
+       let idx = 0;
+       const loadingInterval = setInterval(() => {
+         document.getElementById('loadingSub').textContent = loadingMessages[idx];
+         idx = (idx + 1) % loadingMessages.length;
+       }, 600);
+
+       const langNames = {
+         c: 'C',
+         python: 'Python',
+         shell: 'Shell',
+         generic: 'Generic'
+       };
+
+       const optDescriptions = {
+         bugs: 'bug detection',
+         style: 'style and norminette compliance',
+         memory: 'memory leaks and allocation',
+         performance: 'performance optimization',
+         security: 'security vulnerabilities',
+         general: 'overall quality'
+       };
+
+       const focusAreas = selectedOptions.map(o => optDescriptions[o]).join(', ');
       
       const PROMPT = `Review this ${langNames[selectedLang]} code. Focus on: ${focusAreas}.
 
@@ -410,82 +907,199 @@ Provide a structured review with these sections:
 Code:
 ${code.slice(0, 5000)}`;
       
-      try {
-        const response = await sendMessage(PROMPT);
-        displayResults(response, code);
-      } catch (e) {
-        document.getElementById('loadingState').classList.add('hidden');
-        alert('Error: ' + e.message);
-      }
+       try {
+         const response = await sendMessage(PROMPT);
+         clearInterval(loadingInterval);
+         displayResults(response, code);
+       } catch (e) {
+         clearInterval(loadingInterval);
+         document.getElementById('loadingState').classList.add('hidden');
+         showError('AI Error: ' + e.message);
+       }
     }
     
     function displayResults(response, originalCode) {
       document.getElementById('loadingState').classList.add('hidden');
-      document.getElementById('resultArea').classList.remove('hidden');
-      
+      const resultArea = document.getElementById('resultArea');
+      resultArea.classList.remove('hidden');
+      resultArea.classList.add('show');
+
       // Parse score
       const scoreMatch = response.match(/OVERALL\s+SCORE:\s*(\d+)/i);
       const score = scoreMatch ? parseInt(scoreMatch[1]) : 7;
-      
-      let html = `
-        <div class="result-header">
-          <div class="result-title">Review Results</div>
-        </div>
-      `;
-      
-      // Score section
-      html += `
-        <div class="review-section">
-          <h3>📊 Overall Score</h3>
-          <div class="review-content" style="text-align: center; padding: 30px;">
-            <span style="font-family: 'Orbitron', sans-serif; font-size: 64px; color: ${getScoreColor(score)}; text-shadow: 0 0 30px ${getScoreColor(score)}40;">${score}/10</span>
-          </div>
-        </div>
-      `;
-      
-      // Parse sections
+
+      // Determine score class and feedback
+      let scoreClass = 'average';
+      let feedback = { title: 'Needs Work', desc: 'Consider significant improvements' };
+      if (score >= 9) { scoreClass = 'excellent'; feedback = { title: 'Excellent!', desc: 'Your code is production-ready' }; }
+      else if (score >= 7) { scoreClass = 'good'; feedback = { title: 'Good Job', desc: 'Solid implementation with minor tweaks needed' }; }
+      else if (score >= 5) { scoreClass = 'average'; feedback = { title: 'Needs Work', desc: 'Several areas require attention' }; }
+      else { scoreClass = 'poor'; feedback = { title: 'Needs Major Work', desc: 'Consider revisiting the fundamentals' }; }
+
       const sections = [
         { key: 'OVERVIEW', icon: '📋', title: 'Overview' },
         { key: 'KEY FINDINGS', icon: '🔍', title: 'Key Findings' },
         { key: 'SUGGESTIONS', icon: '💡', title: 'Suggestions' },
         { key: 'PRIORITY FIXES', icon: '⚡', title: 'Priority Fixes' }
       ];
-      
+
+      let sectionsHtml = '';
       sections.forEach(section => {
         const content = extractSection(response, section.key);
         if (content) {
-          html += `
-            <div class="review-section">
-              <h3>${section.icon} ${section.title}</h3>
-              <div class="review-content">${formatContent(content)}</div>
+          const formatted = formatSectionContent(content, section.key === 'PRIORITY FIXES');
+          sectionsHtml += `
+            <div class="review-section-card">
+              <div class="section-header">
+                <div class="section-icon">${section.icon}</div>
+                <h3 class="section-title">${section.title}</h3>
+              </div>
+              <div class="section-content">${formatted}</div>
             </div>
           `;
         }
       });
-      
+
+      const html = `
+        <div class="result-hero">
+          <div class="hero-glow"></div>
+          <div class="hero-content">
+            <div class="header-top">
+              <div class="user-profile">
+                <img src="https://avatars.githubusercontent.com/u/185643713?v=4" alt="Avatar" class="avatar-img">
+                <div class="user-info">
+                  <span class="badge">REVIEW COMPLETE</span>
+                  <h1>Analysis Ready</h1>
+                </div>
+              </div>
+              <div class="result-badge">${feedback.title}</div>
+            </div>
+
+            <div class="score-display">
+              <div class="score-ring-container">
+                <svg class="score-ring" viewBox="0 0 160 160">
+                  <circle class="bg-circle" cx="80" cy="80" r="72"/>
+                  <circle class="progress-circle ${scoreClass}" cx="80" cy="80" r="72" id="scoreProgress"/>
+                </svg>
+                <div class="score-value">
+                  <div class="number" id="scoreNumber">0</div>
+                  <div class="label">Score</div>
+                </div>
+              </div>
+
+              <div class="score-feedback">
+                <h3>${feedback.title}</h3>
+                <p>${feedback.desc}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-sections-grid">
+          ${sectionsHtml}
+        </div>
+
+        <button class="btn-primary reset-btn" onclick="startNewReview()">
+          🔄 New Review
+        </button>
+      `;
+
       document.getElementById('resultsContent').innerHTML = html;
-      
+
+      // Animate score
+      setTimeout(() => animateScore(score), 300);
+
       // Scroll to results
       document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
-    }
-    
-    function extractSection(text, sectionName) {
-      const regex = new RegExp(`${sectionName}:\\s*(.*?)(?=\\n\\n[A-Z]|\\n\\n$|$)`, 'is');
-      const match = text.match(regex);
-      return match ? match[1].trim() : null;
-    }
-    
-    function formatContent(text) {
-      return text
-        .replace(/\n-/g, '<br>-')
-        .replace(/```([\s\S]*?)```/g, '<code>$1</code>')
+     }
+
+     function extractSection(text, sectionName) {
+       try {
+         // Match optional numbering (e.g., "1. OVERALL SCORE:" or "OVERALL SCORE:")
+         const pattern = `(?:\\d+\\.\\s*)?${sectionName}:\\s*([\\s\\S]*?)(?=\\n\\n(?:\\d+\\.\\s*)?[A-Z0-9]|\\n\\n$|$)`;
+         const regex = new RegExp(pattern, 'i');
+         const match = text.match(regex);
+         return match ? match[1].trim() : null;
+       } catch (e) {
+         console.error('Error extracting section:', sectionName, e);
+         return null;
+       }
+     }
+
+     function formatSectionContent(text, isPriority = false) {
+      if (!text) return '';
+
+      // Escape HTML
+      text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+      if (isPriority) {
+        // Format priority fixes as numbered items
+        const items = text.split(/\n|\n\n/).filter(item => item.trim());
+        let html = '<div class="suggestion-list">';
+        items.forEach((item, idx) => {
+          const cleanItem = item.replace(/^\d+\.\s*/, '').trim();
+          if (cleanItem) {
+            html += `
+              <div class="priority-fix">
+                <div class="priority-number">${idx + 1}</div>
+                <div class="priority-content">
+                  <h4>${cleanItem.split('.')[0] || 'Fix'}</h4>
+                  <p>${cleanItem}</p>
+                </div>
+              </div>
+            `;
+          }
+        });
+        html += '</div>';
+        return html;
+      }
+
+      // Regular section content with bullet points
+      text = text
+        .replace(/```([\s\S]*?)```/g, '<div class="code-block"><code>$1</code></div>')
         .replace(/`([^`]+)`/g, '<code>$1</code>')
-        .replace(/\n\n/g, '</p><p>')
-        .replace(/\n/g, '<br>')
-        .replace(/<p>/g, '<p style="margin-bottom: 12px;">')
-        .replace(/<\?p>/g, '<p>');
+        .replace(/\n\s*-\s+/g, '<br><span class="highlight-green">▪ </span>')
+        .replace(/\n\s*\*\s+/g, '<br><span class="highlight-green">▪ </span>')
+        .replace(/\n/g, '<br>');
+
+      return `<p>${text}</p>`;
     }
-    
+
+    function animateScore(score) {
+      const scoreEl = document.getElementById('scoreNumber');
+      const progressRing = document.getElementById('scoreProgress');
+      if (!scoreEl || !progressRing) return;
+
+      const radius = 72;
+      const circumference = 2 * Math.PI * radius;
+      const offset = circumference - (score / 10) * circumference;
+
+      // Animate number
+      let current = 0;
+      const duration = 2000;
+      const startTime = performance.now();
+
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        current = Math.floor(score * easeOut);
+        scoreEl.textContent = current;
+
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        }
+      }
+
+      requestAnimationFrame(update);
+
+      // Animate ring
+      setTimeout(() => {
+        progressRing.style.strokeDashoffset = offset;
+        progressRing.style.transition = 'stroke-dashoffset 2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+      }, 100);
+    }
+
     function getScoreColor(score) {
       if (score >= 8) return '#4ade80';
       if (score >= 6) return '#fbbf24';
@@ -499,8 +1113,11 @@ ${code.slice(0, 5000)}`;
       document.getElementById('charCounter').classList.remove('warning', 'danger');
       document.getElementById('reviewBtn').disabled = true;
       document.getElementById('loadingState').classList.add('hidden');
-      document.getElementById('resultArea').classList.add('hidden');
-      
+      const resultArea = document.getElementById('resultArea');
+      resultArea.classList.add('hidden');
+      resultArea.classList.remove('show');
+      document.getElementById('resultsContent').innerHTML = '';
+
       // Reset selections
       selectedLang = 'c';
       selectedOptions = ['general'];
@@ -508,7 +1125,7 @@ ${code.slice(0, 5000)}`;
       document.querySelector('[data-lang="c"]').classList.add('active');
       document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
       document.querySelector('[data-opt="general"]').classList.add('active');
-      
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     

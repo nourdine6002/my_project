@@ -60,18 +60,17 @@ async function sendMessage(userMessage, retryCount = 0) {
     const data = JSON.parse(responseText);
 
     if (data.error) {
-      if (data.error.message.includes('tokens limit') || data.error.message.includes('402')) {
+      const errorMessage = data.error.message || data.error || JSON.stringify(data.error);
+      if (errorMessage.includes('credits') || errorMessage.includes('402') || response.status === 402) {
         throw new Error("402 - Credits limit exceeded. Please check your Cerebras account.");
       }
-      if (data.error.message.includes('aborted') && retryCount < 2) {
-        console.log("Retrying after abort...", retryCount + 1);
-        messages.pop();
-        return sendMessage(userMessage, retryCount + 1);
+      if (errorMessage.includes('tokens') || errorMessage.includes('token')) {
+        throw new Error("Token limit exceeded. Please try a shorter message.");
       }
-      throw new Error("API Error: " + data.error.message);
+      throw new Error("API Error: " + errorMessage);
     }
 
-    if (data.choices && data.choices[0] && data.choices[0].message) {
+    if (data.choices && data.choices.length > 0 && data.choices[0].message && data.choices[0].message.content) {
       const aiResponse = data.choices[0].message.content;
       messages.push({
         role: "assistant",
@@ -80,8 +79,19 @@ async function sendMessage(userMessage, retryCount = 0) {
       return aiResponse;
     }
 
-    console.error("No response data:", data);
-    return "No response from AI. Check console for details.";
+    // Handle unexpected response format
+    console.error("Unexpected response format:", data);
+    if (data.choices && data.choices[0] && data.choices[0].text) {
+      // Fallback for older API format
+      const aiResponse = data.choices[0].text;
+      messages.push({
+        role: "assistant",
+        content: aiResponse
+      });
+      return aiResponse;
+    }
+
+    return "No response from AI. Please try again.";
 
   } catch (error) {
     clearTimeout(timeoutId);

@@ -510,9 +510,11 @@ Subject:\n${text.slice(0, 4000)}`;
         document.getElementById('resultDesc').style.display = 'none';
       }
 
-      // Parse Daily Tasks
-      const taskList = document.getElementById('taskList');
-      const dayMatches = [...response.matchAll(/Day (\d+):\s*(.+?)(?:\n|Day|\nTIPS|$)/gi)];
+       // Parse Daily Tasks - handles multi-line tasks
+       const taskList = document.getElementById('taskList');
+       // Match "Day N:" followed by any content (including newlines) until next "Day" or "TIPS" or end
+       const dayRegex = /Day\s+(\d+):\s*([\s\S]*?)(?=\nDay|\nTIPS|$)/gi;
+       const dayMatches = [...response.matchAll(dayRegex)];
       
       if (dayMatches.length > 0) {
         let html = '';
